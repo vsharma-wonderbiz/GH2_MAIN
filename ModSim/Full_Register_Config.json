@@ -1,0 +1,261 @@
+{
+    "stacks": [
+        {
+            "stack": 1,
+            "signals": [
+                {
+                    "name": "rawdata_current",
+                    "registers": [
+                        0,
+                        1
+                    ],
+                    "min": 41,
+                    "max": 43,
+                    "unit": "A"
+                },
+                {
+                    "name": "rawdata_voltage",
+                    "registers": [
+                        2,
+                        3
+                    ],
+                    "min": 44,
+                    "max": 44.1,
+                    "unit": "V"
+                },
+                {
+                    "name": "rawdata_pressure",
+                    "registers": [
+                        4,
+                        5
+                    ],
+                    "min": 25,
+                    "max": 30,
+                    "unit": "bar"
+                },
+                {
+                    "name": "rawdata_outlet_pressure",
+                    "registers": [
+                        6,
+                        7
+                    ],
+                    "min": 20,
+                    "max": 25,
+                    "unit": "bar"
+                },
+                {
+                    "name": "rawdata_flowrate",
+                    "registers": [
+                        8,
+                        9
+                    ],
+                    "min": 2.8,
+                    "max": 3.5,
+                    "unit": "Nm3/h"
+                },
+                {
+                    "name": "rawdata_temperature",
+                    "registers": [
+                        10,
+                        11
+                    ],
+                    "min": 48,
+                    "max": 55,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "rawdata_h2flow",
+                    "registers": [
+                        12,
+                        13
+                    ],
+                    "min": 486,
+                    "max": 500,
+                    "unit": "Nm3/h"
+                },
+                {
+                    "name": "rawdata_water_conductivity",
+                    "registers": [
+                        14,
+                        15
+                    ],
+                    "min": 15,
+                    "max": 27,
+                    "unit": "\u00c2\u00b5S/cm"
+                },
+                {
+                    "name": "rawdata_water_flowrate",
+                    "registers": [
+                        16,
+                        17
+                    ],
+                    "min": 25.2,
+                    "max": 33.3,
+                    "unit": "L/min"
+                },
+                {
+                    "name": "rawdata_concentration",
+                    "registers": [
+                        18,
+                        19
+                    ],
+                    "min": 0.5,
+                    "max": 1.0,
+                    "unit": "%"
+                },
+                {
+                    "name": "rawdata_fan_rpm",
+                    "registers": [
+                        20,
+                        21
+                    ],
+                    "min": 3810,
+                    "max": 4290,
+                    "unit": "RPM"
+                },
+                {
+                    "name": "rawdata_safey_board_temp",
+                    "registers": [
+                        22,
+                        23
+                    ],
+                    "min": 40,
+                    "max": 45,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "rawdata_recombiner_temp",
+                    "registers": [
+                        24,
+                        25
+                    ],
+                    "min": 55,
+                    "max": 65,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "rawdata_downstream_temp",
+                    "registers": [
+                        26,
+                        27
+                    ],
+                    "min": 50,
+                    "max": 60,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "rawdata_5v_board_voltage",
+                    "registers": [
+                        28,
+                        29
+                    ],
+                    "min": 4.99,
+                    "max": 5.024,
+                    "unit": "V"
+                },
+                {
+                    "name": "rawdata_12v_board_voltage",
+                    "registers": [
+                        30,
+                        31
+                    ],
+                    "min": 11.888,
+                    "max": 11.912,
+                    "unit": "V"
+                },
+                {
+                    "name": "rawdata_24v_board_voltage",
+                    "registers": [
+                        32,
+                        33
+                    ],
+                    "min": 23.407,
+                    "max": 23.649,
+                    "unit": "V"
+                },
+                {
+                    "name": "rawdata_pump_signal",
+                    "registers": [
+                        34,
+                        35
+                    ],
+                    "min": 0.0,
+                    "max": 2.999,
+                    "unit": "V"
+                },
+                {
+                    "name": "rawdata_battery_voltage",
+                    "registers": [
+                        36,
+                        37
+                    ],
+                    "min": 3.011,
+                    "max": 3.06,
+                    "unit": "V"
+                },
+                {
+                    "name": "rawdata_warning_exists",
+                    "registers": [
+                        38,
+                        39
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "unit": "bool"
+                },
+                {
+                    "name": "rawdata_lifetime",
+                    "registers": [
+                        40,
+                        41
+                    ],
+                    "min": 38000,
+                    "max": 40000,
+                    "unit": "hours"
+                },
+                {
+                    "name": "rawdata_trip_signal",
+                    "registers": [
+                        42,
+                        43
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "unit": "bool"
+                }
+            ]
+        }
+    ],
+    "plant": [
+        {
+            "name": "plantdata_power",
+            "registers": [
+                460,
+                461
+            ],
+            "min": 1000,
+            "max": 2000,
+            "unit": "kW"
+        },
+        {
+            "name": "plantdata_throughput",
+            "registers": [
+                462,
+                463
+            ],
+            "min": 200,
+            "max": 450,
+            "unit": "Nm3/h"
+        },
+        {
+            "name": "plantdata_water_flow_tot",
+            "registers": [
+                464,
+                465
+            ],
+            "min": 2.0,
+            "max": 5.0,
+            "unit": "m3/h"
+        }
+    ]
+}

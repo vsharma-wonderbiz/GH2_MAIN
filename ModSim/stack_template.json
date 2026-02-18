@@ -1,0 +1,28 @@
+{
+  "datatype": "float32",
+  "registers_per_signal": 2,
+  "signals": [
+    { "name": "rawdata_current", "min": 41, "max": 43, "unit": "A" },
+    { "name": "rawdata_voltage", "min": 44, "max": 44.1, "unit": "V" },
+    { "name": "rawdata_pressure", "min": 25, "max": 30, "unit": "bar" },
+    { "name": "rawdata_outlet_pressure", "min": 20, "max": 25, "unit": "bar" },
+    { "name": "rawdata_flowrate", "min": 2.8, "max": 3.5, "unit": "Nm3/h" },
+    { "name": "rawdata_temperature", "min": 48, "max": 55, "unit": "°C" },
+    { "name": "rawdata_h2flow", "min": 486, "max": 500, "unit": "Nm3/h" },
+    { "name": "rawdata_water_conductivity", "min": 15, "max": 27, "unit": "µS/cm" },
+    { "name": "rawdata_water_flowrate", "min": 25.2, "max": 33.3, "unit": "L/min" },
+    { "name": "rawdata_concentration", "min": 0.5, "max": 1.0, "unit": "%" },
+    { "name": "rawdata_fan_rpm", "min": 3810, "max": 4290, "unit": "RPM" },
+    { "name": "rawdata_safey_board_temp", "min": 40, "max": 45, "unit": "°C" },
+    { "name": "rawdata_recombiner_temp", "min": 55, "max": 65, "unit": "°C" },
+    { "name": "rawdata_downstream_temp", "min": 50, "max": 60, "unit": "°C" },
+    { "name": "rawdata_5v_board_voltage", "min": 4.99, "max": 5.024, "unit": "V" },
+    { "name": "rawdata_12v_board_voltage", "min": 11.888, "max": 11.912, "unit": "V" },
+    { "name": "rawdata_24v_board_voltage", "min": 23.407, "max": 23.649, "unit": "V" },
+    { "name": "rawdata_pump_signal", "min": 0.0, "max": 2.999, "unit": "V" },
+    { "name": "rawdata_battery_voltage", "min": 3.011, "max": 3.06, "unit": "V" },
+    { "name": "rawdata_warning_exists", "min": 0, "max": 1, "unit": "bool" },
+    { "name": "rawdata_lifetime", "min": 38000, "max": 40000, "unit": "hours" },
+    { "name": "rawdata_trip_signal", "min": 0, "max": 1, "unit": "bool" }
+  ]
+}

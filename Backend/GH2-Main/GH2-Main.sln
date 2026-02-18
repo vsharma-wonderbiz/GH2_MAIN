@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GH2-Main", "GH2-Main\GH2-Main.csproj", "{CC6840FD-113D-4BE4-B0FA-F415143BBE07}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC6840FD-113D-4BE4-B0FA-F415143BBE07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC6840FD-113D-4BE4-B0FA-F415143BBE07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC6840FD-113D-4BE4-B0FA-F415143BBE07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC6840FD-113D-4BE4-B0FA-F415143BBE07}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {64F135E7-F2B4-4409-A93B-88960DB6F482}
+	EndGlobalSection
+EndGlobal
