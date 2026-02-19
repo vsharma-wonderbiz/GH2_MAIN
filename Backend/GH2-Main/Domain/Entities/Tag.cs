@@ -14,7 +14,7 @@ namespace Domain.Entities
         public string Unit { get; private set; }
         public float LowerLimit { get; private set; }
         public float UpperLimit { get; private set; }
-        public DateTime CreatedAt { get; private set; } = DateTime.Now;
+        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
         public TagType TagType { get; private set; }
 
         public ICollection<MappingTable> Mapings=new List<MappingTable>();
