@@ -1,0 +1,12 @@
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\bin\Debug\net9.0\Domain.deps.json
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\bin\Debug\net9.0\Domain.dll
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\bin\Debug\net9.0\Domain.pdb
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\obj\Debug\net9.0\Domain.sourcelink.json
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\obj\Debug\net9.0\Domain.dll
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\obj\Debug\net9.0\refint\Domain.dll
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\obj\Debug\net9.0\Domain.pdb
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Domain\obj\Debug\net9.0\ref\Domain.dll

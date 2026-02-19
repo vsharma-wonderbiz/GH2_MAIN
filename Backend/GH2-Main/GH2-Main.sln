@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GH2-Main", "GH2-Main\GH2-Main.csproj", "{CC6840FD-113D-4BE4-B0FA-F415143BBE07}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{2B4C9A75-8A46-4831-9D03-2BE5578505CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{E1138556-64CF-4B62-9BA1-9284E31A614D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2B4C9A75-8A46-4831-9D03-2BE5578505CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B4C9A75-8A46-4831-9D03-2BE5578505CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B4C9A75-8A46-4831-9D03-2BE5578505CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1138556-64CF-4B62-9BA1-9284E31A614D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1138556-64CF-4B62-9BA1-9284E31A614D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1138556-64CF-4B62-9BA1-9284E31A614D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1138556-64CF-4B62-9BA1-9284E31A614D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
