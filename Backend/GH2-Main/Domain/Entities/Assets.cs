@@ -4,20 +4,56 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Domain.Entities
 {
     public class Assets
     {
-        public int AssetId { get; set; }
+        public int AssetId { get; private set; }
+        public string Name { get; private set; }
+        public string AssetType { get; private set; }
+        public string? ParentAssetId { get; private set; }
+        public DateTime CreatedAt { get; private set; } = DateTime.Now;
+        public ICollection<MappingTable> Mappings { get; private set; } = new List<MappingTable>();
 
-       
-        public required string Name { get; set; }
+        // EF Core needs a parameterless constructor
+        private Assets() { }
 
-        public required string AssetType { get; set; }
+        public Assets(string name, string? parentAssetId = null)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name), "Asset Name is required");
 
-        public string? ParentAssetId { get; set; }
+            this.Name = name;
+            this.ParentAssetId = parentAssetId;
 
-        public DateTime CreatedAt { get; set; }= DateTime.Now;
+            // Rule: Plant if no parent, Machine if parent exists
+            this.AssetType = parentAssetId == null ? "Plant" : "Machine";
+        }
+
+        public void UpdateName(string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName))
+                throw new ArgumentException("Asset name cannot be empty");
+
+            this.Name = newName;
+        }
+
+        public void AssignParent(string parentId)
+        {
+            if (string.IsNullOrWhiteSpace(parentId))
+                throw new ArgumentException("Parent AssetId cannot be empty");
+
+            this.ParentAssetId = parentId;
+            this.AssetType = "Machine";
+        }
+
+        public void RemoveParent()
+        {
+            this.ParentAssetId = null;
+            this.AssetType = "Plant";
+        }
     }
+
 }
