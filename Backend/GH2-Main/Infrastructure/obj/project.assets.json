@@ -1232,6 +1232,19 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
+      "Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Application.dll": {}
+        }
+      },
       "Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
@@ -3580,6 +3593,11 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Application/1.0.0": {
+      "type": "project",
+      "path": "../Application/Application.csproj",
+      "msbuildProject": "../Application/Application.csproj"
+    },
     "Domain/1.0.0": {
       "type": "project",
       "path": "../Domain/Domain.csproj",
@@ -3588,6 +3606,7 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
+      "Application >= 1.0.0",
       "Domain >= 1.0.0",
       "Microsoft.EntityFrameworkCore >= 9.0.13",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.13",
@@ -3629,6 +3648,9 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
+            "C:\\Users\\Vinay Sharma\\GH2_MAIN\\Backend\\GH2-Main\\Application\\Application.csproj": {
+              "projectPath": "C:\\Users\\Vinay Sharma\\GH2_MAIN\\Backend\\GH2-Main\\Application\\Application.csproj"
+            },
             "C:\\Users\\Vinay Sharma\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\Domain.csproj": {
               "projectPath": "C:\\Users\\Vinay Sharma\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\Domain.csproj"
             }

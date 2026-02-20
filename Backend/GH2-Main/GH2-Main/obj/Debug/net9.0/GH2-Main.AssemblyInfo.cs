@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GH2-Main")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dfb67510521968e36719f62a06732caeaf9ec71c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5540cb4268f4e64f3095bd2db159c7782a0d62d7")]
 [assembly: System.Reflection.AssemblyProductAttribute("GH2-Main")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GH2-Main")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

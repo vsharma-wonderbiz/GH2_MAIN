@@ -1,3 +1,6 @@
+using Application.Interface;
+using Application.Services;
+using Infrastructure.Implementation;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Seeding;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +21,9 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConn")));
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IAssetService, AssetService>();
+
 
 
 

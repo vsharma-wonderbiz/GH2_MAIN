@@ -22,6 +22,8 @@ namespace Infrastructure.Persistence
         public DbSet<Tag> Tags { get; set; }
         public DbSet<SensorRawData> SensorRawDatas { get; set; }
 
+        public DbSet<ProtocolConfig> ProtocolConfig { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
