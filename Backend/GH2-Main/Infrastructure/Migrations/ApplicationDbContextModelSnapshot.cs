@@ -64,28 +64,9 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("DataType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Deadband")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FunctionCode")
-                        .HasColumnType("integer");
-
                     b.Property<string>("OpcNodeId")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("RegisterAddress")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RegisterCount")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SlaveId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("TagId")
                         .HasColumnType("integer");
@@ -135,6 +116,39 @@ namespace Infrastructure.Migrations
                     b.ToTable("NodeLastDatas");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ProtocolConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("FunctionCode")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MappingId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RegisterAddress")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RegisterCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SlaveId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MappingId");
+
+                    b.ToTable("ProtocolConfig");
+                });
+
             modelBuilder.Entity("Domain.Entities.SensorRawData", b =>
                 {
                     b.Property<int>("Id")
@@ -181,6 +195,13 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DataType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("Deadband")
+                        .HasColumnType("real");
 
                     b.Property<float>("LowerLimit")
                         .HasColumnType("real");
@@ -268,7 +289,7 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Tag", "Tag")
-                        .WithMany("Mapings")
+                        .WithMany("Mappings")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -282,6 +303,17 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.MappingTable", "Mapping")
                         .WithMany("NodeLastData")
+                        .HasForeignKey("MappingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mapping");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ProtocolConfig", b =>
+                {
+                    b.HasOne("Domain.Entities.MappingTable", "Mapping")
+                        .WithMany("ModbusConifg")
                         .HasForeignKey("MappingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -314,7 +346,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.TransactionData", b =>
                 {
                     b.HasOne("Domain.Entities.MappingTable", "Mapping")
-                        .WithMany("TrnasactionData")
+                        .WithMany("TransactionData")
                         .HasForeignKey("MappingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -329,16 +361,18 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.MappingTable", b =>
                 {
+                    b.Navigation("ModbusConifg");
+
                     b.Navigation("NodeLastData");
 
                     b.Navigation("SensorData");
 
-                    b.Navigation("TrnasactionData");
+                    b.Navigation("TransactionData");
                 });
 
             modelBuilder.Entity("Domain.Entities.Tag", b =>
                 {
-                    b.Navigation("Mapings");
+                    b.Navigation("Mappings");
                 });
 
             modelBuilder.Entity("Domain.Entities.TagType", b =>

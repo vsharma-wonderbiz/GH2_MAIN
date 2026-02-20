@@ -1,1 +1,4 @@
 .vs/
+
+# Ignore EF Core migrations in Infrastructure project
+Backend/GH2-Main/Infrastructure/Migrations/

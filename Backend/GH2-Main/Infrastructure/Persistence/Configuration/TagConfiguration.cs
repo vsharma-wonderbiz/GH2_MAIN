@@ -18,6 +18,8 @@ namespace Infrastructure.Persistence.Configuration
 
             builder.Property(t => t.TagName).IsRequired();
             builder.Property(t => t.Unit).IsRequired();
+            builder.Property(t=>t.Deadband).IsRequired();
+            builder.Property(t => t.DataType).IsRequired();
 
             
             builder.HasOne(t => t.TagType)          
