@@ -17,11 +17,16 @@ namespace Infrastructure.Persistence.Configuration
             builder.Property(m => m.MappingId).ValueGeneratedOnAdd();
 
             builder.Property(m => m.OpcNodeId).IsRequired();
-            
+
+            builder.HasIndex(a => a.OpcNodeId)
+                 .IsUnique();
+
             builder.HasOne(m => m.Asset)
                    .WithMany(a => a.Mappings)
                    .HasForeignKey(m => m.AssetId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+        
 
             builder.HasOne(m => m.Tag)
                    .WithMany(t => t.Mappings)

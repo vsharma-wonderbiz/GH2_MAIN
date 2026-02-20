@@ -1,0 +1,6 @@
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Application\obj\Debug\net9.0\Application.csproj.AssemblyReference.cache
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Application\obj\Debug\net9.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Application\obj\Debug\net9.0\Application.AssemblyInfoInputs.cache
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Application\obj\Debug\net9.0\Application.AssemblyInfo.cs
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Application\obj\Debug\net9.0\Application.csproj.CoreCompileInputs.cache
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Application\obj\Debug\net9.0\Application.sourcelink.json

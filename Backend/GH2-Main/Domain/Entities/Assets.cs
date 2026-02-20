@@ -13,14 +13,14 @@ namespace Domain.Entities
         public int AssetId { get; private set; }
         public string Name { get; private set; }
         public string AssetType { get; private set; }
-        public string? ParentAssetId { get; private set; }
+        public int? ParentAssetId { get; private set; }
         public DateTime CreatedAt { get; private set; } = DateTime.Now;
         public ICollection<MappingTable> Mappings { get; private set; } = new List<MappingTable>();
 
         // EF Core needs a parameterless constructor
         private Assets() { }
 
-        public Assets(string name, string? parentAssetId = null)
+        public Assets(string name, int? parentAssetId = null)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name), "Asset Name is required");
@@ -40,10 +40,10 @@ namespace Domain.Entities
             this.Name = newName;
         }
 
-        public void AssignParent(string parentId)
+        public void AssignParent(int parentId)
         {
-            if (string.IsNullOrWhiteSpace(parentId))
-                throw new ArgumentException("Parent AssetId cannot be empty");
+            if (parentId>0)
+                throw new ArgumentException("Parent AssetId must be a positive number ");
 
             this.ParentAssetId = parentId;
             this.AssetType = "Machine";
