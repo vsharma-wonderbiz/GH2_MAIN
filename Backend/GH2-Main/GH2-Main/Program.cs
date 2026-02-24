@@ -4,6 +4,7 @@ using Infrastructure.Implementation;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Sedding;
 using Infrastructure.Persistence.Seeding;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
  
@@ -25,6 +26,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
+builder.Services.AddScoped<BackfillSensorDataService>();
 
 
 
