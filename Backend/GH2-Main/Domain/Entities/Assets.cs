@@ -14,7 +14,7 @@ namespace Domain.Entities
         public string Name { get; private set; }
         public string AssetType { get; private set; }
         public int? ParentAssetId { get; private set; }
-        public DateTime CreatedAt { get; private set; } = DateTime.Now;
+        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
         public ICollection<MappingTable> Mappings { get; private set; } = new List<MappingTable>();
 
         // EF Core needs a parameterless constructor
@@ -29,7 +29,7 @@ namespace Domain.Entities
             this.ParentAssetId = parentAssetId;
 
             // Rule: Plant if no parent, Machine if parent exists
-            this.AssetType = parentAssetId == null ? "Plant" : "Machine";
+            this.AssetType = parentAssetId == null ? "Plant" : "Stack";
         }
 
         public void UpdateName(string newName)

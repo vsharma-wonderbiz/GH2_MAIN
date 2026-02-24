@@ -58,7 +58,10 @@ namespace Infrastructure.Persistence.Seeding
                     new Tag(stackTypeId, "battery_voltage", "V", 3.011f, 3.06f,"float32",0.0015f),
                     new Tag(stackTypeId, "warning_exists", "bool", 0, 1,"bool",0),
                     new Tag(stackTypeId, "lifetime", "hours", 38000, 40000,"float32",0),
-                    new Tag(stackTypeId, "trip_signal", "bool", 0, 1,"float32",0)
+                    new Tag(stackTypeId, "trip_signal", "bool", 0, 1,"float32",0),
+                    new Tag(plantTypeId, "power", "kW" ,1000 , 2000 ,"float32",0),
+                    new Tag(plantTypeId, "throughput", "Nm3/h" ,200 , 450 ,"float32",0),
+                    new Tag(plantTypeId, "water_flow_tot", "m3" ,464 , 465 ,"float32",0),
                 };
 
                 context.Tags.AddRange(stackTags);

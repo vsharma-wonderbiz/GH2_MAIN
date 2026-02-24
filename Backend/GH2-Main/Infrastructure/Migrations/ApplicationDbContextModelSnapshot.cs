@@ -42,8 +42,8 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("ParentAssetId")
-                        .HasColumnType("text");
+                    b.Property<int?>("ParentAssetId")
+                        .HasColumnType("integer");
 
                     b.HasKey("AssetId");
 
@@ -74,6 +74,9 @@ namespace Infrastructure.Migrations
                     b.HasKey("MappingId");
 
                     b.HasIndex("AssetId");
+
+                    b.HasIndex("OpcNodeId")
+                        .IsUnique();
 
                     b.HasIndex("TagId");
 
@@ -111,7 +114,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MappingId");
+                    b.HasIndex("MappingId", "OpcNodeId")
+                        .IsUnique();
 
                     b.ToTable("NodeLastDatas");
                 });

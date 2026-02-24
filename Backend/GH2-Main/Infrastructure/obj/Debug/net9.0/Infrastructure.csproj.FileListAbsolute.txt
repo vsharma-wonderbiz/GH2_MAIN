@@ -16,3 +16,5 @@ C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Infrastructure\obj\Debug\net9.0\
 C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Infrastructure\obj\Debug\net9.0\Infrastructure.pdb
 C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Infrastructure\obj\Debug\net9.0\Infrastructure.genruntimeconfig.cache
 C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Infrastructure\obj\Debug\net9.0\ref\Infrastructure.dll
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Infrastructure\bin\Debug\net9.0\Application.dll
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\Infrastructure\bin\Debug\net9.0\Application.pdb

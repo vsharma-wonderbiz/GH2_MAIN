@@ -2,10 +2,11 @@ using Application.Interface;
 using Application.Services;
 using Infrastructure.Implementation;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Sedding;
 using Infrastructure.Persistence.Seeding;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-
+ 
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
@@ -23,6 +24,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConn")));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAssetService, AssetService>();
+builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 
 
 
@@ -40,6 +42,9 @@ using (var scope = app.Services.CreateScope())
     // Run your seeder
     TagTypeSeeder.Seeder(context);
     TagsSeeder.Seeder(context, logger);
+    AssetSeeder.Seed(context);
+    MappingSeeder.Seed(context);
+    await ProtocolDataSeeder.SeedAsync(context);
 }
 
 

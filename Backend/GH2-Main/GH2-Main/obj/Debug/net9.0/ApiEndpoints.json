@@ -1,5 +1,21 @@
 [
   {
+    "ContainingType": "GH2_Main.Controllers.AssetController",
+    "Method": "CreateAsset",
+    "RelativePath": "api/Asset",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Application.DTOS.CreateAssetDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GH2_Main.Controllers.WeatherForecastController",
     "Method": "Get",
     "RelativePath": "WeatherForecast",
