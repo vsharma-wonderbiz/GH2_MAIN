@@ -11,16 +11,16 @@ namespace Application.Services
 {
     public class AssetService : IAssetService
     {
-        private readonly IRepository<Assets> _assetRepo;
+        private readonly IAssetRepository _assetRepo;
 
-        public AssetService(IRepository<Assets> assetRepo)
+        public AssetService(IAssetRepository assetRepo)
         {
             _assetRepo = assetRepo;
         }
 
         public async Task CreateAssetAsync(CreateAssetDto dto)
         {
-           
+
 
             var asset = await _assetRepo.GetByNameAsync(dto.Name);
 
@@ -33,6 +33,16 @@ namespace Application.Services
             await _assetRepo.SaveChangesAsync();
 
 
+        }
+
+        public async Task<Assets?> GetAssetById(int id)
+        {
+            var asset = await _assetRepo.GetByIdAsync(id);
+
+            if (asset != null)
+                throw new InvalidOperationException("Asset Asset Not Present.");
+
+            return asset;
         }
     }
 }

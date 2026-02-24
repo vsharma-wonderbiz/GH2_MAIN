@@ -1,14 +1,14 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Domain.Entities;
 
-//namespace Application.Interface
-//{
-//    internal interface IAssetRepository
-//    {
-//        Task 
-//    }
-//}
-    
+namespace Application.Interface
+{
+    public interface IAssetRepository : IRepository<Assets>
+    {
+        Task<Assets> GetByNameAsync(string name);
+    }
+}

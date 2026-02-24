@@ -11,8 +11,8 @@ namespace Infrastructure.Implementation
 {
     public class Repository<T> : IRepository<T> where T :class 
     {
-        private readonly ApplicationDbContext _context;
-        private readonly DbSet<T> _dbset;
+        protected readonly ApplicationDbContext _context;
+        protected readonly DbSet<T> _dbset;
 
         public Repository(ApplicationDbContext context)
         {
@@ -24,10 +24,6 @@ namespace Infrastructure.Implementation
         {
             return await _dbset.FindAsync(id);
 
-        }
-        public async Task<T?> GetByNameAsync(string Name)
-        {
-            return await _dbset.FindAsync(Name);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()

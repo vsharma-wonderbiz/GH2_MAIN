@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.DTOS;
-using Domain.Entities
+using Domain.Entities;
 
 
 namespace Application.Interface
@@ -13,7 +13,7 @@ namespace Application.Interface
     {
         Task<Assets?> GetAssetById(int id);
 
-        Task CreateAssetAsync(CreateAssetDto);
+        Task CreateAssetAsync(CreateAssetDto dto);
 
     }
 }

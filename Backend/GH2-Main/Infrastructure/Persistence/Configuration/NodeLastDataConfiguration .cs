@@ -27,6 +27,10 @@ namespace Infrastructure.Persistence.Configuration
                    .WithMany(m => m.NodeLastData)
                    .HasForeignKey(n => n.MappingId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasIndex(n => new { n.MappingId, n.OpcNodeId })
+               .IsUnique();
+
         }
     }
 

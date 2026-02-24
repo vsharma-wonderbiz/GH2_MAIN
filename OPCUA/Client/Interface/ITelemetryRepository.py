@@ -9,7 +9,7 @@ class ITelemetryRepository(ABC):
 
     @abstractmethod
     def get_node_id_mapping(self):
-        """Returns dict {opc_node_id: node_id}"""
+        """Returns dict {opc_node_id: mappingId}"""
         pass
 
     @abstractmethod
@@ -22,7 +22,7 @@ class ITelemetryRepository(ABC):
         pass
 
     @abstractmethod
-    def insert_telemetry_record(self, node_id, value, timestamp: datetime):
+    def insert_transaction_record(self, node_id, value, timestamp: datetime):
         pass
 
     @abstractmethod

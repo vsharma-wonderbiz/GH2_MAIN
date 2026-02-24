@@ -1,24 +1,28 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using Domain.Entities;
-//using Application.Interface;
-//using Infrastructure.Persistence;
+﻿using Domain.Entities;
+using Infrastructure.Persistence;
+using Application.Interface;
+using Microsoft.EntityFrameworkCore;
 
-//namespace Infrastructure.Implementation
-//{
-//    public class AssetRepositary : IRepository<Assets>
-//    {
-//        private readonly ApplicationDbContext _context;
+namespace Infrastructure.Implementation
+{
+    public class AssetRepository : Repository<Assets>, IAssetRepository
+    {
+        public AssetRepository(ApplicationDbContext context)
+            : base(context)
+        {
+        }
 
-//        public AssetRepositary(ApplicationDbContext context)
-//        {
-//            _context = context;
-//        }
+        public async Task<Assets?> GetByNameAsync(string name)
+        {
+            return await _dbset
+                .FirstOrDefaultAsync(x => x.Name == name);
+        }
 
-//        public async Task<>
-
-//    }
-//}
+        //public async Task<List<Assets>> GetChildrenAsync(int parentId)
+        //{
+        //    return await _dbset
+        //        .Where(x => x.ParentAssetId == parentId)
+        //        .ToListAsync();
+        //}
+    }
+}
