@@ -16,6 +16,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "GH2_Main.Controllers.BackfillDataController",
+    "Method": "BackfillAsset",
+    "RelativePath": "api/BackfillData/backfill/asset/{assetName}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "assetName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GH2_Main.Controllers.WeatherForecastController",
     "Method": "Get",
     "RelativePath": "WeatherForecast",
