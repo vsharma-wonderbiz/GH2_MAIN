@@ -18,26 +18,20 @@ namespace GH2_Main.Controllers
             _logger = logger;
         }
 
-        // -------------------------------------------------------
-        // BACKFILL FULL MONTH (ASYNC FIRE-AND-FORGET)
-        // -------------------------------------------------------
 
         [HttpPost("backfill/asset/{assetName}")]
-        public IActionResult BackfillAsset(string assetName)
+        public async  Task<IActionResult> BackfillAsset(string assetName)
         {
-            Task.Run(async () =>
-            {
                 try
                 {
                     _logger.LogInformation($"Backfill started for asset {assetName}");
-                    await _backfillService.BackfillAssetByNameAsync(assetName);
+                    await _backfillService.BackfillAssetAsync(assetName);
                     _logger.LogInformation($"Backfill completed for asset {assetName}");
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, $"Backfill failed for asset {assetName}");
                 }
-            });
 
             return Accepted(new
             {
@@ -49,69 +43,69 @@ namespace GH2_Main.Controllers
         // BACKFILL CUSTOM RANGE
         // -------------------------------------------------------
 
-        [HttpPost("backfill/asset/{assetName}/range")]
-        public IActionResult BackfillAssetRange(
-            string assetName,
-            [FromQuery] DateTime startDate,
-            [FromQuery] DateTime endDate)
-        {
-            if (startDate >= endDate)
-                return BadRequest("Start date must be before end date");
+        //[HttpPost("backfill/asset/{assetName}/range")]
+        //public IActionResult BackfillAssetRange(
+        //    string assetName,
+        //    [FromQuery] DateTime startDate,
+        //    [FromQuery] DateTime endDate)
+        //{
+        //    if (startDate >= endDate)
+        //        return BadRequest("Start date must be before end date");
 
-            if ((endDate - startDate).TotalDays > 90)
-                return BadRequest("Maximum allowed range is 90 days");
+        //    if ((endDate - startDate).TotalDays > 90)
+        //        return BadRequest("Maximum allowed range is 90 days");
 
-            Task.Run(async () =>
-            {
-                try
-                {
-                    _logger.LogInformation($"Backfill started for {assetName} | {startDate} - {endDate}");
-                    await _backfillService.BackfillAssetAsync(assetName, startDate, endDate);
-                    _logger.LogInformation($"Backfill completed for {assetName}");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"Backfill failed for {assetName}");
-                }
-            });
+        //    Task.Run(async () =>
+        //    {
+        //        try
+        //        {
+        //            _logger.LogInformation($"Backfill started for {assetName} | {startDate} - {endDate}");
+        //            await _backfillService.BackfillAssetAsync(assetName, startDate, endDate);
+        //            _logger.LogInformation($"Backfill completed for {assetName}");
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _logger.LogError(ex, $"Backfill failed for {assetName}");
+        //        }
+        //    });
 
-            return Accepted(new
-            {
-                message = $"Backfill started in background for asset: {assetName}"
-            });
-        }
+        //    return Accepted(new
+        //    {
+        //        message = $"Backfill started in background for asset: {assetName}"
+        //    });
+        //}
 
-        // -------------------------------------------------------
-        // STATS
-        // -------------------------------------------------------
+        //// -------------------------------------------------------
+        //// STATS
+        //// -------------------------------------------------------
 
-        [HttpGet("stats")]
-        public async Task<IActionResult> GetStats()
-        {
-            var stats = await _backfillService.GetStatsAsync();
-            return Ok(stats);
-        }
+        //[HttpGet("stats")]
+        //public async Task<IActionResult> GetStats()
+        //{
+        //    var stats = await _backfillService.GetStatsAsync();
+        //    return Ok(stats);
+        //}
 
-        // -------------------------------------------------------
-        // CLEAR ALL DATA
-        // -------------------------------------------------------
+        //// -------------------------------------------------------
+        //// CLEAR ALL DATA
+        //// -------------------------------------------------------
 
-        [HttpDelete("clear/all")]
-        public async Task<IActionResult> ClearAllData()
-        {
-            await _backfillService.ClearSensorDataAsync();
-            return Ok(new { message = "All sensor data cleared" });
-        }
+        //[HttpDelete("clear/all")]
+        //public async Task<IActionResult> ClearAllData()
+        //{
+        //    await _backfillService.ClearSensorDataAsync();
+        //    return Ok(new { message = "All sensor data cleared" });
+        //}
 
-        // -------------------------------------------------------
-        // CLEAR ASSET DATA
-        // -------------------------------------------------------
+        //// -------------------------------------------------------
+        //// CLEAR ASSET DATA
+        //// -------------------------------------------------------
 
-        [HttpDelete("clear/asset/{assetName}")]
-        public async Task<IActionResult> ClearAssetData(string assetName)
-        {
-            await _backfillService.ClearSensorDataForAssetAsync(assetName);
-            return Ok(new { message = $"Sensor data cleared for asset: {assetName}" });
-        }
+        //[HttpDelete("clear/asset/{assetName}")]
+        //public async Task<IActionResult> ClearAssetData(string assetName)
+        //{
+        //    await _backfillService.ClearSensorDataForAssetAsync(assetName);
+        //    return Ok(new { message = $"Sensor data cleared for asset: {assetName}" });
+        //}
     }
 }

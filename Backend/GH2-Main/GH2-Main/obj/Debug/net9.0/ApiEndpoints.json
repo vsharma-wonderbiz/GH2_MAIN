@@ -32,68 +32,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "GH2_Main.Controllers.BackfillDataController",
-    "Method": "BackfillAssetRange",
-    "RelativePath": "api/BackfillData/backfill/asset/{assetName}/range",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "assetName",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "startDate",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      },
-      {
-        "Name": "endDate",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "GH2_Main.Controllers.BackfillDataController",
-    "Method": "ClearAllData",
-    "RelativePath": "api/BackfillData/clear/all",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "GH2_Main.Controllers.BackfillDataController",
-    "Method": "ClearAssetData",
-    "RelativePath": "api/BackfillData/clear/asset/{assetName}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "assetName",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "GH2_Main.Controllers.BackfillDataController",
-    "Method": "GetStats",
-    "RelativePath": "api/BackfillData/stats",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "GH2_Main.Controllers.WeatherForecastController",
     "Method": "Get",
     "RelativePath": "WeatherForecast",

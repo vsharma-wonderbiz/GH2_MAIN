@@ -1,8 +1,7 @@
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.SqlClient;
-using System.Data;
+using Npgsql;
 
 namespace Infrastructure.Services
 {
@@ -16,11 +15,14 @@ namespace Infrastructure.Services
             _context = context;
         }
 
-        public async Task BackfillAssetAsync(string assetName, DateTime startDate, DateTime endDate)
+        public async Task BackfillAssetAsync(string assetName)
         {
+            var endDate = DateTime.Now;
+            var startDate = endDate.AddMonths(-1);
+
             var asset = await _context.Assets
                 .Include(a => a.Mappings)
-                    .ThenInclude(m => m.Tag)
+                .ThenInclude(m => m.Tag)
                 .FirstOrDefaultAsync(a => a.Name == assetName);
 
             if (asset == null)
@@ -32,7 +34,6 @@ namespace Infrastructure.Services
             foreach (var mapping in asset.Mappings)
             {
                 Console.WriteLine($"Processing {mapping.Tag.TagName}");
-
                 await BackfillWithBulkCopyAsync(
                     mapping,
                     startDate,
@@ -51,74 +52,49 @@ namespace Infrastructure.Services
         {
             var connectionString = _context.Database.GetConnectionString();
 
-            using var connection = new SqlConnection(connectionString);
+            using var connection = new NpgsqlConnection(connectionString);
             await connection.OpenAsync();
-
-            using var bulkCopy = new SqlBulkCopy(connection)
-            {
-                DestinationTableName = "SensorRawDatas",
-                BatchSize = 100000,
-                BulkCopyTimeout = 0
-            };
-
-            bulkCopy.ColumnMappings.Add("MappingId", "MappingId");
-            bulkCopy.ColumnMappings.Add("OpcNodeId", "OpcNodeId");
-            bulkCopy.ColumnMappings.Add("AssetName", "AssetName");
-            bulkCopy.ColumnMappings.Add("TagName", "TagName");
-            bulkCopy.ColumnMappings.Add("Value", "Value");
-            bulkCopy.ColumnMappings.Add("TimeStamp", "TimeStamp");
-
-            var table = CreateDataTable();
 
             float currentValue = (minValue + maxValue) / 2;
             var currentTime = startDate;
             int totalCount = 0;
+            int batchSize = 100000;
 
             var assetName = mapping.Asset.Name;
             var tagName = mapping.Tag.TagName;
 
+            // PostgreSQL COPY is one continuous stream — we'll restart it per batch
             while (currentTime <= endDate)
             {
-                currentValue = SimulateNextValue(currentValue, minValue, maxValue);
+                // Begin a COPY stream for each batch
+                using var writer = await connection.BeginBinaryImportAsync(
+                    "COPY \"SensorRawDatas\" (\"MappingId\", \"OpcNodeId\", \"AssetName\", \"TagName\", \"Value\", \"TimeStamp\") FROM STDIN (FORMAT BINARY)");
 
-                table.Rows.Add(
-                    mapping.MappingId,
-                    mapping.OpcNodeId,
-                    assetName,
-                    tagName,
-                    currentValue,
-                    currentTime);
+                int batchCount = 0;
 
-                totalCount++;
-                currentTime = currentTime.AddSeconds(1);
-
-                if (table.Rows.Count >= 100000)
+                while (currentTime <= endDate && batchCount < batchSize)
                 {
-                    await bulkCopy.WriteToServerAsync(table);
-                    Console.WriteLine($"Inserted {totalCount:N0} rows...");
-                    table.Clear();
-                }
-            }
+                    currentValue = SimulateNextValue(currentValue, minValue, maxValue);
 
-            if (table.Rows.Count > 0)
-            {
-                await bulkCopy.WriteToServerAsync(table);
-                table.Clear();
+                    await writer.StartRowAsync();
+                    await writer.WriteAsync(mapping.MappingId, NpgsqlTypes.NpgsqlDbType.Integer);
+                    await writer.WriteAsync(mapping.OpcNodeId, NpgsqlTypes.NpgsqlDbType.Text);
+                    await writer.WriteAsync(assetName, NpgsqlTypes.NpgsqlDbType.Text);
+                    await writer.WriteAsync(tagName, NpgsqlTypes.NpgsqlDbType.Text);
+                    await writer.WriteAsync(currentValue, NpgsqlTypes.NpgsqlDbType.Real);
+                    await writer.WriteAsync(currentTime, NpgsqlTypes.NpgsqlDbType.Timestamp);
+
+                    totalCount++;
+                    batchCount++;
+                    currentTime = currentTime.AddSeconds(1);
+                }
+
+                // Complete the COPY stream — this is what actually commits the batch
+                await writer.CompleteAsync();
+                Console.WriteLine($"Inserted {totalCount:N0} rows...");
             }
 
             Console.WriteLine($"Finished: {totalCount:N0} rows inserted.");
-        }
-
-        private DataTable CreateDataTable()
-        {
-            var table = new DataTable();
-            table.Columns.Add("MappingId", typeof(int));
-            table.Columns.Add("OpcNodeId", typeof(string));
-            table.Columns.Add("AssetName", typeof(string));
-            table.Columns.Add("TagName", typeof(string));
-            table.Columns.Add("Value", typeof(float));
-            table.Columns.Add("TimeStamp", typeof(DateTime));
-            return table;
         }
 
         private float SimulateNextValue(float currentValue, float min, float max)
