@@ -24,6 +24,8 @@ namespace Infrastructure.Persistence
 
         public DbSet<ProtocolConfig> ProtocolConfig { get; set; }
 
+        public DbSet<WeeklyAggregatedData> WeeklyAvgData { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             

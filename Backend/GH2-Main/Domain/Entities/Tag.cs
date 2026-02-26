@@ -28,7 +28,7 @@ namespace Domain.Entities
             if (string.IsNullOrWhiteSpace(unit))
                 throw new ArgumentException("Unit is required", nameof(unit));
 
-            if (lowerLimit >= upperLimit)
+            if (lowerLimit > upperLimit)
                 throw new ArgumentException("LowerLimit must be less than UpperLimit");
 
             TagTypeId = tagTypeId;

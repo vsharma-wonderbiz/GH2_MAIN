@@ -15,7 +15,8 @@ namespace Infrastructure.Persistence
             {
                 context.TagTypes.AddRange(
                     new TagType("Plant"),
-                    new TagType("Stack")
+                    new TagType("Stack"),
+                    new TagType("Derived")
                     );
 
                 context.SaveChanges();

@@ -62,11 +62,14 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("OpcNodeId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .IsUnicode(false)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("TagId")
                         .HasColumnType("integer");
@@ -80,7 +83,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("Mappings");
+                    b.ToTable("MappingTables", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.NodeLastData", b =>
@@ -284,6 +287,48 @@ namespace Infrastructure.Migrations
                     b.ToTable("TransactionData");
                 });
 
+            modelBuilder.Entity("Domain.Entities.WeeklyAggregatedData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssetId")
+                        .HasColumnType("integer");
+
+                    b.Property<float>("AverageValue")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("MappingId")
+                        .HasColumnType("integer");
+
+                    b.Property<float>("MaxValue")
+                        .HasColumnType("real");
+
+                    b.Property<float>("MinValue")
+                        .HasColumnType("real");
+
+                    b.Property<int>("TotalSamples")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("WeekEndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("WeekStartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MappingId");
+
+                    b.ToTable("WeeklyAvgData");
+                });
+
             modelBuilder.Entity("Domain.Entities.MappingTable", b =>
                 {
                     b.HasOne("Domain.Entities.Assets", "Asset")
@@ -351,6 +396,17 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.MappingTable", "Mapping")
                         .WithMany("TransactionData")
+                        .HasForeignKey("MappingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mapping");
+                });
+
+            modelBuilder.Entity("Domain.Entities.WeeklyAggregatedData", b =>
+                {
+                    b.HasOne("Domain.Entities.MappingTable", "Mapping")
+                        .WithMany()
                         .HasForeignKey("MappingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

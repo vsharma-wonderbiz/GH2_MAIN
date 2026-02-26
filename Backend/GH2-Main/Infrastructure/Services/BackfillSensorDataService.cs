@@ -33,13 +33,16 @@ namespace Infrastructure.Services
 
             foreach (var mapping in asset.Mappings)
             {
-                Console.WriteLine($"Processing {mapping.Tag.TagName}");
-                await BackfillWithBulkCopyAsync(
-                    mapping,
-                    startDate,
-                    endDate,
-                    mapping.Tag.LowerLimit,
-                    mapping.Tag.UpperLimit);
+                if (mapping.Tag.TagTypeId != 3)
+                {
+                    Console.WriteLine($"Processing {mapping.Tag.TagName}");
+                    await BackfillWithBulkCopyAsync(
+                        mapping,
+                        startDate,
+                        endDate,
+                        mapping.Tag.LowerLimit,
+                        mapping.Tag.UpperLimit);
+                }
             }
         }
 
@@ -86,7 +89,7 @@ namespace Infrastructure.Services
 
                     totalCount++;
                     batchCount++;
-                    currentTime = currentTime.AddSeconds(1);
+                    currentTime = currentTime.AddSeconds(5);
                 }
 
                 // Complete the COPY stream — this is what actually commits the batch

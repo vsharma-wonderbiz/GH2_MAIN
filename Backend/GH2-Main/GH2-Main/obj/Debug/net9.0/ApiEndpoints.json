@@ -1,5 +1,21 @@
 [
   {
+    "ContainingType": "API.Controllers.AnalyticsController",
+    "Method": "GetAnalyticsData",
+    "RelativePath": "api/Analytics/data",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Application.DTOS.AnalyticsRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GH2_Main.Controllers.AssetController",
     "Method": "CreateAsset",
     "RelativePath": "api/Asset",
