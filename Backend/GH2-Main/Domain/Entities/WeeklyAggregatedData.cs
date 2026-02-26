@@ -14,6 +14,10 @@ namespace Domain.Entities
         public float MinValue { get; private set; }
         public float MaxValue { get; private set; }
         public int TotalSamples { get; private set; }
+
+        public int DaysCount { get; private set; }
+
+        public bool IsFinal { get; private set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
         public MappingTable Mapping { get; private set; }
@@ -22,7 +26,7 @@ namespace Domain.Entities
 
         // Constructor enforces required values
         public WeeklyAggregatedData(int assetid,int mappingId, DateTime weekStart, DateTime weekEnd,
-                                     float avgValue, float minValue, float maxValue, int totalSamples)
+                                     float avgValue, float minValue, float maxValue, int totalSamples, int daysCount, bool isFinal)
         {
             if (weekEnd < weekStart)
                 throw new ArgumentException("WeekEndDate cannot be earlier than WeekStartDate.");
@@ -41,6 +45,8 @@ namespace Domain.Entities
             MinValue = minValue;
             MaxValue = maxValue;
             TotalSamples = totalSamples;
+            DaysCount = daysCount;
+            IsFinal = isFinal;
         }
 
         public void UpdateAggregates(float avgValue, float minValue, float maxValue, int totalSamples)
