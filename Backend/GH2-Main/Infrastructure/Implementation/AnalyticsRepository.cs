@@ -7,6 +7,7 @@ using Application.DTOS;
 using Application.Interface;
 using Domain.Entities;
 using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Implementation
@@ -86,7 +87,7 @@ namespace Infrastructure.Implementation
                 .FirstOrDefaultAsync(x =>
                     x.AssetId == assetId &&
                     x.MappingId == mappingId &&
-                    x.WeekStartDate == weekStart);
+                    x.WeekStartDate == weekStart.Date);
         }
 
         public async Task AddAsync(WeeklyAggregatedData entity)
@@ -125,7 +126,6 @@ namespace Infrastructure.Implementation
                 })
                 .FirstOrDefaultAsync();
 
-            // Handle case when no data exists
             if (aggregate == null)
             {
                 return new WeeklyAvgResposeFromDb
@@ -145,6 +145,9 @@ namespace Infrastructure.Implementation
                 Count = aggregate.Count
             };
         }
+
+
+       
 
 
         public async Task<bool> IsWeekAvgDataPresent(int mappingId, DateTime weekStart, DateTime weekEnd)

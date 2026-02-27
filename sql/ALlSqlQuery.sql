@@ -1,7 +1,11 @@
 select * from "MappingTables"
-   where "MappingId"=32
+   where "MappingId"=23
   
 select * from "Tags"
+
+select * from "NodeLastDatas"
+
+
 
 select * from "WeeklyAvgData"
 
@@ -14,13 +18,13 @@ where "MappingId"=1
 
 SELECT *
 FROM "SensorRawDatas"
-WHERE "MappingId" = 27
+WHERE "MappingId" = 27	
   AND "TimeStamp"::date = '2026-02-28'
 
 
 select * from "SensorRawDatas"
 where "TagName"='power'
-order by "TimeStamp" '2026-01-14' AND '2026-01-21'
+order by "TimeStamp" '2026-01-23' AND '2026-02-27'
 
 select * from "SensorRawDatas"
 where "AssetName"='Plant_1'
@@ -102,3 +106,4 @@ select * from "WeeklyAvgData"
 
 delete from "SensorRawDatas"
 delete from "WeeklyAvgData"
+delete from "NodeLastDatas"

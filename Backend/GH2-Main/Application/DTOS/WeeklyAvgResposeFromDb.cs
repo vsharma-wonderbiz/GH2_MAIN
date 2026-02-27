@@ -13,5 +13,7 @@ namespace Application.DTOS
         public float Max { get; set; }
         public float Sum { get; set; }
         public int Count { get; set; }
+
+        public bool IsFinal { get; set; }
     }
 }

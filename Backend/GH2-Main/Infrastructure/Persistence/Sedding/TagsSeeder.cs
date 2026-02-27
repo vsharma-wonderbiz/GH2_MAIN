@@ -73,22 +73,22 @@ namespace Infrastructure.Persistence.Seeding
 // Plant Level Derived Tags
 // --------------------
 
-                   new Tag(DerivedTypeId, "plant_derived_specific_energy", "kWh/Nm3", 0, 0, "float32", 0),
-new Tag(DerivedTypeId, "plant_derived_throughput", "Nm3/h", 0, 0, "float32", 0),
-new Tag(DerivedTypeId, "plant_derived_specific_water_consumption", "m3/Nm3", 0, 0, "float32", 0),
-new Tag(DerivedTypeId, "plant_derived_inlet_water_conductivity", "µS/cm", 0, 0, "float32", 0),
+                   new Tag(plantTypeId, "specific_energy", "kWh/Nm3", 0, 0, "float32", 0,true),
+new Tag(plantTypeId, "throughput", "Nm3/h", 0, 0, "float32", 0,true),
+new Tag(plantTypeId, "specific_water_consumption", "m3/Nm3", 0, 0, "float32", 0, true),
+new Tag(plantTypeId, "inlet_water_conductivity", "µS/cm", 0, 0, "float32", 0, true),
 
 // --------------------
 // Stack Level Derived Tags
 // --------------------
 
-new Tag(DerivedTypeId, "stack_derived_specific_energy", "kWh/Nm3", 0, 0, "float32", 0),
-new Tag(DerivedTypeId, "stack_derived_throughput", "Nm3/h", 0, 0, "float32", 0),
-new Tag(DerivedTypeId, "stack_derived_pressure_diff", "bar", 0, 0, "float32", 0),
-new Tag(DerivedTypeId, "stack_derived_voltage_kpi", "V", 0, 0, "float32", 0),
-new Tag(DerivedTypeId, "stack_derived_temperature_kpi", "°C", 0, 0, "float32", 0),
-new Tag(DerivedTypeId, "stack_derived_ratio", "ratio", 0, 0, "float32", 0),
-new Tag(DerivedTypeId, "stack_derived_concentration_kpi", "%", 0, 0, "float32", 0),
+new Tag(stackTypeId, "stack_specific_energy", "kWh/Nm3", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "throughput", "Nm3/h", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "pressure_diff", "bar", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "voltage_kpi", "V", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "temperature_kpi", "°C", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "ratio", "ratio", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "concentration_kpi", "%", 0, 0, "float32", 0, true),
                 };
 
                 context.Tags.AddRange(stackTags);

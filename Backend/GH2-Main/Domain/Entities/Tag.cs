@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Domain.Entities
 {
@@ -13,11 +14,13 @@ namespace Domain.Entities
         public float UpperLimit { get; private set; }
         public string DataType { get; private set; }
         public float Deadband { get; private set; }
+        public bool IsDerived { get; private set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+        
         public TagType TagType { get; private set; }
         public ICollection<MappingTable> Mappings { get; private set; } = new List<MappingTable>();
         private Tag() { }
-        public Tag(int tagTypeId, string tagName, string unit, float lowerLimit, float upperLimit, string dataType = null, float deadband = 0)
+        public Tag(int tagTypeId, string tagName, string unit, float lowerLimit, float upperLimit, string dataType = null, float deadband = 0, bool isDerived=false)
         {
             if (tagTypeId <= 0)
                 throw new ArgumentException("TagTypeId must be greater than 0", nameof(tagTypeId));
@@ -38,6 +41,7 @@ namespace Domain.Entities
             UpperLimit = upperLimit;
             DataType = dataType;
             Deadband = deadband;
+            IsDerived = isDerived;
         }
         public void UpdateTagName(string newName)
         {

@@ -33,7 +33,7 @@ namespace Infrastructure.Services
 
             foreach (var mapping in asset.Mappings)
             {
-                if (mapping.Tag.TagTypeId != 3)
+                if (!mapping.Tag.IsDerived)
                 {
                     Console.WriteLine($"Processing {mapping.Tag.TagName}");
                     await BackfillWithBulkCopyAsync(

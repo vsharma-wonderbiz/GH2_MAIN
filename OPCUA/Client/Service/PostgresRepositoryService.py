@@ -20,7 +20,7 @@ class PostgresRepositoryService(ITelemetryRepository):
         with self.lock:
             try:
                 self.cursor.execute("""
-                  SELECT "OpcNodeId", "MappingId" FROM "Mappings"
+                  SELECT "OpcNodeId", "MappingId" FROM "MappingTables"
                 """)
                 mappings = {row[0]: row[1] for row in self.cursor.fetchall()}
                 logging.info(f"Fetched {len(mappings)} OPC node mappings")

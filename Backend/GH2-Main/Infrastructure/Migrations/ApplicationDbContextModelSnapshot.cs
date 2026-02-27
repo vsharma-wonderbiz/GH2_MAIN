@@ -210,6 +210,9 @@ namespace Infrastructure.Migrations
                     b.Property<float>("Deadband")
                         .HasColumnType("real");
 
+                    b.Property<bool>("IsDerived")
+                        .HasColumnType("boolean");
+
                     b.Property<float>("LowerLimit")
                         .HasColumnType("real");
 
@@ -303,6 +306,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("DaysCount")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsFinal")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("MappingId")
                         .HasColumnType("integer");

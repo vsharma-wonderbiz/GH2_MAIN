@@ -9,13 +9,16 @@ namespace GH2_Main.Controllers
     {
         private readonly BackfillSensorDataService _backfillService;
         private readonly ILogger<BackfillDataController> _logger;
+        private readonly PastWeeksAggregatedData _PastweekServce;
 
         public BackfillDataController(
             BackfillSensorDataService backfillService,
-            ILogger<BackfillDataController> logger)
+            ILogger<BackfillDataController> logger,
+            PastWeeksAggregatedData pastweekServce)
         {
             _backfillService = backfillService;
             _logger = logger;
+            _PastweekServce = pastweekServce;
         }
 
 
@@ -37,6 +40,13 @@ namespace GH2_Main.Controllers
             {
                 message = $"Backfill started in background for asset: {assetName}"
             });
+        }
+
+        [HttpPost("pastAvg")]
+        public async Task<IActionResult> PastWeekAverage()
+        {
+            await _PastweekServce.RunAsync();
+            return Ok("Check Console");
         }
 
         // -------------------------------------------------------

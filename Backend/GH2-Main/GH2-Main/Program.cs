@@ -36,6 +36,8 @@ builder.Services.AddScoped<BackfillSensorDataService>();
 builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddHostedService<WeeklyAvgCalculatorBackgroundService>();
+builder.Services.AddScoped<PastWeeksAggregatedData>();
+builder.Services.AddScoped<IMappingRepositary, MappingRepositary>();
 
 
 

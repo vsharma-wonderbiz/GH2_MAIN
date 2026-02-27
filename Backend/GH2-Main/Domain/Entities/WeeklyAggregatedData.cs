@@ -49,7 +49,7 @@ namespace Domain.Entities
             IsFinal = isFinal;
         }
 
-        public void UpdateAggregates(float avgValue, float minValue, float maxValue, int totalSamples)
+        public void UpdateAggregates(float avgValue, float minValue, float maxValue, int totalSamples,DateTime WeeEndData)
         {
             if (totalSamples <= 0)
                 throw new ArgumentOutOfRangeException(nameof(totalSamples), "TotalSamples must be positive.");
@@ -61,6 +61,13 @@ namespace Domain.Entities
             MinValue = minValue;
             MaxValue = maxValue;
             TotalSamples = totalSamples;
+            WeekEndDate = WeeEndData;
+            CreatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateIsFinale(bool change)
+        {
+            IsFinal = change;
         }
     }
 }

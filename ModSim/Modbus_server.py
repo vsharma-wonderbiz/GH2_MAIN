@@ -337,5 +337,5 @@ if __name__ == "__main__":
 
     print("Modbus TCP Server running on 10.10.10.19:5020")
 
-    StartTcpServer(context, address=("10.10.10.19", 5020))
+    StartTcpServer(context, address=("10.10.10.233", 5020))
 

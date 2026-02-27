@@ -29,14 +29,11 @@ namespace Infrastructure.Persistence.Seeding
                 .Select(t => t.TagTypeId)
                 .FirstOrDefault();
 
-            var derivedTypeId = context.TagTypes
-                .Where(t => t.TagName == "Derived")
-                .Select(t => t.TagTypeId)
-                .FirstOrDefault();
+            
 
             // 🔹 1️⃣ Plant Physical Tags
             var plantTags = context.Tags
-                .Where(t => t.TagTypeId == plantTypeId)
+                .Where(t => t.TagTypeId == plantTypeId && t.IsDerived==false)
                 .ToList();
 
             foreach (var tag in plantTags)
@@ -54,7 +51,7 @@ namespace Infrastructure.Persistence.Seeding
             if (stack != null)
             {
                 var stackTags = context.Tags
-                    .Where(t => t.TagTypeId == stackTypeId)
+                    .Where(t => t.TagTypeId == stackTypeId && t.IsDerived==false)
                     .ToList();
 
                 foreach (var tag in stackTags)
@@ -70,29 +67,31 @@ namespace Infrastructure.Persistence.Seeding
             }
 
             // 🔹 3️⃣ Derived Tags (NO OPC NODE)
-            var derivedTags = context.Tags
-                .Where(t => t.TagTypeId == derivedTypeId)
+            var PlantderivedTags = context.Tags
+                .Where(t => t.IsDerived == true && t.TagTypeId==plantTypeId)
                 .ToList();
 
-            foreach (var tag in derivedTags)
+            var stackderivedTags = context.Tags
+               .Where(t => t.IsDerived == true && t.TagTypeId == stackTypeId)
+               .ToList();
+
+            foreach (var tag in PlantderivedTags)
             {
-                // Determine level from name
-                if (tag.TagName.StartsWith("plant_derived"))
-                {
                     context.Mappings.Add(new MappingTable(
                         plant.AssetId,
                         tag.TagId,
                         null   // no OPC
-                    ));
-                }
-                else if (tag.TagName.StartsWith("stack_derived") && stack != null)
-                {
-                    context.Mappings.Add(new MappingTable(
-                        stack.AssetId,
-                        tag.TagId,
-                        null   // no OPC
-                    ));
-                }
+                    )); 
+            }
+            foreach (var tag in stackderivedTags)
+            {
+                context.Mappings.Add(new MappingTable(
+                    stack.AssetId,
+                    tag.TagId,
+                    null   // no OPC
+                ));
+
+
             }
 
             context.SaveChanges();

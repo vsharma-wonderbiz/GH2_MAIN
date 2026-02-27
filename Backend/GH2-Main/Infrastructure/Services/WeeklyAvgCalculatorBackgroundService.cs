@@ -8,14 +8,12 @@ using Microsoft.Extensions.Logging;
 
 public class WeeklyAvgCalculatorBackgroundService : BackgroundService
 {
-    //private readonly IAnalyticsRepository analyticsRepository;
-    //private readonly ApplicationDbContext context;
     private readonly ILogger<WeeklyAvgCalculatorBackgroundService> _logger;
     private readonly IServiceScopeFactory _scopeFactory;
 
     public WeeklyAvgCalculatorBackgroundService(
        IServiceScopeFactory scopeFactory,
-    ILogger<WeeklyAvgCalculatorBackgroundService> logger)
+       ILogger<WeeklyAvgCalculatorBackgroundService> logger)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
@@ -23,11 +21,15 @@ public class WeeklyAvgCalculatorBackgroundService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _logger.LogInformation("Weekly Average Background Service will start after 10 minutes delay...");
+
+        // 🔥 Startup Delay Here
+        await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
+
         _logger.LogInformation("Weekly Average Background Service started.");
 
         while (!stoppingToken.IsCancellationRequested)
         {
-
             try
             {
                 using (var scope = _scopeFactory.CreateScope())
@@ -38,43 +40,23 @@ public class WeeklyAvgCalculatorBackgroundService : BackgroundService
                     var context =
                         scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                    var (weekStart, weekEnd) = GetLastCompletedWeekRange();
-                   
+                    var (weekStart, weekEnd) = GetCurrentWeekRange();
 
-                    _logger.LogInformation("Processing weekly aggregation for {WeekStart} - {WeekEnd}",
+                    _logger.LogInformation("Processing rolling weekly aggregation for {WeekStart} - {WeekEnd}",
                         weekStart, weekEnd);
 
                     var mappings = await context.Mappings
-                                  .Where(a => a.Tag.TagTypeId != 3)
-                                 .Include(a => a.Asset)
-                                 .Include(b => b.Tag)
-                                 .ToListAsync();
-
-                    _logger.LogInformation($" these is all the mapping {mappings.ToString()}");
-                    foreach (var mapping in mappings)
-                    {
-                        Console.WriteLine($"MappingId: {mapping.MappingId}, AssetId: {mapping.AssetId}, TagId: {mapping.TagId}, OpcNodeId: {mapping.OpcNodeId}");
-                    }
+                                  .Where(a => a.Tag.IsDerived==false)
+                                  .Include(a => a.Asset)
+                                  .Include(b => b.Tag)
+                                  .ToListAsync();
 
                     foreach (var mapping in mappings)
                     {
-                        bool exists = await analyticsRepository
-                            .IsWeekAvgDataPresent(mapping.MappingId, weekStart,weekEnd);
-                        Console.Write(exists);
+                        var dailyAggregate = await analyticsRepository
+                            .GetWeeklyAggregateAsync(mapping.MappingId, weekStart, DateTime.UtcNow);
 
-
-                        if (exists)
-                        {
-                            _logger.LogInformation(
-                                "Weekly data already exists for MappingId {MappingId}",
-                                mapping.MappingId);
-                            continue;
-                        }
-
-                        var aggregate = await analyticsRepository
-                            .GetWeeklyAggregateAsync(mapping.MappingId, weekStart, weekEnd);
-
-                        if (aggregate == null || aggregate.Count == 0)
+                        if (dailyAggregate == null || dailyAggregate.Count == 0)
                         {
                             _logger.LogWarning(
                                 "No raw data found for MappingId {MappingId}",
@@ -82,50 +64,77 @@ public class WeeklyAvgCalculatorBackgroundService : BackgroundService
                             continue;
                         }
 
-                        var datapoint = new WeeklyAggregatedData(
-                            mapping.Asset.AssetId,
-                            mapping.MappingId,
-                            weekStart,
-                            weekEnd,
-                            aggregate.Average,
-                            aggregate.Min,
-                            aggregate.Max,
-                            aggregate.Count
-                        );
+                        bool IsExsist = await analyticsRepository
+                            .IsWeekAvgDataPresent(mapping.MappingId, weekStart, weekEnd);
 
-                        await analyticsRepository.AddAsync(datapoint);
+                        if (IsExsist)
+                        {
+                            var enitiy = await analyticsRepository
+                                .GetByAssetMappingAndWeekAsync(mapping.AssetId, mapping.MappingId, weekStart);
 
-                        _logger.LogInformation(
-                            "Inserted weekly aggregate for MappingId {MappingId}",
-                            mapping.MappingId);
+                            var newAvg = (enitiy.AverageValue * enitiy.TotalSamples + dailyAggregate.Average * dailyAggregate.Count)
+                                          / (enitiy.TotalSamples + dailyAggregate.Count);
+
+                            var newMin = Math.Min(enitiy.MinValue, dailyAggregate.Min);
+                            var newMax = Math.Max(enitiy.MaxValue, dailyAggregate.Max);
+                            var newTotalSamples = enitiy.TotalSamples + dailyAggregate.Count;
+                            var newWeekEnd = DateTime.UtcNow;
+
+                            enitiy.UpdateAggregates(newAvg, newMin, newMax, newTotalSamples, newWeekEnd);
+
+                            if (DateTime.UtcNow.DayOfWeek == DayOfWeek.Sunday)
+                                enitiy.UpdateIsFinale(true);
+
+                            await analyticsRepository.UpdateAsync(enitiy);
+
+                            _logger.LogInformation(
+                                "Updated rolling weekly aggregate for MappingId {MappingId}",
+                                mapping.MappingId);
+                        }
+                        else
+                        {
+                            var datapoint = new WeeklyAggregatedData(
+                                mapping.Asset.AssetId,
+                                mapping.MappingId,
+                                weekStart,
+                                weekEnd,
+                                dailyAggregate.Average,
+                                dailyAggregate.Min,
+                                dailyAggregate.Max,
+                                dailyAggregate.Count,
+                                1,
+                                DateTime.UtcNow.DayOfWeek == DayOfWeek.Sunday
+                            );
+
+                            await analyticsRepository.AddAsync(datapoint);
+
+                            _logger.LogInformation(
+                                "Inserted rolling weekly aggregate for MappingId {MappingId}",
+                                mapping.MappingId);
+                        }
                     }
 
                     await analyticsRepository.SaveChangesAsync();
                 }
-            
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred during weekly aggregation.");
             }
 
-            // Run once per day (safe interval)
-            await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+            await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
         }
 
         _logger.LogInformation("Weekly Average Background Service stopped.");
     }
 
-    private (DateTime weekStart, DateTime weekEnd) GetLastCompletedWeekRange()
+    // Current week range: Monday -> Sunday
+    private (DateTime weekStart, DateTime weekEnd) GetCurrentWeekRange()
     {
         var today = DateTime.UtcNow.Date;
-
         int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
-        var currentWeekStart = today.AddDays(-1 * diff);
-
-        var lastWeekStart = currentWeekStart.AddDays(-7);
-        var lastWeekEnd = currentWeekStart.AddTicks(-1);
-
-        return (lastWeekStart, lastWeekEnd);
+        var weekStart = today.AddDays(-diff);
+        var weekEnd = weekStart.AddDays(6);
+        return (weekStart, weekEnd);
     }
 }
