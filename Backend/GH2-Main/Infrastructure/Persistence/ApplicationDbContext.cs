@@ -26,6 +26,8 @@ namespace Infrastructure.Persistence
 
         public DbSet<WeeklyAggregatedData> WeeklyAvgData { get; set; }
 
+        public DbSet<KpiTable> KpiTable { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             

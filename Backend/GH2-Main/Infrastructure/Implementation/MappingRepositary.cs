@@ -21,11 +21,25 @@ namespace Infrastructure.Implementation
         
         public async Task<List<int>> GetDependentTagMAppingId(List<int> assetIds, List<int> tagIds)
         {
+
             var MappingIds = await _context.Mappings
                             .Where(m => assetIds.Contains(m.AssetId) && tagIds.Contains(m.TagId))
                             .Select(m => m.MappingId).ToListAsync();
 
             return MappingIds;
+
+        }
+
+        public async Task<List<MappingTable>> GetMappingsByAssetIdsAndTagIds(
+    List<int> assetIds, List<int> tagIds)
+        {
+
+            return await _context.Mappings
+                .Include(m => m.Asset)
+                .Include(m => m.Tag)
+                .Where(m => assetIds.Contains(m.AssetId) && tagIds.Contains(m.TagId))
+                .ToListAsync();
+
         }
     }
 }

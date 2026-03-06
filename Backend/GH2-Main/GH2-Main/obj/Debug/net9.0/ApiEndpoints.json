@@ -16,6 +16,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "API.Controllers.AnalyticsController",
+    "Method": "BuildingKpiService",
+    "RelativePath": "api/Analytics/kpi",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Application.DTOS.KpiRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GH2_Main.Controllers.AssetController",
     "Method": "CreateAsset",
     "RelativePath": "api/Asset",
@@ -51,6 +67,16 @@
     "ContainingType": "GH2_Main.Controllers.BackfillDataController",
     "Method": "PastWeekAverage",
     "RelativePath": "api/BackfillData/pastAvg",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GH2_Main.Controllers.BackfillDataController",
+    "Method": "PastWeekKpis",
+    "RelativePath": "api/BackfillData/pastKpi",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

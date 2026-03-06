@@ -12,6 +12,7 @@
           "Infrastructure": "1.0.0",
           "Microsoft.AspNetCore.OpenApi": "9.0.4",
           "Microsoft.EntityFrameworkCore.Design": "9.0.13",
+          "Microsoft.Extensions.Configuration.Abstractions": "10.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
           "Serilog.AspNetCore": "10.0.0",
           "Serilog.Sinks.Console": "6.1.1"
@@ -1155,7 +1156,9 @@
       "System.ValueTuple/4.5.0": {},
       "Application/1.0.0": {
         "dependencies": {
-          "Domain": "1.0.0"
+          "Domain": "1.0.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "10.0.0",
+          "Microsoft.Extensions.Configuration.Binder": "10.0.0"
         },
         "runtime": {
           "Application.dll": {

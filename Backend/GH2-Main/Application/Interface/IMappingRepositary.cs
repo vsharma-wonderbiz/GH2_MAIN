@@ -10,7 +10,7 @@ namespace Application.Interface
     public interface IMappingRepositary
     {
         Task<List<int>> GetDependentTagMAppingId(List<int> assetIds,List<int> tagIds);
-        
 
+        Task<List<MappingTable>> GetMappingsByAssetIdsAndTagIds(List<int> assetIds, List<int> tagIds);
     }
 }

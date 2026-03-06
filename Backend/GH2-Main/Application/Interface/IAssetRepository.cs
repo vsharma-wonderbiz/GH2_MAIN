@@ -10,5 +10,8 @@ namespace Application.Interface
     public interface IAssetRepository : IRepository<Assets>
     {
         Task<Assets> GetByNameAsync(string name);
+        Task<List<Assets>> GetAssetsByType(string assetType);
+        Task<List<Assets>> GetChildAssets(int parentAssetId);
+
     }
 }

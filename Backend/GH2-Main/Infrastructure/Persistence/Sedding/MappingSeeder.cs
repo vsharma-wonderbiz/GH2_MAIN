@@ -16,8 +16,9 @@ namespace Infrastructure.Persistence.Seeding
             if (plant == null)
                 return;
 
-            var stack = context.Assets
-                .FirstOrDefault(a => a.ParentAssetId == plant.AssetId);
+            var stacks = context.Assets
+                .Where(a => a.ParentAssetId == plant.AssetId)
+                .ToList();
 
             var plantTypeId = context.TagTypes
                 .Where(t => t.TagName == "Plant")
@@ -29,14 +30,23 @@ namespace Infrastructure.Persistence.Seeding
                 .Select(t => t.TagTypeId)
                 .FirstOrDefault();
 
-            
-
-            // 🔹 1️⃣ Plant Physical Tags
-            var plantTags = context.Tags
-                .Where(t => t.TagTypeId == plantTypeId && t.IsDerived==false)
+            var plantPhysicalTags = context.Tags
+                .Where(t => t.TagTypeId == plantTypeId && !t.IsDerived)
                 .ToList();
 
-            foreach (var tag in plantTags)
+            var stackPhysicalTags = context.Tags
+                .Where(t => t.TagTypeId == stackTypeId && !t.IsDerived)
+                .ToList();
+
+            var plantDerivedTags = context.Tags
+                .Where(t => t.TagTypeId == plantTypeId && t.IsDerived)
+                .ToList();
+
+            var stackDerivedTags = context.Tags
+                .Where(t => t.TagTypeId == stackTypeId && t.IsDerived)
+                .ToList();
+
+            foreach (var tag in plantPhysicalTags)
             {
                 var opcNodeId = $"ns=2;s={plant.Name}.{tag.TagName}";
 
@@ -47,14 +57,9 @@ namespace Infrastructure.Persistence.Seeding
                 ));
             }
 
-            // 🔹 2️⃣ Stack Physical Tags
-            if (stack != null)
+            foreach (var stack in stacks)
             {
-                var stackTags = context.Tags
-                    .Where(t => t.TagTypeId == stackTypeId && t.IsDerived==false)
-                    .ToList();
-
-                foreach (var tag in stackTags)
+                foreach (var tag in stackPhysicalTags)
                 {
                     var opcNodeId = $"ns=2;s={plant.Name}.{stack.Name}.{tag.TagName}";
 
@@ -66,32 +71,25 @@ namespace Infrastructure.Persistence.Seeding
                 }
             }
 
-            // 🔹 3️⃣ Derived Tags (NO OPC NODE)
-            var PlantderivedTags = context.Tags
-                .Where(t => t.IsDerived == true && t.TagTypeId==plantTypeId)
-                .ToList();
-
-            var stackderivedTags = context.Tags
-               .Where(t => t.IsDerived == true && t.TagTypeId == stackTypeId)
-               .ToList();
-
-            foreach (var tag in PlantderivedTags)
-            {
-                    context.Mappings.Add(new MappingTable(
-                        plant.AssetId,
-                        tag.TagId,
-                        null   // no OPC
-                    )); 
-            }
-            foreach (var tag in stackderivedTags)
+            foreach (var tag in plantDerivedTags)
             {
                 context.Mappings.Add(new MappingTable(
-                    stack.AssetId,
+                    plant.AssetId,
                     tag.TagId,
-                    null   // no OPC
+                    null
                 ));
+            }
 
-
+            foreach (var stack in stacks)
+            {
+                foreach (var tag in stackDerivedTags)
+                {
+                    context.Mappings.Add(new MappingTable(
+                        stack.AssetId,
+                        tag.TagId,
+                        null
+                    ));
+                }
             }
 
             context.SaveChanges();

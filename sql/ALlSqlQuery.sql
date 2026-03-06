@@ -1,19 +1,24 @@
 select * from "MappingTables"
-   where "MappingId"=23
+   where "MappingId"=5
   
 select * from "Tags"
 
-select * from "NodeLastDatas"
+select * from "Assets"
+
+select * from "NodeLastDatas"	
+
+select * from "KpiTable"
 
 
 
 select * from "WeeklyAvgData"
+  where "MappingId"=10
 
 select * from "Tags"
 
 select * from "SensorRawDatas"
-where "MappingId"=1
-      AND "TimeStamp" between '2026-02-14' AND '2026-02-21'
+where "MappingId"=5
+      AND "TimeStamp" between '2026-02-' AND '2026-02-21'
 
 
 SELECT *
@@ -107,3 +112,8 @@ select * from "WeeklyAvgData"
 delete from "SensorRawDatas"
 delete from "WeeklyAvgData"
 delete from "NodeLastDatas"
+delete from "MappingTables"
+
+delete from "KpiTable"
+
+delete from "Tags"

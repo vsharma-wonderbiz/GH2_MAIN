@@ -158,5 +158,29 @@ namespace Infrastructure.Implementation
                             && x.WeekEndDate.Date == weekEnd.Date);
         }
 
+
+        public async Task<List<MappingAvgValueDto>> GetAvgValuesForMappings(
+    List<int> mappingIds,
+    DateTime startTime,
+    DateTime endTime)
+        {
+            var start = startTime.Date;
+            var end = endTime.Date;
+
+            return await _context.WeeklyAvgData
+                .Where(x => mappingIds.Contains(x.MappingId) &&
+                            x.WeekStartDate <= end &&    // week starts before or on end
+                            x.WeekEndDate >= start)      // week ends after or on start
+                .GroupBy(x => x.MappingId)
+                .Select(g => new MappingAvgValueDto
+                {
+                    MappingId = g.Key,
+                    AvgValue = g.Average(x => x.AverageValue),
+                    MinValue = g.Min(x => x.MinValue),
+                    MaxValue = g.Max(x => x.MaxValue)
+                })
+                .ToListAsync();
+        }
+
     }
 }

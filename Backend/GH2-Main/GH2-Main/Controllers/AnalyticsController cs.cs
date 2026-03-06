@@ -1,5 +1,6 @@
 ﻿using Application.DTOS;
 using Application.Interface;
+using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -9,10 +10,12 @@ namespace API.Controllers
     public class AnalyticsController : ControllerBase
     {
         private readonly IAnalyticsService _analyticsService;
+        private readonly KpiCalulationService _kpiCalulationService;
 
-        public AnalyticsController(IAnalyticsService analyticsService)
+        public AnalyticsController(IAnalyticsService analyticsService,KpiCalulationService kpiCalulationService)
         {
             _analyticsService = analyticsService;
+            _kpiCalulationService= kpiCalulationService;
         }
 
         [HttpPost("data")]
@@ -31,6 +34,13 @@ namespace API.Controllers
             {
                 return StatusCode(500, new { message = "Internal server error." });
             }
+        }
+
+        [HttpPost("kpi")]
+        public async Task<IActionResult> BuildingKpiService(KpiRequestDto dto)
+        {
+            var result = await _kpiCalulationService.CalculateKpi(dto);
+            return Ok(result);
         }
     }
 }

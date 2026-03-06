@@ -1,0 +1,19 @@
+    {
+        "kpiDependencies": {
+            "Plant": {
+                "specific_energy": [ "power", "h2flow" ],
+                "throughput": [ "h2flow" ],
+                "specific_water_consumption": [ "water_flow_tot", "h2flow" ],
+                "inlet_water_conductivity": [ "water_conductivity" ]
+            },
+            "Stack": {
+                "stack_specific_energy": [ "current", "voltage", "h2flow" ],
+                "throughput": ["h2flow"],
+                "pressure_diff": [ "pressure", "outlet_pressure" ],
+                "ratio": [ "current", "voltage", "h2flow" ],
+                "temperature_kpi": [ "downstream_temp", "recombiner_temp" ],
+                "voltage_kpi": [ "voltage" ],
+                "concentration_kpi": [ "concentration" ]
+            }
+        }
+    }

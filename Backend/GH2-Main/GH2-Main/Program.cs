@@ -1,5 +1,6 @@
 using Application.Interface;
 using Application.Services;
+using Infrastructure.BackgroundServices;
 using Infrastructure.Implementation;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Sedding;
@@ -24,11 +25,15 @@ builder.Host.UseSerilog((context, services, configuration) =>
 });
 // Add services to the container.
 
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConn")));
+
+builder.Configuration.AddJsonFile("kpiDependencies.json", optional: false, reloadOnChange: true);
+
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
@@ -38,6 +43,12 @@ builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddHostedService<WeeklyAvgCalculatorBackgroundService>();
 builder.Services.AddScoped<PastWeeksAggregatedData>();
 builder.Services.AddScoped<IMappingRepositary, MappingRepositary>();
+builder.Services.AddScoped<ITagRepositary, TagRepositary>();
+builder.Services.AddScoped<IKpiResultRepository, KpiResultRepository>();
+builder.Services.AddScoped<KpiCalulationService>();
+builder.Services.AddScoped<KpiFormulaService>();
+builder.Services.AddHostedService<KpiBackgroundService>();
+builder.Services.AddScoped<KpiHistoryService>();
 
 
 
