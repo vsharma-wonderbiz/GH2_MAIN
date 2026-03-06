@@ -13,6 +13,7 @@ namespace Application.Interface
         Task AddAsync(KpiTable result);
         Task AddRangeAsync(List<KpiTable> results);
         Task<bool> IsAlreadyCalculated(string kpiName, string assetName, DateTime startTime, DateTime endTime);
+        Task<List<KpiTable>> GetByKpiNameAndDateRange(string kpiName, DateTime startTime, DateTime endTime);
         Task SaveChangesAsync();
     }
 }

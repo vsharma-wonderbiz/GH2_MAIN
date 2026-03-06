@@ -10,12 +10,12 @@ namespace API.Controllers
     public class AnalyticsController : ControllerBase
     {
         private readonly IAnalyticsService _analyticsService;
-        private readonly KpiCalulationService _kpiCalulationService;
+        private readonly KpiQueryService _kpiQueryService;
 
-        public AnalyticsController(IAnalyticsService analyticsService,KpiCalulationService kpiCalulationService)
+        public AnalyticsController(IAnalyticsService analyticsService,KpiQueryService kpiQueryService)
         {
             _analyticsService = analyticsService;
-            _kpiCalulationService= kpiCalulationService;
+            _kpiQueryService = kpiQueryService;
         }
 
         [HttpPost("data")]
@@ -36,11 +36,46 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("kpi")]
-        public async Task<IActionResult> BuildingKpiService(KpiRequestDto dto)
+        //[HttpPost("kpi")]
+        //public async Task<IActionResult> BuildingKpiService(KpiRequestDto dto)
+        //{
+        //    var result = await _kpiCalulationService.CalculateKpi(dto);
+        //    return Ok(result);
+        //}
+
+        [HttpPost("Kpi")]
+        public async Task<IActionResult> GetKpi([FromBody] KpiQueryRequestDto request)
         {
-            var result = await _kpiCalulationService.CalculateKpi(dto);
-            return Ok(result);
+            Console.WriteLine($"TagId: {request.TagId}, TimeRange: {request.TimeRange}");
+            try
+            {
+                if (request.TagId <= 0)
+                    return BadRequest("TagId is required and must be greater than 0.");
+
+                if (request.TimeRange == KpiTimeRange.Custom)
+                {
+                    if (request.CustomStart == null || request.CustomEnd == null)
+                        return BadRequest("CustomStart and CustomEnd are required for Custom time range.");
+
+                    if (request.CustomStart >= request.CustomEnd)
+                        return BadRequest("CustomStart must be before CustomEnd.");
+                }
+
+                var result = await _kpiQueryService.GetKpiAsync(request);
+
+                if (result == null || !result.Assets.Any())
+                    return NotFound($"No KPI data found for TagId {request.TagId}.");
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
     }
 }

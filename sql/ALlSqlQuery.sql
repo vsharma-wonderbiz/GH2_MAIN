@@ -8,6 +8,7 @@ select * from "Assets"
 select * from "NodeLastDatas"	
 
 select * from "KpiTable"
+where "WeekNumber"=3
 
 
 

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Application.Interface;
 using Application.Services;
 using Infrastructure.BackgroundServices;
@@ -26,7 +27,13 @@ builder.Host.UseSerilog((context, services, configuration) =>
 // Add services to the container.
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // allows "tagId", "TagId", "TAGID" — all work
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -49,6 +56,8 @@ builder.Services.AddScoped<KpiCalulationService>();
 builder.Services.AddScoped<KpiFormulaService>();
 builder.Services.AddHostedService<KpiBackgroundService>();
 builder.Services.AddScoped<KpiHistoryService>();
+builder.Services.AddScoped<KpiQueryService>();
+
 
 
 
