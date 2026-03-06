@@ -1145,7 +1145,8 @@
         "dependencies": {
           "Domain": "1.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.0",
-          "Microsoft.Extensions.Configuration.Binder": "10.0.0"
+          "Microsoft.Extensions.Configuration.Binder": "10.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.0"
         },
         "runtime": {
           "Application.dll": {

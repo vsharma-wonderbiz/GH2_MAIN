@@ -17,15 +17,15 @@
   },
   {
     "ContainingType": "API.Controllers.AnalyticsController",
-    "Method": "BuildingKpiService",
-    "RelativePath": "api/Analytics/kpi",
+    "Method": "GetKpi",
+    "RelativePath": "api/Analytics/Kpi",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "Application.DTOS.KpiRequestDto",
+        "Name": "request",
+        "Type": "Application.DTOS.KpiQueryRequestDto",
         "IsRequired": true
       }
     ],

@@ -10,7 +10,8 @@
         "dependencies": {
           "Domain": "1.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.0",
-          "Microsoft.Extensions.Configuration.Binder": "10.0.0"
+          "Microsoft.Extensions.Configuration.Binder": "10.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.13"
         },
         "runtime": {
           "Application.dll": {}
@@ -48,6 +49,25 @@
           "lib/net9.0/Microsoft.Extensions.Configuration.Binder.dll": {
             "assemblyVersion": "10.0.0.0",
             "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/9.0.13": {
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1326.6317"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/9.0.13": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.13"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1326.6317"
           }
         }
       },
@@ -95,6 +115,20 @@
       "sha512": "sha512-tMF9wNh+hlyYDWB8mrFCQHQmWHlRosol1b/N2Jrefy1bFLnuTlgSYmPyHNmz8xVQgs7DpXytBRWxGhG+mSTp0g==",
       "path": "microsoft.extensions.configuration.binder/10.0.0",
       "hashPath": "microsoft.extensions.configuration.binder.10.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/9.0.13": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HyJoV/UcJr71gPs9ot3GFJG2yyYxoBNTvp48xVJn37FRLeJZithg74aUNZQRCJgk0yG6LbgDlXDJJwG3QFnoyQ==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/9.0.13",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.9.0.13.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/9.0.13": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DjxxzZzkQLRJ6d9FLj7n513UvqYREl0ygN//SYA+N4+QWM1UvSJjpv3+zrlIraUyui0NXRbeJSU/hruR7lTw/g==",
+      "path": "microsoft.extensions.logging.abstractions/9.0.13",
+      "hashPath": "microsoft.extensions.logging.abstractions.9.0.13.nupkg.sha512"
     },
     "Microsoft.Extensions.Primitives/10.0.0": {
       "type": "package",

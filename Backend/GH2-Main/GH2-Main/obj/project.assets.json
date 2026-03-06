@@ -1680,7 +1680,8 @@
         "dependencies": {
           "Domain": "1.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.0",
-          "Microsoft.Extensions.Configuration.Binder": "10.0.0"
+          "Microsoft.Extensions.Configuration.Binder": "10.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.13"
         },
         "compile": {
           "bin/placeholder/Application.dll": {}
