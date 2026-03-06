@@ -10,18 +10,16 @@ namespace Infrastructure.Persistence.Seeding
             if (context.Mappings.Any())
                 return;
 
-            // Get plant
             var plant = context.Assets
                 .FirstOrDefault(a => a.Name == "Plant_1");
 
             if (plant == null)
                 return;
 
-            // Get stack under plant
-            var stack = context.Assets
-                .FirstOrDefault(a => a.ParentAssetId == plant.AssetId);
+            var stacks = context.Assets
+                .Where(a => a.ParentAssetId == plant.AssetId)
+                .ToList();
 
-            // Get tag type ids
             var plantTypeId = context.TagTypes
                 .Where(t => t.TagName == "Plant")
                 .Select(t => t.TagTypeId)
@@ -32,42 +30,65 @@ namespace Infrastructure.Persistence.Seeding
                 .Select(t => t.TagTypeId)
                 .FirstOrDefault();
 
-            // 🔹 1️⃣ Map Plant Level Tags
-            var plantTags = context.Tags
-                .Where(t => t.TagTypeId == plantTypeId)
+            var plantPhysicalTags = context.Tags
+                .Where(t => t.TagTypeId == plantTypeId && !t.IsDerived)
                 .ToList();
 
-            foreach (var tag in plantTags)
+            var stackPhysicalTags = context.Tags
+                .Where(t => t.TagTypeId == stackTypeId && !t.IsDerived)
+                .ToList();
+
+            var plantDerivedTags = context.Tags
+                .Where(t => t.TagTypeId == plantTypeId && t.IsDerived)
+                .ToList();
+
+            var stackDerivedTags = context.Tags
+                .Where(t => t.TagTypeId == stackTypeId && t.IsDerived)
+                .ToList();
+
+            foreach (var tag in plantPhysicalTags)
             {
                 var opcNodeId = $"ns=2;s={plant.Name}.{tag.TagName}";
 
-                var mapping = new MappingTable(
+                context.Mappings.Add(new MappingTable(
                     plant.AssetId,
                     tag.TagId,
                     opcNodeId
-                );
-
-                context.Mappings.Add(mapping);
+                ));
             }
 
-            // 🔹 2️⃣ Map Stack Level Tags
-            if (stack != null)
+            foreach (var stack in stacks)
             {
-                var stackTags = context.Tags
-                    .Where(t => t.TagTypeId == stackTypeId)
-                    .ToList();
-
-                foreach (var tag in stackTags)
+                foreach (var tag in stackPhysicalTags)
                 {
                     var opcNodeId = $"ns=2;s={plant.Name}.{stack.Name}.{tag.TagName}";
 
-                    var mapping = new MappingTable(
+                    context.Mappings.Add(new MappingTable(
                         stack.AssetId,
                         tag.TagId,
                         opcNodeId
-                    );
+                    ));
+                }
+            }
 
-                    context.Mappings.Add(mapping);
+            foreach (var tag in plantDerivedTags)
+            {
+                context.Mappings.Add(new MappingTable(
+                    plant.AssetId,
+                    tag.TagId,
+                    null
+                ));
+            }
+
+            foreach (var stack in stacks)
+            {
+                foreach (var tag in stackDerivedTags)
+                {
+                    context.Mappings.Add(new MappingTable(
+                        stack.AssetId,
+                        tag.TagId,
+                        null
+                    ));
                 }
             }
 

@@ -1,8 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "+JFyYuHTYCM=",
+  "dgSpecHash": "PIpq2Op7S5o=",
   "success": true,
   "projectFilePath": "C:\\Users\\Vinay Sharma\\GH2_MAIN\\Backend\\GH2-Main\\Application\\Application.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Vinay Sharma\\.nuget\\packages\\microsoft.extensions.configuration\\10.0.0\\microsoft.extensions.configuration.10.0.0.nupkg.sha512",
+    "C:\\Users\\Vinay Sharma\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\10.0.0\\microsoft.extensions.configuration.abstractions.10.0.0.nupkg.sha512",
+    "C:\\Users\\Vinay Sharma\\.nuget\\packages\\microsoft.extensions.configuration.binder\\10.0.0\\microsoft.extensions.configuration.binder.10.0.0.nupkg.sha512",
+    "C:\\Users\\Vinay Sharma\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.0\\microsoft.extensions.primitives.10.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

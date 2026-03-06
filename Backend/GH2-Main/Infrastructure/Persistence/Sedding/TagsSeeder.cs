@@ -24,6 +24,13 @@ namespace Infrastructure.Persistence.Seeding
                 .Select(a => a.TagTypeId)
                 .FirstOrDefault();
 
+            var DerivedTypeId = context.TagTypes
+               .Where(a => a.TagName == "Derived")
+               .Select(a => a.TagTypeId)
+               .FirstOrDefault();
+
+
+
             if (stackTypeId == 0)
             {
                 logger.LogError("Stack TagType not found. Cannot seed stack tags.");
@@ -62,6 +69,26 @@ namespace Infrastructure.Persistence.Seeding
                     new Tag(plantTypeId, "power", "kW" ,1000 , 2000 ,"float32",0),
                     new Tag(plantTypeId, "throughput", "Nm3/h" ,200 , 450 ,"float32",0),
                     new Tag(plantTypeId, "water_flow_tot", "m3" ,464 , 465 ,"float32",0),
+                    // --------------------
+// Plant Level Derived Tags
+// --------------------
+
+                   new Tag(plantTypeId, "specific_energy", "kWh/Nm3", 0, 0, "float32", 0,true),
+new Tag(plantTypeId, "throughput", "Nm3/h", 0, 0, "float32", 0,true),
+new Tag(plantTypeId, "specific_water_consumption", "m3/Nm3", 0, 0, "float32", 0, true),
+new Tag(plantTypeId, "inlet_water_conductivity", "µS/cm", 0, 0, "float32", 0, true),
+
+// --------------------
+// Stack Level Derived Tags
+// --------------------
+
+new Tag(stackTypeId, "stack_specific_energy", "kWh/Nm3", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "throughput", "Nm3/h", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "pressure_diff", "bar", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "voltage_kpi", "V", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "temperature_kpi", "°C", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "ratio", "ratio", 0, 0, "float32", 0, true),
+new Tag(stackTypeId, "concentration_kpi", "%", 0, 0, "float32", 0, true),
                 };
 
                 context.Tags.AddRange(stackTags);

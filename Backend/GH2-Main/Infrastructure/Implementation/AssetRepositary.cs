@@ -18,6 +18,20 @@ namespace Infrastructure.Implementation
                 .FirstOrDefaultAsync(x => x.Name == name);
         }
 
+        public async Task<List<Assets>> GetAssetsByType(string assetType)
+        {
+            return await _context.Assets
+                .Where(a => a.AssetType == assetType)
+                .ToListAsync();
+        }
+
+        public async Task<List<Assets>> GetChildAssets(int parentAssetId)
+        {
+            return await _context.Assets
+                .Where(a => a.ParentAssetId == parentAssetId)
+                .ToListAsync();
+        }
+
         //public async Task<List<Assets>> GetChildrenAsync(int parentId)
         //{
         //    return await _dbset

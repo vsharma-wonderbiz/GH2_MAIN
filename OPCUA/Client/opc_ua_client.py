@@ -8,7 +8,7 @@ from Service.PostgresRepositoryService import PostgresRepositoryService
 import threading
 import time
 
-URL = "opc.tcp://10.10.10.19:4840"
+URL = "opc.tcp://10.10.10.233:4840"
 CHANGE_THRESHOLD = 0.01  # 1% change threshold
 
 
@@ -81,7 +81,7 @@ class SubscriptionHandler:
 
 class SnapshotThread(threading.Thread):
 
-    def __init__(self, repo: ITelemetryRepository, interval_seconds=1):
+    def __init__(self, repo: ITelemetryRepository, interval_seconds=5):
         super().__init__(daemon=True)
         self.repo = repo
         self.interval = interval_seconds

@@ -16,7 +16,7 @@ namespace Infrastructure.Persistence.Configuration
             builder.HasKey(m => m.MappingId);
             builder.Property(m => m.MappingId).ValueGeneratedOnAdd();
 
-            builder.Property(m => m.OpcNodeId).IsRequired();
+           
 
             builder.HasIndex(a => a.OpcNodeId)
                  .IsUnique();
