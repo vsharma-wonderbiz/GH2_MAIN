@@ -46,21 +46,33 @@ namespace Infrastructure.Implementation
 
 
 
-        public async Task<List<KpiTable>> GetByKpiNameAndDateRange(
-     string kpiName, DateTime startTime, DateTime endTime)
-        {
-            // Normalize to midnight so comparison is pure date-based
-            var startDate = startTime.Date;
-            var endDate = endTime.Date;
+        //   public async Task<List<KpiTable>> GetByKpiNameAndDateRange(
+        //string kpiName, DateTime startTime, DateTime endTime)
+        //   {
+        //       // Normalize to midnight so comparison is pure date-based
+        //       var startDate = startTime.Date;
+        //       var endDate = endTime.Date;
 
+        //       return await _context.KpiTable
+        //           .Where(x => x.KpiName == kpiName &&
+        //                       x.StartTime >= startDate &&
+        //                       x.StartTime < startDate.AddDays(1) &&
+        //                       x.EndTime >= endDate &&
+        //                       x.EndTime < endDate.AddDays(1))
+        //           .ToListAsync();
+        //   }
+
+        public async Task<List<KpiTable>> GetByKpiNameAndDateRange(
+    string kpiName, DateTime startTime, DateTime endTime)
+        {
             return await _context.KpiTable
                 .Where(x => x.KpiName == kpiName &&
-                            x.StartTime >= startDate &&
-                            x.StartTime < startDate.AddDays(1) &&
-                            x.EndTime >= endDate &&
-                            x.EndTime < endDate.AddDays(1))
+                            x.StartTime <= endTime &&
+                            x.EndTime >= startTime)
                 .ToListAsync();
         }
+
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

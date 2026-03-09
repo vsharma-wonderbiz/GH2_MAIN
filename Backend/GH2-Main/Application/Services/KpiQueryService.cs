@@ -109,6 +109,8 @@ namespace Application.Services
                 {
                     AssetName = c.AssetName,
                     KpiValue = c.KpiValue,
+                    StartTime=c.StartTime,
+                    EndTime=c.EndTime
                     //Mappings = new List<TagMappingDto>() // cache doesn't store raw mappings
                 }).ToList()
             };

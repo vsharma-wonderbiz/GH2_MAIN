@@ -1,3 +1,4 @@
+
 select * from "MappingTables"
    where "MappingId"=5
   
@@ -8,12 +9,30 @@ select * from "Assets"
 select * from "NodeLastDatas"	
 
 select * from "KpiTable"
-where "WeekNumber"=3
+where "KpiValue"=
+
+
+-- these is bsaically checking if the value is been presnet in the tbale or not
+SELECT *
+FROM "WeeklyAvgData"
+WHERE "MappingId" = 66
+  AND "WeekStartDate" <= '2026-03-04T09:57:47.2045756Z'
+  AND "WeekEndDate" >= '2026-02-10T09:57:47.2045756Z';
+
+--kpi table to chec if the value is avaliable or not 
+  SELECT *
+FROM "KpiTable"
+WHERE "KpiName" = 'stack_specific_energy'
+  AND "StartTime" <= '2026-03-04T09:57:47.2045756Z'
+  AND "EndTime" >= '2026-02-10T09:57:47.2045756Z';
+
+
 
 
 
 select * from "WeeklyAvgData"
-  where "MappingId"=10
+  where "MappingId"=66
+        AND "TimeStamp" between '2026-02-10T09:57:47.2045756Z' AND '2026-03-04T09:57:47.2045756Z'
 
 select * from "Tags"
 
@@ -62,7 +81,9 @@ WHERE "AssetName" = 'Plant_1'
 GROUP BY minute_bucket, "AssetName", "TagName"
 ORDER BY minute_bucket;
 
+SHOW TIMEZONE;
 
+SET TIME ZONE 'UTC';
 
 -- these is the qurey to fetch the  raw sensor data with aggreate of 1 minute of asset=Planyt_1
 -- and all tags 
@@ -117,4 +138,9 @@ delete from "MappingTables"
 
 delete from "KpiTable"
 
+delete from "Assets"
+
 delete from "Tags"
+
+
+delete from "TagTypes"

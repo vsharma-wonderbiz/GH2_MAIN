@@ -17,8 +17,10 @@ namespace Infrastructure.Persistence.Sedding
 
             var stack = new Assets("Stack_1", plant.AssetId);
             var stack2 = new Assets("Stack_2", plant.AssetId);
+            var stack3 = new Assets("Stack_3", plant.AssetId);
             context.Assets.Add(stack);
             context.Assets.Add(stack2);
+            context.Assets.Add(stack3);
             context.SaveChanges();
         }
     }

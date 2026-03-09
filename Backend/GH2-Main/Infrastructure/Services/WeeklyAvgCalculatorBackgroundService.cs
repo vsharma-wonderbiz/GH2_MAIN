@@ -23,7 +23,7 @@ public class WeeklyAvgCalculatorBackgroundService : BackgroundService
     {
         _logger.LogInformation("Weekly Average Background Service will start after 10 minutes delay...");
 
-        // 🔥 Startup Delay Here
+        //  Startup Delay Here
         await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken);
 
         _logger.LogInformation("Weekly Average Background Service started.");

@@ -9,6 +9,7 @@ namespace Application.Services
     public class KpiFormulaService
     {
         // Main entry - pass kpiName and { "current": 4.5, "voltage": 120.3, "h2flow": 0.85 }
+
         public float? Calculate(string kpiName, Dictionary<string, float> tagValues)
         {
             return kpiName switch

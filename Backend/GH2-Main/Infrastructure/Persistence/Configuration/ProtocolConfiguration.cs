@@ -23,6 +23,10 @@ namespace Infrastructure.Persistence.Configuration
                 .WithMany(u=>u.ModbusConifg)
                 .HasForeignKey(u=>u.MappingId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(a=>a.CreatedAt)
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("NOW()");
         }
     }
 }
