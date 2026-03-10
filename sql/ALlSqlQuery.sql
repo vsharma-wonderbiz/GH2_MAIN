@@ -1,10 +1,12 @@
 
 select * from "MappingTables"
-   where "MappingId"=5
+   where "MappingId"=135
   
 select * from "Tags"
 
 select * from "Assets"
+
+select * from "ProtocolConfig"
 
 select * from "NodeLastDatas"	
 
@@ -53,6 +55,8 @@ order by "TimeStamp" '2026-01-23' AND '2026-02-27'
 
 select * from "SensorRawDatas"
 where "AssetName"='Plant_1'
+
+select * from "ProtocolConfig"
 
 SELECT * FROM pg_extension;
 
@@ -135,6 +139,8 @@ delete from "SensorRawDatas"
 delete from "WeeklyAvgData"
 delete from "NodeLastDatas"
 delete from "MappingTables"
+
+delete from "ProtocolConfig"
 
 delete from "KpiTable"
 

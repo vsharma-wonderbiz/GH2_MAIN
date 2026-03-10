@@ -12,5 +12,9 @@ namespace Application.Interface
         Task<List<int>> GetDependentTagMAppingId(List<int> assetIds,List<int> tagIds);
 
         Task<List<MappingTable>> GetMappingsByAssetIdsAndTagIds(List<int> assetIds, List<int> tagIds);
+
+        Task<List<MappingTable>> GetAllMappingWithConfigs();
+
+        Task<ProtocolConfig> GetModbusConfigFromMapppingId(int mappingId);
     }
 }

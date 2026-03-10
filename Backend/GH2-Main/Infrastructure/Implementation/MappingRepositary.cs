@@ -31,7 +31,7 @@ namespace Infrastructure.Implementation
         }
 
         public async Task<List<MappingTable>> GetMappingsByAssetIdsAndTagIds(
-    List<int> assetIds, List<int> tagIds)
+         List<int> assetIds, List<int> tagIds)
         {
 
             return await _context.Mappings
@@ -40,6 +40,21 @@ namespace Infrastructure.Implementation
                 .Where(m => assetIds.Contains(m.AssetId) && tagIds.Contains(m.TagId))
                 .ToListAsync();
 
+        }
+
+
+        public async Task<List<MappingTable>> GetAllMappingWithConfigs()
+        {
+            return await _context.Mappings
+                 .Where(m=>m.Tag.IsDerived==false)
+                .Include(m => m.Asset)
+                .Include(m => m.Tag)
+                .ToListAsync();
+        }
+
+        public async Task<ProtocolConfig> GetModbusConfigFromMapppingId(int mappingId)
+        {
+            return await _context.ProtocolConfig.FirstOrDefaultAsync(a => a.MappingId == mappingId);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Infrastructure.Persistence.Sedding
             var mappings = await context.Mappings
                 .Include(m => m.Tag)
                 .Include(m => m.Asset)
+                .Where(a=>a.Tag.IsDerived==false)
                 .ToListAsync();
 
             foreach (var mapping in mappings)
@@ -25,7 +26,7 @@ namespace Infrastructure.Persistence.Sedding
                 // Convert 0 -> 40001
                 int modbusAddress = 40001 + registerAddress;
 
-                var protocol = new ProtocolConfig(mapping.MappingId, modbusAddress, 3, 1);
+                var protocol = new ProtocolConfig(mapping.MappingId, modbusAddress,2, 3, 1);
              
                 await context.ProtocolConfig.AddAsync(protocol);
             }

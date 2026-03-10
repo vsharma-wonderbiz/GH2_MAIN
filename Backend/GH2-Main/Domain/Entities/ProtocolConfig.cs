@@ -16,7 +16,7 @@ namespace Domain.Entities
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
         private ProtocolConfig() { }
-        public ProtocolConfig(int mappingId, int registerAddress, int functionCode, int slaveId)
+        public ProtocolConfig(int mappingId, int registerAddress,int resgiterCount, int functionCode, int slaveId)
         {
             if (mappingId <= 0)
                 throw new ArgumentException("MappingId must be greater than 0", nameof(mappingId));
@@ -32,6 +32,7 @@ namespace Domain.Entities
 
             MappingId = mappingId;
             RegisterAddress = registerAddress;
+            RegisterCount = resgiterCount;
             FunctionCode = functionCode;
             SlaveId = slaveId;
         }
