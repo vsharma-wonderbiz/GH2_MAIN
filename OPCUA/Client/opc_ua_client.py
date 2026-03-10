@@ -8,7 +8,7 @@ from Service.PostgresRepositoryService import PostgresRepositoryService
 import threading
 import time
 
-URL = "opc.tcp://10.10.10.233:4840"
+URL = "opc.tcp://10.10.10.23:4840"
 CHANGE_THRESHOLD = 0.01  # 1% change threshold
 
 

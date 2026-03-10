@@ -57,6 +57,7 @@ builder.Services.AddScoped<KpiFormulaService>();
 builder.Services.AddHostedService<KpiBackgroundService>();
 builder.Services.AddScoped<KpiHistoryService>();
 builder.Services.AddScoped<KpiQueryService>();
+builder.Services.AddScoped<MappingService>();
 
 
 

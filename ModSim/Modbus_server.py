@@ -335,7 +335,7 @@ if __name__ == "__main__":
     )
     sim_thread.start()
 
-    print("Modbus TCP Server running on 10.10.10.19:5020")
+    print("Modbus TCP Server running on 10.10.10.46:5020")
 
-    StartTcpServer(context, address=("10.10.10.233", 5020))
+    StartTcpServer(context, address=("10.10.10.46", 5020))
 

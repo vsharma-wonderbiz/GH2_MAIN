@@ -1,19 +1,40 @@
+
 select * from "MappingTables"
-   where "MappingId"=5
+   where "MappingId"=135
   
 select * from "Tags"
 
 select * from "Assets"
 
+select * from "ProtocolConfig"
+
 select * from "NodeLastDatas"	
 
 select * from "KpiTable"
-where "WeekNumber"=3
+where "KpiValue"=
+
+
+-- these is bsaically checking if the value is been presnet in the tbale or not
+SELECT *
+FROM "WeeklyAvgData"
+WHERE "MappingId" = 66
+  AND "WeekStartDate" <= '2026-03-04T09:57:47.2045756Z'
+  AND "WeekEndDate" >= '2026-02-10T09:57:47.2045756Z';
+
+--kpi table to chec if the value is avaliable or not 
+  SELECT *
+FROM "KpiTable"
+WHERE "KpiName" = 'stack_specific_energy'
+  AND "StartTime" <= '2026-03-04T09:57:47.2045756Z'
+  AND "EndTime" >= '2026-02-10T09:57:47.2045756Z';
+
+
 
 
 
 select * from "WeeklyAvgData"
-  where "MappingId"=10
+  where "MappingId"=66
+        AND "TimeStamp" between '2026-02-10T09:57:47.2045756Z' AND '2026-03-04T09:57:47.2045756Z'
 
 select * from "Tags"
 
@@ -34,6 +55,8 @@ order by "TimeStamp" '2026-01-23' AND '2026-02-27'
 
 select * from "SensorRawDatas"
 where "AssetName"='Plant_1'
+
+select * from "ProtocolConfig"
 
 SELECT * FROM pg_extension;
 
@@ -62,7 +85,9 @@ WHERE "AssetName" = 'Plant_1'
 GROUP BY minute_bucket, "AssetName", "TagName"
 ORDER BY minute_bucket;
 
+SHOW TIMEZONE;
 
+SET TIME ZONE 'UTC';
 
 -- these is the qurey to fetch the  raw sensor data with aggreate of 1 minute of asset=Planyt_1
 -- and all tags 
@@ -115,6 +140,13 @@ delete from "WeeklyAvgData"
 delete from "NodeLastDatas"
 delete from "MappingTables"
 
+delete from "ProtocolConfig"
+
 delete from "KpiTable"
 
+delete from "Assets"
+
 delete from "Tags"
+
+
+delete from "TagTypes"

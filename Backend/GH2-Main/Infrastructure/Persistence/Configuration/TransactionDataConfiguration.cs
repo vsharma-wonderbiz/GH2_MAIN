@@ -27,6 +27,10 @@ namespace Infrastructure.Persistence.Configuration
                    .WithMany(m => m.TransactionData)
                    .HasForeignKey(s => s.MappingId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(a => a.TimeStamp)
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("NOW()");
         }
     }
 }

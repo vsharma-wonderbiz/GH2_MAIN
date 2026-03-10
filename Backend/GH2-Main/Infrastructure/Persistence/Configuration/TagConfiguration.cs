@@ -27,6 +27,11 @@ namespace Infrastructure.Persistence.Configuration
                    .HasForeignKey(t => t.TagTypeId) 
                    .OnDelete(DeleteBehavior.Cascade);
 
+
+            builder.Property(a => a.CreatedAt)
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("NOW()");
+
         }
     }
 }

@@ -31,6 +31,11 @@ namespace Infrastructure.Persistence.Configuration
             builder.HasIndex(n => new { n.MappingId, n.OpcNodeId })
                .IsUnique();
 
+
+            builder.Property(a=>a.TimeStamp)
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("NOW()");
+
         }
     }
 

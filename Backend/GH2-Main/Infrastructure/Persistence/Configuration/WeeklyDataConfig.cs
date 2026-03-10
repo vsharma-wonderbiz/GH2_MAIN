@@ -62,6 +62,11 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasIndex(m => m.AssetId);
             builder.HasIndex(m => m.TagId);
             builder.HasIndex(m => m.OpcNodeId);
+
+
+            builder.Property(a => a.CreatedAt)
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("NOW()");
         }
     }
 }

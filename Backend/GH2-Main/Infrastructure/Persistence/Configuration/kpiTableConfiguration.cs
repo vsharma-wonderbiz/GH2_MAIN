@@ -36,7 +36,8 @@ namespace Infrastructure.Persistence.Configuration
                    .IsRequired();
 
             builder.Property(x => x.CalculatedAt)
-        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("NOW()");
         }
     }
 }
