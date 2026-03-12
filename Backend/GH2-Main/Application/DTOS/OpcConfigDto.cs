@@ -8,26 +8,26 @@ namespace Application.DTOS
 {
     public class OpcConfigDto
     {
-        public string AssetName { get; set; }
+        public string asset_name { get; set; }
 
-        public string TagName { get; set; }
+        public string tag_name { get; set; }
 
-        public string OpcNodeId { get; set; }
+        public string opc_node_id { get; set; }
 
-        public int SlaveId { get; set; }
+        public int slave_id { get; set; }
 
-        public int RegisterAddress { get; set; }
+        public int register_address { get; set; }
 
-        public string Datatype { get; set; }
+        public string datatype { get; set; }
 
-        public int RegisterCount { get; set; }
+        public int register_count { get; set; }
 
-        public int FunctionCode { get; set; }
+        public int function_code { get; set; }
 
-        public string Unit { get; set; }
+        public string unit { get; set; }
 
-        public string DisplayName { get; set; }
+        public string display_name { get; set; }
 
-        public double Deadband { get; set; }
+        public double deadband { get; set; }
     }
 }

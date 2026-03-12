@@ -150,6 +150,26 @@ class PostgresRepositoryService(ITelemetryRepository):
         #         print(f"Temp:{signals.get("temperature")}")
         #     self.conn.commit()
         #     print(f" Successfully created {len(mixer_data)} snapshots")
+        
+        
+        
+    def get_signal_limits(self):
+      try:
+        with self.lock:
+            self.cursor.execute(
+                """
+                SELECT "TagName","LowerLimit","UpperLimit"
+                FROM "Tags"
+                WHERE "IsDerived" = false
+                """
+            )
+
+            result = self.cursor.fetchall()
+            return result
+
+      except Exception as e:
+        print("Error fetching signal limits:", e)
+        return [] 
 
 
 def parse_node_id(node_id: str):

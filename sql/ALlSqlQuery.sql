@@ -1,18 +1,46 @@
 
 select * from "MappingTables"
    where "MappingId"=135
+
+
+select * from "RegisterAddress"
+   where "MappingId"=135
   
 select * from "Tags"
 
 select * from "Assets"
 
 select * from "ProtocolConfig"
+     where "MappingId"=74
 
 select * from "NodeLastDatas"	
 
 select * from "KpiTable"
 where "KpiValue"=
 
+
+
+SELECT 
+    m."MappingId",
+    a."Name" AS asset_name,
+    t."TagName" AS tag_name,
+	m."OpcNodeId" AS opc_node_id,
+    t."DataType" AS data_type ,
+    pc."SlaveId",
+    pc."RegisterAddress",
+    pc."FunctionCode",
+    pc."RegisterCount",
+    (pc."RegisterAddress" - 40001) AS adjusted_register,
+    ROUND(t."Deadband"::numeric, 4) AS rounded_deadband
+FROM "MappingTables" m
+JOIN "Assets" a 
+    ON m."AssetId" = a."AssetId"
+JOIN "Tags" t
+    ON m."TagId" = t."TagId"
+JOIN "ProtocolConfig" pc 
+    ON pc."MappingId" = m."MappingId"
+WHERE t."IsDerived" = false
+ORDER BY a."Name", t."TagName";
 
 -- these is bsaically checking if the value is been presnet in the tbale or not
 SELECT *
@@ -116,6 +144,30 @@ WHERE "AssetName" = 'Stack_1'
   AND "TimeStamp" <  '2026-02-24 16:00:00'
 GROUP BY minute_bucket, "AssetName", "TagName"
 ORDER BY minute_bucket;	
+
+
+SELECT 
+    m.mappingid,
+    a.name AS asset_name,
+    t.tagname,
+    t.datatype,
+    pc.slaveid,
+    pc.registeraddress,
+    pc.functioncode,
+    pc.registercount,
+    -- mirror your C# logic
+    (pc.registeraddress - 40001) AS adjusted_register,
+    ROUND(t.deadband::numeric, 4) AS rounded_deadband
+FROM "MappingTable" as m
+JOIN assets a 
+    ON m.assetid = a.assetid
+JOIN tag t 
+    ON m.tagid = t.tagid
+JOIN protocolconfig pc 
+    ON pc.mappingid = m.mappingid
+WHERE t.isderived = false
+ORDER BY a.name, t.tagname;
+
 
 
 

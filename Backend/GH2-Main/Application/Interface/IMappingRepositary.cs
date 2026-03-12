@@ -13,6 +13,7 @@ namespace Application.Interface
 
         Task<List<MappingTable>> GetMappingsByAssetIdsAndTagIds(List<int> assetIds, List<int> tagIds);
 
+        Task<bool> Isconfig(int mappingID);
         Task<List<MappingTable>> GetAllMappingWithConfigs();
 
         Task<ProtocolConfig> GetModbusConfigFromMapppingId(int mappingId);

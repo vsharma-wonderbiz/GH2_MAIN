@@ -16,7 +16,7 @@ namespace Infrastructure.Persistence.Sedding
             var mappings = await context.Mappings
                 .Include(m => m.Tag)
                 .Include(m => m.Asset)
-                .Where(a=>a.Tag.IsDerived==false)
+                .Where(a=>a.Tag.IsDerived==false && a.Asset.Name=="Stack_1")
                 .ToListAsync();
 
             foreach (var mapping in mappings)
