@@ -8,7 +8,7 @@ from Service.PostgresRepositoryService import PostgresRepositoryService
 import threading
 import time
 
-URL = "opc.tcp://10.10.10.23:4840"
+URL = "opc.tcp://10.10.10.122:4840"
 CHANGE_THRESHOLD = 0.01  # 1% change threshold
 
 
@@ -79,6 +79,19 @@ class SubscriptionHandler:
 
 
 
+class AlarmManager:
+    def __init__(self, repo):
+        # proper constructor; store repository for later use
+        self.repo = repo
+        self.signal_limits = {}
+
+    def get_all_signall_limit(self):
+        limits = self.repo.get_signal_limits()
+        print(limits)
+        # TODO: implement return or further processing
+        pass
+
+
 class SnapshotThread(threading.Thread):
 
     def __init__(self, repo: ITelemetryRepository, interval_seconds=5):
@@ -133,6 +146,7 @@ class NodeSubscriber:
         self.subscription = None
         self.monitored_nodes = {}
         self.mapping_id_map = {}
+        self.alarm_manager=AlarmManager(self.repo)
 
     def connect_opc(self) -> bool:
         """Connect to OPC UA server."""
@@ -335,6 +349,8 @@ def main():
 
             # 6. Keep subscription alive and listen for data changes
             subscriber.keep_alive()
+            
+            subscriber.alarm_manager
 
         else:
             logging.error("Failed to subscribe to nodes")

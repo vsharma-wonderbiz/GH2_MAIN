@@ -33,3 +33,7 @@ class ITelemetryRepository(ABC):
     @abstractmethod
     def create_machine_snapshots(self, timestamp: datetime):
         pass
+    
+    @abstractmethod
+    def get_signal_limits():
+        pass

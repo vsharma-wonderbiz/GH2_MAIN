@@ -18,7 +18,6 @@ namespace Application.Services
 
         public async Task<AnalyticsResponseDto> GetAnalyticsData(AnalyticsRequestDto dto)
         {
-            
             var asset = await _assetRepo.GetByNameAsync(dto.AssetName);
 
             if (asset == null)

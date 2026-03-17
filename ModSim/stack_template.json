@@ -18,7 +18,7 @@
     { "name": "rawdata_downstream_temp", "min": 50, "max": 60, "unit": "°C" },
     { "name": "rawdata_5v_board_voltage", "min": 4.99, "max": 5.024, "unit": "V" },
     { "name": "rawdata_12v_board_voltage", "min": 11.888, "max": 11.912, "unit": "V" },
-    { "name": "rawdata_24v_board_voltage", "min": 23.407, "max": 23.649, "unit": "V" },
+    { "name": "rawdata_24v_board_voltage", "min": 23.407, "max": 23.649, "unit": "V" }, 
     { "name": "rawdata_pump_signal", "min": 0.0, "max": 2.999, "unit": "V" },
     { "name": "rawdata_battery_voltage", "min": 3.011, "max": 3.06, "unit": "V" },
     { "name": "rawdata_warning_exists", "min": 0, "max": 1, "unit": "bool" },

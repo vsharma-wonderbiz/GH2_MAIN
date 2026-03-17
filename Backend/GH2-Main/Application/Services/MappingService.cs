@@ -19,6 +19,7 @@ namespace Application.Services
 
         public async Task<List<OpcConfigDto>> BuildTheOpcConfig()
         {
+            //all the physcial tags mapping 
             var mappings = await _mapRepo.GetAllMappingWithConfigs();
 
 
@@ -26,24 +27,31 @@ namespace Application.Services
 
             foreach (var mapping in mappings)
             {
-                var Config=await _mapRepo.GetModbusConfigFromMapppingId(mapping.MappingId);
-                int register = Config.RegisterAddress - 40001;
-                var deadBand = Math.Round(mapping.Tag.Deadband, 4);
+                bool isExist = await _mapRepo.Isconfig(mapping.MappingId);
 
-                result.Add(new OpcConfigDto
+                if (isExist)
                 {
-                    AssetName = mapping.Asset.Name,
-                    TagName = mapping.Tag.TagName,
-                    OpcNodeId = mapping.OpcNodeId,
-                    SlaveId = Config.SlaveId,
-                    RegisterAddress = register,
-                    Datatype = mapping.Tag.DataType,
-                    RegisterCount = Config.RegisterCount,
-                    FunctionCode = Config.FunctionCode,
-                    Unit = mapping.Tag.Unit,
-                    DisplayName = $"{mapping.Asset.Name}_{mapping.Tag.TagName}",
-                    Deadband =deadBand,
-                });
+
+                    var Config = await _mapRepo.GetModbusConfigFromMapppingId(mapping.MappingId);
+                    int register = Config.RegisterAddress - 40001;
+                    var deadBand = Math.Round(mapping.Tag.Deadband, 4);
+
+                    result.Add(new OpcConfigDto
+                    {
+                       asset_name = mapping.Asset.Name,
+                        tag_name = mapping.Tag.TagName,
+                        opc_node_id = mapping.OpcNodeId,
+                        slave_id = Config.SlaveId,
+                        register_address = register,
+                        datatype = mapping.Tag.DataType,
+                        register_count = Config.RegisterCount,
+                        function_code = Config.FunctionCode,
+                        unit = mapping.Tag.Unit,
+                        display_name = $"{mapping.Asset.Name}_{mapping.Tag.TagName}",
+                        deadband = deadBand,
+                    });
+
+                }
 
 
                 

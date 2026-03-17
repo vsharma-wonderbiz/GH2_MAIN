@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,6 +53,12 @@ namespace Infrastructure.Implementation
                 .Include(m => m.Tag)
                 .ToListAsync();
         }
+
+        public async Task<bool> Isconfig(int mappingID)
+        {
+            return await _context.ProtocolConfig.AnyAsync(a => a.MappingId == mappingID);
+        }
+
 
         public async Task<ProtocolConfig> GetModbusConfigFromMapppingId(int mappingId)
         {
