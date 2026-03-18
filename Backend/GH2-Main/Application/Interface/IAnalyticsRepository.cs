@@ -34,6 +34,8 @@ namespace Application.Interface
         List<int> mappingIds,
     DateTime startTime,
     DateTime endTime);
+
+        Task<bool> DataExist();
         Task SaveChangesAsync();
 
     }

@@ -7,6 +7,7 @@ using Application.DTOS;
 using Application.Interface;
 using Domain.Entities;
 using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +28,7 @@ namespace Infrastructure.Implementation
         DateTime startTime,
         DateTime endTime,
         int bucketMinutes
-    )
+         )
         {
             IQueryable<SensorRawData> query = _context.SensorRawDatas
                 .Where(x => x.AssetName == assetname &&
@@ -160,9 +161,9 @@ namespace Infrastructure.Implementation
 
 
         public async Task<List<MappingAvgValueDto>> GetAvgValuesForMappings(
-    List<int> mappingIds,
-    DateTime startTime,
-    DateTime endTime)
+        List<int> mappingIds,
+        DateTime startTime,
+        DateTime endTime)
         {
             var start = startTime.Date;
             var end = endTime.Date;
@@ -180,6 +181,11 @@ namespace Infrastructure.Implementation
                     MaxValue = g.Max(x => x.MaxValue)
                 })
                 .ToListAsync();
+        }
+
+        public async Task<bool> DataExist()
+        {
+            return await _context.SensorRawDatas.AnyAsync();
         }
 
     }

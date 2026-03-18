@@ -132,7 +132,7 @@ class NodeSubscriber:
         
         Args:
             url: OPC UA server URL
-            db: Database connection object (defaults to PostgresSqlConnection)
+            db: Database connection object (defaults to PostgresSqlConnection)                  
             repo: Repository object (defaults to PostgresRepositoryService)
             threshold: Change threshold for notifications
         """
