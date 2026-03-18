@@ -78,6 +78,20 @@ namespace Application.Services
             DateTime startTime,
             DateTime endTime)
         {
+
+            bool exists = await _analyticsRepository.DataExist();
+
+            if (!exists)
+            {
+                Console.WriteLine("No data available to calculate KPI");
+
+
+                return new KpiMappingResultDto
+                {
+                    KpiName = kpiName,
+                    Assets = new List<AssetMappingDto>()
+                };
+            }
             // Fetch ALL plants automatically
             var plants = await _assetRepositary.GetAssetsByType("Plant");
             var resultAssets = new List<AssetMappingDto>();
@@ -174,12 +188,22 @@ namespace Application.Services
                 }
 
                 //+ Calculate KPI and add to result ───────────────────────────
-                resultAssets.Add(new AssetMappingDto
+                try
                 {
-                    AssetName = plant.Name,
-                    KpiValue = _formulaService.Calculate(kpiName, tagValues),
-                    Mappings = allPlantMappingDetails
-                });
+                    resultAssets.Add(new AssetMappingDto
+                    {
+                        AssetName = plant.Name,
+                        KpiValue = _formulaService.Calculate(kpiName, tagValues),
+                        Mappings = allPlantMappingDetails
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception: {ex}");
+                    throw; // rethrow if you want the app to fail fast
+                }
+
+
             }
 
             return new KpiMappingResultDto
@@ -196,6 +220,20 @@ namespace Application.Services
             DateTime startTime,
             DateTime endTime)
         {
+
+             bool exists = await _analyticsRepository.DataExist();
+
+            if (!exists)
+            {
+                Console.WriteLine("No data available to calculate KPI");
+
+
+                return new KpiMappingResultDto
+                {
+                    KpiName = kpiName,
+                    Assets = new List<AssetMappingDto>()
+                };
+            }
             var dependentTagIds = dependentTags.Select(t => t.TagId).ToList();
 
             // Get all stacks

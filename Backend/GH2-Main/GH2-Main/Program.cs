@@ -8,6 +8,7 @@ using Infrastructure.Persistence.Sedding;
 using Infrastructure.Persistence.Seeding;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Serilog;
  
 var builder = WebApplication.CreateBuilder(args);
@@ -30,14 +31,18 @@ builder.Host.UseSerilog((context, services, configuration) =>
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
+
         // allows "tagId", "TagId", "TAGID" — all work
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+
     });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConn")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConn")
+      
+     ));
 
 builder.Configuration.AddJsonFile("kpiDependencies.json", optional: false, reloadOnChange: true);
 

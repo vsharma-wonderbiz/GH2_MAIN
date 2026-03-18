@@ -21,10 +21,10 @@ public class WeeklyAvgCalculatorBackgroundService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Weekly Average Background Service will start after 10 minutes delay...");
+        _logger.LogInformation("Weekly Average Background Service will start after 50 minutes delay...");
 
         //  Startup Delay Here
-        await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken);
+        await Task.Delay(TimeSpan.FromMinutes(50), stoppingToken);
 
         _logger.LogInformation("Weekly Average Background Service started.");
 
