@@ -8,7 +8,7 @@ from Service.PostgresRepositoryService import PostgresRepositoryService
 import threading
 import time
 
-URL = "opc.tcp://10.10.10.122:4840"
+URL = "opc.tcp://10.10.10.209:4840"
 CHANGE_THRESHOLD = 0.01  # 1% change threshold
 
 
@@ -26,18 +26,21 @@ class SubscriptionHandler:
     Maps OPC NodeIds to MappingIds and updates DB on value changes.
     """
 
-    def __init__(self, repo: ITelemetryRepository, mapping_id_map: dict, threshold: float):
+    def __init__(self, repo: ITelemetryRepository, mapping_id_map: dict, threshold: float,alaram_manager):
         self.repo = repo
         self.mapping_id_map = mapping_id_map  # Maps OpcNodeId string -> MappingId (integer)
         self.threshold = threshold
         self.last_known_values = repo.get_all_last_known_values() if repo else {}
         self.lock = threading.Lock()
+        self.alarm_manager=alaram_manager
 
     def datachange_notification(self, node, val, data):
         """Called when a monitored node value changes."""
         try:
             with self.lock:
                 opc_node_id = node.nodeid.to_string()
+                signal_name=self._extract_signal_name(opc_node_id)
+                # print(signal_name)
                 mapping_id = self.mapping_id_map.get(opc_node_id)
                 
                 if not mapping_id:
@@ -59,6 +62,8 @@ class SubscriptionHandler:
                     self.repo.update_last_known_value(mapping_id, opc_node_id, val, source_time)
                     self.last_known_values[mapping_id] = val
                     logging.info(f"Updated MappingId {mapping_id} (OPC: {opc_node_id}): {val}")
+                    
+                    self.alarm_manager.check_alarm(signal_name,val)
 
         except Exception as e:
             logging.error(f"Subscription handler error: {e}")
@@ -75,6 +80,17 @@ class SubscriptionHandler:
 
         except (ValueError, TypeError):
             return old_value != new_value
+        
+    def _extract_signal_name(self,opc_id: str):
+      try:
+        # Step 1: remove prefix "ns=2;s="
+        clean = opc_id.split('=')[-1]
+
+        # Step 2: take last part after "."
+        return clean.split('.')[-1].lower()
+
+      except Exception:
+        return None
 
 
 
@@ -87,9 +103,27 @@ class AlarmManager:
 
     def get_all_signall_limit(self):
         limits = self.repo.get_signal_limits()
-        print(limits)
+        self.signal_limits={
+            signal:{
+                "min":min_val,
+                "max":max_val
+            }
+            for signal,min_val,max_val in limits
+        }   
+        logging.info(f"Signal limits loaded: {self.signal_limits}")
         # TODO: implement return or further processing
         pass
+    
+    def check_alarm(self,signal_name,current_name):
+        limits=self.signal_limits.get(signal_name)
+        
+        if limits:
+            min_val = float(limits["min"])
+            max_val = float(limits["max"])
+            print(signal_name)
+            print(f"curr_val:{current_name},min:{min_val},max:{max_val}")
+            if current_name < min_val or current_name > max_val:
+             print("Alaram Trigger ho gaya hai ok na")
 
 
 class SnapshotThread(threading.Thread):
@@ -148,6 +182,8 @@ class NodeSubscriber:
         self.mapping_id_map = {}
         self.alarm_manager=AlarmManager(self.repo)
 
+    
+    
     def connect_opc(self) -> bool:
         """Connect to OPC UA server."""
         try:
@@ -158,6 +194,7 @@ class NodeSubscriber:
             logging.error(f"Unable to connect to OPC server: {e}")
             return False
 
+    
     def disconnect_opc(self) -> None:
         """Disconnect from OPC UA server."""
         try:
@@ -168,6 +205,7 @@ class NodeSubscriber:
         except Exception as e:
             logging.warning(f"Error disconnecting OPC client: {e}")
 
+    
     def connect_db(self):
         """Connect to database."""
         if not self.db:
@@ -182,6 +220,7 @@ class NodeSubscriber:
             logging.error(f"Unable to connect to DB: {e}")
             return None
 
+    
     def discover_nodes(self) -> list:
         """Discover available OPC UA nodes in namespace 2."""
         discovered_nodes = []
@@ -193,6 +232,7 @@ class NodeSubscriber:
             logging.error(f"Node discovery failed: {e}")
         return discovered_nodes
 
+    
     def _browse_recursive(self, node, discovered_nodes: list) -> None:
         """Recursively browse OPC UA node tree."""
         try:
@@ -216,6 +256,7 @@ class NodeSubscriber:
         except Exception as e:
             logging.warning(f"Failed to browse node {node}: {e}")
 
+    
     def get_mapping_id_map(self) -> dict:
         """Fetch OPC NodeId to MappingId mapping from repository."""
         try:
@@ -226,6 +267,7 @@ class NodeSubscriber:
             logging.error(f"Failed to get mapping ID map: {e}")
             return {}
 
+    
     def subscribe_to_nodes(self, nodes: list) -> bool:
         """
         Create subscription and monitor list of nodes.
@@ -270,15 +312,18 @@ class NodeSubscriber:
             logging.error(f"Failed to create subscription: {e}")
             return False
 
+    
     def _create_handler(self) -> SubscriptionHandler:
         """Create subscription handler with current config."""
         self.handler = SubscriptionHandler(
             self.repo,
             self.mapping_id_map,
-            self.threshold
+            self.threshold,
+            self.alarm_manager
         )
         return self.handler
 
+    
     def keep_alive(self) -> None:
         """Keep subscription alive (blocks indefinitely)."""
         try:
@@ -294,16 +339,17 @@ class NodeSubscriber:
             
     def _start_snapsot(self):
         try:
-          snap_shot=SnapshotThread(self.repo)
-          snap_shot.run()
+          self.snap_shot=SnapshotThread(self.repo)
+          self.snap_shot.start()
           
         except Exception as e:
             logging.warning(f"Something went wrong while updating the snaphsot service {e}")
             
+    
     def _stop_snapshot(self):
         try:
-            snap_shot=SnapshotThread(self.repo)
-            snap_shot.stop()
+            self.snap_shot=SnapshotThread(self.repo)
+            self.snap_shot.stop()
         except Exception as e:
             logging.warning(f"Something went wrong while updating the snaphsot service {e}")
         
@@ -338,22 +384,24 @@ def main():
         mapping_id_map = subscriber.get_mapping_id_map()
         if not mapping_id_map:
             logging.warning("No node mappings found in database")
-            # Continue anyway - handler will skip unmapped nodes
+            # Continue anyway
 
         # 5. Setup subscription and monitoring
-        if subscriber.subscribe_to_nodes(nodes):
-            logging.info("Successfully subscribed to nodes")
-            
-        if subscriber._start_snapsot():
-            logging.info("Started the logging service")
-
-            # 6. Keep subscription alive and listen for data changes
-            subscriber.keep_alive()
-            
-            subscriber.alarm_manager
-
-        else:
+        if not subscriber.subscribe_to_nodes(nodes):
             logging.error("Failed to subscribe to nodes")
+            return
+
+        logging.info("Successfully subscribed to nodes")
+
+        # Start snapshot thread (non-blocking)
+        subscriber._start_snapsot()
+        logging.info("Snapshot service started")
+
+        # Call alarm logic (NOW IT WILL RUN)
+        subscriber.alarm_manager.get_all_signall_limit()
+
+        #  Keep alive should be LAST (blocking loop)
+        subscriber.keep_alive()
 
     except Exception as e:
         logging.error(f"Unexpected error: {e}")
@@ -361,11 +409,9 @@ def main():
     finally:
         try:
             subscriber.disconnect_opc()
-            subscriber._start_snapsot()
             logging.info("Cleanup completed")
         except Exception as e:
             logging.warning(f"Error during cleanup: {e}")
-
 
 if __name__ == "__main__":
     main()
