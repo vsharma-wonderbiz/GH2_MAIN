@@ -104,7 +104,7 @@ class PostgresRepositoryService(ITelemetryRepository):
         """use the data fetched from the nodelast value to insert here """
         mixer_data = self.get_mixer_signal_data()
 
-        print(f"DEBUG: Retrieved mixer_data: {mixer_data}")
+        # print(f"DEBUG: Retrieved mixer_data: {mixer_data}")
       
         if not mixer_data:
             print("WARNING: No mixer data found in node_last_value table!")
