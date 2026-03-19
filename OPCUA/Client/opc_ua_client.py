@@ -7,8 +7,11 @@ from Interface.ITelemetryRepository import ITelemetryRepository
 from Service.PostgresRepositoryService import PostgresRepositoryService
 import threading
 import time
+import pika
+import json
 
-URL = "opc.tcp://10.10.10.209:4840"
+URL = "opc.tcp://10.10.10.242:4840"
+RABBITMQ_HOST='localhost'
 CHANGE_THRESHOLD = 0.01  # 1% change threshold
 
 
@@ -63,7 +66,7 @@ class SubscriptionHandler:
                     self.last_known_values[mapping_id] = val
                     logging.info(f"Updated MappingId {mapping_id} (OPC: {opc_node_id}): {val}")
                     
-                    self.alarm_manager.check_alarm(signal_name,val)
+                    self.alarm_manager.check_alarm(signal_name,mapping_id,val)
 
         except Exception as e:
             logging.error(f"Subscription handler error: {e}")
@@ -96,34 +99,138 @@ class SubscriptionHandler:
 
 
 class AlarmManager:
-    def __init__(self, repo):
-        # proper constructor; store repository for later use
+    def __init__(self, repo, rabbit_mq):
         self.repo = repo
         self.signal_limits = {}
+        self.active_alarms = {}  # { signal_name: "min" | "max" | None }
+        self.mq = rabbit_mq
 
-    def get_all_signall_limit(self):
+    def get_all_signal_limits(self):
         limits = self.repo.get_signal_limits()
-        self.signal_limits={
-            signal:{
-                "min":min_val,
-                "max":max_val
-            }
-            for signal,min_val,max_val in limits
-        }   
+        self.signal_limits = {
+            signal: {"min": min_val, "max": max_val}
+            for signal, min_val, max_val in limits
+        }
         logging.info(f"Signal limits loaded: {self.signal_limits}")
-        # TODO: implement return or further processing
-        pass
-    
-    def check_alarm(self,signal_name,current_name):
-        limits=self.signal_limits.get(signal_name)
         
-        if limits:
+
+    def check_alarm(self, signal_name,mapping_id,current_value):
+        limits = self.signal_limits.get(signal_name)
+
+        if not limits:
+            return  # No limits configured for this signal
+
+        try:
+            val = float(current_value)
             min_val = float(limits["min"])
             max_val = float(limits["max"])
-            print(signal_name)
-            print(f"curr_val:{current_name},min:{min_val},max:{max_val}")
-            if current_name < min_val or current_name > max_val:
-             print("Alaram Trigger ho gaya hai ok na")
+
+            if val < min_val:
+                self._trigger_alarm(signal_name, "min", val, min_val,mapping_id)
+
+            elif val > max_val:
+                self._trigger_alarm(signal_name, "max", val, max_val,mapping_id)
+
+            else:
+                self._clear_alarm(signal_name, val,mapping_id)
+
+        except (ValueError, TypeError) as e:
+            logging.warning(f"Alarm check failed for {signal_name}: {e}")
+
+    def _trigger_alarm(self, signal_name, alarm_type, current_value, limit_value,mapping_id):
+        """Publish alarm only if not already active (no spam)."""
+        if self.active_alarms.get(signal_name) == alarm_type:
+            return  # Already triggered, skip
+
+        self.active_alarms[signal_name] = alarm_type
+
+        message = json.dumps({
+            "event": "ALARM_TRIGGERED",
+            "mapping_id":mapping_id,
+            "signal": signal_name,
+            "alarm_type": alarm_type,        # "min" or "max"
+            "current_value": current_value,
+            "limit_breached": limit_value,
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        })
+        print(message)
+
+        self.mq.publish("alarm_queue", message)
+        logging.warning(f"ALARM [{alarm_type.upper()}] {signal_name}: value={current_value}, limit={limit_value}")
+
+    def _clear_alarm(self, signal_name, current_value,mapping_id):
+        """Publish recovery message only if alarm was previously active."""
+        if self.active_alarms.get(signal_name) is None:
+            return  # Was never in alarm, nothing to clear
+
+        previous_alarm = self.active_alarms[signal_name]
+        self.active_alarms[signal_name] = None
+
+        message = json.dumps({
+            "event": "ALARM_CLEARED",
+            "mapping_id":mapping_id,
+            "signal": signal_name,
+            "previous_alarm_type": previous_alarm,   # what alarm was active before
+            "current_value": current_value,
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        })
+
+        self.mq.publish("alarm_queue", message)
+        logging.info(f"ALARM CLEARED {signal_name}: value={current_value} back in range")
+
+
+class RabbitMQPublisher:
+    def __init__(self, host=RABBITMQ_HOST):
+        self.host = host
+        self.connection = None
+        self.channel = None
+        self._connect()
+
+    def _connect(self):
+        """Establish connection and declare queue."""
+        try:
+            self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host))
+            self.channel = self.connection.channel()
+            self.channel.queue_declare(queue="alarm_queue", durable=True)
+            logging.info(f"RabbitMQ connected at {self.host}")
+        except Exception as e:
+            logging.error(f"RabbitMQ connection failed: {e}")
+            raise
+
+    def _ensure_connection(self):
+        """Reconnect if connection is lost."""
+        try:
+            if self.connection is None or self.connection.is_closed:
+                logging.warning("RabbitMQ connection lost, reconnecting...")
+                self._connect()
+        except Exception as e:
+            logging.error(f"RabbitMQ reconnect failed: {e}")
+            raise
+
+    def publish(self, queue_name, message):
+        """Publish a message to the given queue."""
+        try:
+            self._ensure_connection()
+            self.channel.basic_publish(
+                exchange='',
+                routing_key=queue_name,
+                body=message,
+                properties=pika.BasicProperties(delivery_mode=2)  # persistent message
+            )
+            logging.info(f"Message published to '{queue_name}': {message}")
+
+        except Exception as e:
+            logging.error(f"Failed to publish message to '{queue_name}': {e}")
+            raise
+
+    def close(self):
+        """Gracefully close the RabbitMQ connection."""
+        try:
+            if self.connection and self.connection.is_open:
+                self.connection.close()
+                logging.info("RabbitMQ connection closed")
+        except Exception as e:
+            logging.warning(f"Error closing RabbitMQ connection: {e}")
 
 
 class SnapshotThread(threading.Thread):
@@ -154,6 +261,7 @@ class SnapshotThread(threading.Thread):
         self.running = False
         logging.info("Snapshot thread stopping...")
 
+
 class NodeSubscriber:
     """
     Manages OPC UA connection, database connection, node discovery,
@@ -180,7 +288,7 @@ class NodeSubscriber:
         self.subscription = None
         self.monitored_nodes = {}
         self.mapping_id_map = {}
-        self.alarm_manager=AlarmManager(self.repo)
+        self.alarm_manager=AlarmManager(self.repo,RabbitMQPublisher())
 
     
     
@@ -398,7 +506,7 @@ def main():
         logging.info("Snapshot service started")
 
         # Call alarm logic (NOW IT WILL RUN)
-        subscriber.alarm_manager.get_all_signall_limit()
+        subscriber.alarm_manager.get_all_signal_limits()
 
         #  Keep alive should be LAST (blocking loop)
         subscriber.keep_alive()
