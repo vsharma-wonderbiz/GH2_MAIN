@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.DTOS;
 using Domain.Entities;
 
 namespace Application.Interface
@@ -14,6 +15,12 @@ namespace Application.Interface
         Task AddRangeAsync(List<KpiTable> results);
         Task<bool> IsAlreadyCalculated(string kpiName, string assetName, DateTime startTime, DateTime endTime);
         Task<List<KpiTable>> GetByKpiNameAndDateRange(string kpiName, DateTime startTime, DateTime endTime);
+
+        //Task<(int Week, List<KpiDto> Data)> GetLatestKpisByStackAsync(string stackName);
+
+        Task<List<KpiTable>> GetLatestWeeksAsync(string kpiName, int noOfWeeks);
         Task SaveChangesAsync();
+
+
     }
 }

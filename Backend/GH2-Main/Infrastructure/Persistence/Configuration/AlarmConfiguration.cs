@@ -13,6 +13,24 @@ namespace Infrastructure.Persistence.Configuration
     {
         public void Configure(EntityTypeBuilder<AlarmInfo> entity)
         {
+            entity.HasKey(x=>x.Id);
+
+            entity.Property(a => a.Id)
+                   .ValueGeneratedOnAdd();
+
+            entity.Property(a => a.SignalName)
+                  .IsRequired()
+                  .HasMaxLength(100);
+
+            entity.HasOne(a => a.Mapping )        // AlarmInfo has one Mapping
+                  .WithMany(m => m.Alarms)       // Mapping has many AlarmInfos
+                  .HasForeignKey(a => a.MappingId) // FK column
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.Property(a => a.CreatedAt)
+                     .HasColumnType("timestamptz").
+                     HasDefaultValueSql("NOW()");
+
 
         }
 

@@ -12,6 +12,8 @@ namespace Application.Interface
         Task<Assets> GetByNameAsync(string name);
         Task<List<Assets>> GetAssetsByType(string assetType);
         Task<List<Assets>> GetChildAssets(int parentAssetId);
+        Task<List<Assets>> GetAllPlants();
 
+       
     }
 }

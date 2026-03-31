@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.DTOS;
 using Application.Interface;
 using Domain.Entities;
 using Infrastructure.Persistence;
@@ -78,14 +79,50 @@ namespace Infrastructure.Implementation
             await _context.SaveChangesAsync();
         }
 
-    //    public async Task<bool> IsAlreadyCalculated(
-    //string kpiName, string assetName, DateTime startTime, DateTime endTime)
-    //    {
-    //        return await _context.KpiTable
-    //            .AnyAsync(x => x.KpiName == kpiName &&
-    //                           x.AssetName == assetName &&
-    //                           x.StartTime.Date == startTime.Date &&   // compare DATE only
-    //                           x.EndTime.Date == endTime.Date);        // compare DATE only
-    //    }
+        //public async Task<(int Week, List<KpiDto> Data)> getPlantKpiBasedOnWeek(int noofweek,string kpiname)
+        //{
+        //    var latestWeek = await _context.KpiTable
+        //        .Where(k => k.AssetName.ToLower() == stackName.ToLower()
+        //                 && k.EndTime <= DateTime.UtcNow)
+        //        .OrderByDescending(k => k.EndTime)
+        //        .Select(k => (int?)k.WeekNumber)
+        //        .Distinct()
+        //        .FirstOrDefaultAsync();
+
+        //    if (latestWeek == null)
+        //        return (0, new List<KpiDto>());
+
+        //    var data = await _context.KpiTable
+        //        .Where(k => k.AssetName.ToLower() == stackName.ToLower()
+        //                 && k.WeekNumber == latestWeek)
+        //        .Select(k => new KpiDto
+        //        {
+        //            KpiName = k.KpiName,
+        //            KpiValue = k.KpiValue,
+        //            Level = k.Level
+        //        })
+        //        .ToListAsync();
+
+        //    return (latestWeek.Value, data);
+        //}
+
+        //    public async Task<bool> IsAlreadyCalculated(
+        //string kpiName, string assetName, DateTime startTime, DateTime endTime)
+        //    {
+        //        return await _context.KpiTable
+        //            .AnyAsync(x => x.KpiName == kpiName &&
+        //                           x.AssetName == assetName &&
+        //                           x.StartTime.Date == startTime.Date &&   // compare DATE only
+        //                           x.EndTime.Date == endTime.Date);        // compare DATE only
+        //    }
+
+        public async Task<List<KpiTable>> GetLatestWeeksAsync(string kpiName, int noOfWeeks)
+        {
+                return await _context.KpiTable
+        .Where(k => k.KpiName == kpiName)
+        .OrderBy(k => k.WeekNumber) 
+        .Take(noOfWeeks)              
+        .ToListAsync();
+        }
     }
 }

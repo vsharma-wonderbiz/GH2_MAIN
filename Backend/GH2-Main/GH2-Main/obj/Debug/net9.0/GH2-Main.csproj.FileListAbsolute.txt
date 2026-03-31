@@ -197,3 +197,6 @@ C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\GH2-Main\bin\Debug\net9.0\runtim
 C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\GH2-Main\obj\Debug\net9.0\GH2-Main.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\GH2-Main\bin\Debug\net9.0\kpiDependencies.json
 C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\GH2-Main\bin\Debug\net9.0\RabbitMQ.Client.dll
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\GH2-Main\bin\Debug\net9.0\AutoMapper.dll
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\GH2-Main\bin\Debug\net9.0\BCrypt.Net-Next.dll
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\GH2-Main\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

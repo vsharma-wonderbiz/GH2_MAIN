@@ -10,7 +10,7 @@ import time
 import pika
 import json
 
-URL = "opc.tcp://10.10.10.242:4840"
+URL = "opc.tcp://10.10.10.42:4840"
 RABBITMQ_HOST='localhost'
 CHANGE_THRESHOLD = 0.01  # 1% change threshold
 
@@ -151,7 +151,7 @@ class AlarmManager:
             "alarm_type": alarm_type,        # "min" or "max"
             "current_value": current_value,
             "limit_breached": limit_value,
-            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+            "timestamp": datetime.now(timezone.utc).isoformat()
         })
         print(message)
 
@@ -172,7 +172,7 @@ class AlarmManager:
             "signal": signal_name,
             "previous_alarm_type": previous_alarm,   # what alarm was active before
             "current_value": current_value,
-            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+            "timestamp": datetime.now(timezone.utc).isoformat()
         })
 
         self.mq.publish("alarm_queue", message)
@@ -189,7 +189,7 @@ class RabbitMQPublisher:
     def _connect(self):
         """Establish connection and declare queue."""
         try:
-            self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host))
+            self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host,heartbeat=300))
             self.channel = self.connection.channel()
             self.channel.queue_declare(queue="alarm_queue", durable=True)
             logging.info(f"RabbitMQ connected at {self.host}")
