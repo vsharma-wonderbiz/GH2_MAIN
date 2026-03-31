@@ -1,6 +1,10 @@
 
 
 
+UPDATE "Tags"
+SET "DataType" = 'float32'
+WHERE "TagId" = 20;
+
 
 
 select * from "MappingTables"
@@ -10,7 +14,11 @@ select * from "MappingTables"
 select * from "RegisterAddress"
    where "MappingId"=135
   
-select * from "Tags"
+select * from "TagTypes"
+
+
+select * from "Alarms"
+
 
 select * from "Assets"
 
@@ -20,7 +28,7 @@ select * from "ProtocolConfig"
 select * from "NodeLastDatas"	
 
 select * from "KpiTable"
-where "KpiValue"=
+where "AssetName"='Stack_1' 
 
 
 
@@ -44,7 +52,30 @@ JOIN "Tags" t
 JOIN "ProtocolConfig" pc 
     ON pc."MappingId" = m."MappingId"
 WHERE t."IsDerived" = false
-ORDER BY a."Name", t."TagName";
+ORDER BY a."Name" , t."TagName";
+
+SELECT 
+    pc."Id",
+    m."MappingId",
+    a."Name" AS asset_name,
+    t."TagName" AS tag_name,
+	m."OpcNodeId" AS opc_node_id,
+    t."DataType" AS data_type ,
+    pc."SlaveId",
+    pc."RegisterAddress",
+    pc."FunctionCode",
+    pc."RegisterCount",
+    (pc."RegisterAddress" - 40001) AS adjusted_register,
+    ROUND(t."Deadband"::numeric, 4) AS rounded_deadband
+FROM "MappingTables" m
+JOIN "Assets" a 
+    ON m."AssetId" = a."AssetId"
+JOIN "Tags" t
+    ON m."TagId" = t."TagId"
+JOIN "ProtocolConfig" pc 
+    ON pc."MappingId" = m."MappingId"
+WHERE t."IsDerived" = false
+ORDER BY pc."Id" asc ;
 
 -- these is bsaically checking if the value is been presnet in the tbale or not
 SELECT *
@@ -57,12 +88,8 @@ WHERE "MappingId" = 66
   SELECT *
 FROM "KpiTable"
 WHERE "KpiName" = 'stack_specific_energy'
-  AND "StartTime" <= '2026-03-04T09:57:47.2045756Z'
+  AND "StartTime" <= '2026-03-0T09:57:47.2045756Z'
   AND "EndTime" >= '2026-02-10T09:57:47.2045756Z';
-
-
-
-
 
 select * from "WeeklyAvgData"
   where "MappingId"=66
@@ -204,5 +231,6 @@ delete from "Assets"
 
 delete from "Tags"
 
+delete from "AlarmInfo"
 
 delete from "TagTypes"

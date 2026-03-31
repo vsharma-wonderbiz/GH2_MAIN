@@ -17,5 +17,9 @@ namespace Application.Interface
         Task<List<MappingTable>> GetAllMappingWithConfigs();
 
         Task<ProtocolConfig> GetModbusConfigFromMapppingId(int mappingId);
+
+        Task<List<MappingTable>> GetAllMappingsOnStack(int StackId);
+
+     
     }
 }

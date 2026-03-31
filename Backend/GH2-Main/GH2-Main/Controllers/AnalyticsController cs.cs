@@ -77,5 +77,24 @@ namespace API.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+
+        //[HttpGet("latest/{stackName}")]
+        //public async Task<IActionResult> GetLatestKpis(string stackName)
+        //{
+        //    var result = await _kpiQueryService.GetLatestKpisAsync(stackName);
+
+        //    if (result == null)
+        //        return NotFound("No KPI data found");
+
+        //    return Ok(result);
+        //}
+
+        [HttpPost("PlantKpis")]
+        public async Task<IActionResult> GetLatestPlantKpiOnWeeks(PlantKpiRequestDto requestDto)
+        {
+           var result= await _kpiQueryService.GetPlantKpiBased(requestDto);
+            return Ok(result);
+        }
     }
 }

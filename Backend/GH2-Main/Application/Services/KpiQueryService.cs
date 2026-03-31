@@ -1,4 +1,5 @@
 ﻿// Application/Services/KpiQueryService.cs
+using System.Text.Json;
 using Application.DTOS;
 using Application.Interface;
 using Microsoft.Extensions.Logging;
@@ -114,6 +115,64 @@ namespace Application.Services
                     //Mappings = new List<TagMappingDto>() // cache doesn't store raw mappings
                 }).ToList()
             };
+        }
+
+
+        //public async Task<KpiResponseDto> GetLatestKpisAsync(string stackName)
+        //{
+        //    var result = await _kpiResultRepository.GetLatestWeeksAsync(stackName);
+
+        //    if (result.Data == null || result.Data.Count == 0)
+        //        return null;
+
+        //    return new KpiResponseDto
+        //    {
+        //        StackName = stackName,
+        //        Week = result.Week,
+        //        Data = result.Data
+        //    };
+        //}
+
+        public async Task<object> GetPlantKpiBased(PlantKpiRequestDto Dto)
+        {
+            var weeklydata = await _kpiResultRepository
+                .GetLatestWeeksAsync(Dto.KpiName, Dto.NoOfWeeks);
+
+            var startime = DateTime.UtcNow.AddHours(-1);
+            var endime = DateTime.UtcNow;
+
+            var hourlydata = await _kpiCalulationService.CalculateKpi(new KpiRequestDto
+            {
+                tagId = Dto.KpiId,
+                startTime = startime,
+                endTime = endime
+            });
+            var weeklyResult = weeklydata
+                .OrderBy(w => w.WeekNumber)
+                .Select(w => new
+                {
+                    weekNumber = w.WeekNumber,
+                    startTime = w.StartTime,
+                    endTime = w.EndTime,
+                    value = w.KpiValue
+                });
+
+            var hourlyResult = hourlydata.Assets.Select(a => new
+            {
+                startTime = startime,
+                endTime = endime,
+                value = a.KpiValue,
+            });
+
+            var response = new
+            {
+                kpiName = Dto.KpiName,
+                noOfWeeks = Dto.NoOfWeeks,
+                weeklyData = weeklyResult,
+                hourlyData = hourlyResult
+            };
+
+            return response;
         }
 
         private (DateTime weekStart, DateTime weekEnd) GetLastCompletedWeekRange()

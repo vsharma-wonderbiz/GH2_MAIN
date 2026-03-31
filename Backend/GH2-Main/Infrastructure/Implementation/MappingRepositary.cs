@@ -59,6 +59,15 @@ namespace Infrastructure.Implementation
             return await _context.ProtocolConfig.AnyAsync(a => a.MappingId == mappingID);
         }
 
+        public async Task<List<MappingTable>> GetAllMappingsOnStack(int StackId)
+        {
+            return await _context.Mappings
+                .Where(m=>m.AssetId== StackId &&  m.Tag.IsDerived == false)
+               .Include(m => m.Asset)
+               .Include(m => m.Tag)
+               .ToListAsync();
+        }
+
 
         public async Task<ProtocolConfig> GetModbusConfigFromMapppingId(int mappingId)
         {

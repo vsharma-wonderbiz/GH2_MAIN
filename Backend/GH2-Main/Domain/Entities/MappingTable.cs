@@ -19,6 +19,7 @@ namespace Domain.Entities
         public ICollection<TransactionData> TransactionData { get; private set; } = new List<TransactionData>();
 
         public ICollection<ProtocolConfig> ModbusConifg { get; private set; } = new List<ProtocolConfig>();
+        public ICollection<AlarmInfo> Alarms { get; set; }
 
 
         private MappingTable() { }

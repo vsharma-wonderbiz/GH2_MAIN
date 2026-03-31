@@ -41,8 +41,19 @@ namespace Infrastructure.Implementation
                 .ToListAsync();
         }
 
-    
+        public async Task<List<Tag>> GetAllPlantKpiTags()
+        {
+            var tagid = await _context.TagTypes
+                .Where(a => a.TagName == "Plant")
+                .Select(a => a.TagTypeId)
+                .FirstOrDefaultAsync();
 
+            return await _context.Tags
+                .Where(a => a.TagTypeId == tagid && a.IsDerived == true)
+                .ToListAsync();
+
+
+        }
 
     }
 }

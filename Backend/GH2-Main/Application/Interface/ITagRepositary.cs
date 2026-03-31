@@ -12,8 +12,7 @@ namespace Application.Interface
         Task<Tag?> GetTagNameById(int tagId);
         Task<List<Tag>> GetTagsByNames(List<string> tagNames);
         Task<List<Tag>> GetAllKpiTags();
+        Task<List<Tag>> GetAllPlantKpiTags();
 
-
-       
     }
 }

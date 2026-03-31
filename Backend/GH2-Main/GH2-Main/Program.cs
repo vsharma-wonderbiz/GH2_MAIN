@@ -8,7 +8,7 @@ using Infrastructure.Persistence.Sedding;
 using Infrastructure.Persistence.Seeding;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using GH2_Main.Extension;
 using Serilog;
  
 var builder = WebApplication.CreateBuilder(args);
@@ -46,6 +46,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Configuration.AddJsonFile("kpiDependencies.json", optional: false, reloadOnChange: true);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy => policy
+            .WithOrigins("http://localhost:5173") // ? exact frontend URL
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()); // ? now works because origin is specific
+});
+
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
@@ -53,6 +63,7 @@ builder.Services.AddScoped<BackfillSensorDataService>();
 builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddHostedService<WeeklyAvgCalculatorBackgroundService>();
+builder.Services.AddHostedService<AlarmConsumer>();
 builder.Services.AddScoped<PastWeeksAggregatedData>();
 builder.Services.AddScoped<IMappingRepositary, MappingRepositary>();
 builder.Services.AddScoped<ITagRepositary, TagRepositary>();
@@ -63,6 +74,10 @@ builder.Services.AddHostedService<KpiBackgroundService>();
 builder.Services.AddScoped<KpiHistoryService>();
 builder.Services.AddScoped<KpiQueryService>();
 builder.Services.AddScoped<MappingService>();
+builder.Services.AddScoped<IAlarmRepositary, AlarmRepository>();
+builder.Services.AddCustomServices();
+
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 
 
@@ -85,6 +100,9 @@ using (var scope = app.Services.CreateScope())
     await ProtocolDataSeeder.SeedAsync(context);
 }
 
+
+
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -15,5 +15,11 @@ namespace Application.Interface
 
         Task CreateAssetAsync(CreateAssetDto dto);
 
+        Task<List<Assets>> GetChildAssetsAsync(int parentassetID);
+
+        Task<List<Assets>> GetAllPlantsAsync();
+
+        Task<List<MappingDto>> GetAllMappingsOnStackAsync(int stackId);
+
     }
 }

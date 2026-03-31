@@ -32,6 +32,13 @@ namespace Infrastructure.Implementation
                 .ToListAsync();
         }
 
+        public async Task<List<Assets>> GetAllPlants()
+        {
+            return await _context.Assets
+                .Where(a => a.ParentAssetId == null)
+                .ToListAsync();
+        }
+
         //public async Task<List<Assets>> GetChildrenAsync(int parentId)
         //{
         //    return await _dbset
