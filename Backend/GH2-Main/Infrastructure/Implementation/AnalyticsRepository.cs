@@ -30,6 +30,13 @@ namespace Infrastructure.Implementation
         int bucketMinutes
          )
         {
+            var istStart = startTime.ToLocalTime();
+            var istEnd = endTime.ToLocalTime();
+            Console.WriteLine("these is repositary level");
+            Console.WriteLine($"StartTime (raw) : {istStart}");
+            Console.WriteLine($"EndTime (raw) : {istEnd}");
+            Console.WriteLine($"StartTime Kind :{istStart.Kind}");
+
             IQueryable<SensorRawData> query = _context.SensorRawDatas
                 .Where(x => x.AssetName == assetname &&
                             x.TagName == tagname &&
@@ -53,13 +60,14 @@ namespace Infrastructure.Implementation
             else
             {
                 values = await query
-                    .GroupBy(x => new DateTime(
-                        x.TimeStamp.Year,
-                        x.TimeStamp.Month,
-                        x.TimeStamp.Day,
-                        x.TimeStamp.Hour,
-                        (x.TimeStamp.Minute / bucketMinutes) * bucketMinutes,
-                        0))
+                    .GroupBy(x => DateTime.SpecifyKind(new DateTime(
+                                                    x.TimeStamp.Year,
+                                                    x.TimeStamp.Month,
+                                                    x.TimeStamp.Day,
+                                                    x.TimeStamp.Hour,
+    (x.TimeStamp.Minute / bucketMinutes) * bucketMinutes,
+    0
+), DateTimeKind.Utc))
                     .Select(g => new ValueDto
                     {
                         TimeStamp = g.Key,
@@ -74,7 +82,7 @@ namespace Infrastructure.Implementation
                 AsseName = assetname,
                 TagName = tagname,
                 Values = values,
-                count= values.Count()
+                count = values.Count()
             };
         }
 
@@ -148,7 +156,7 @@ namespace Infrastructure.Implementation
         }
 
 
-       
+
 
 
         public async Task<bool> IsWeekAvgDataPresent(int mappingId, DateTime weekStart, DateTime weekEnd)

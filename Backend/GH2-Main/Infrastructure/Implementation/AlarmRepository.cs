@@ -21,5 +21,14 @@ namespace Infrastructure.Implementation
         {
             return await _context.Alarms.FirstOrDefaultAsync(a => a.MappingId == mappingId && a.SignalName == name && a.Status == "Active");
         }
+
+        public async Task<List<AlarmInfo>> GetAllLatestAlaram()
+        {
+            return await _context.Alarms
+                .OrderByDescending(a => a.CreatedAt)
+                .Take(5)
+                .ToListAsync();
+        }
+
     }
 }

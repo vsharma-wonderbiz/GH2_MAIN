@@ -25,6 +25,11 @@ namespace Application.Services
 
             if (dto.StartTime >= dto.EndTime)
                 throw new InvalidOperationException("Invalid time range.");
+            Console.WriteLine("The is service layer");
+            Console.WriteLine($"StartTime (raw): {dto.StartTime}");
+            Console.WriteLine($"EndTime (raw): {dto.EndTime}");
+            Console.WriteLine($"StartTime Kind: {dto.StartTime.Kind}");
+            Console.WriteLine($"EndTime Kind: {dto.EndTime.Kind}");
 
             int bucketMinutes = CalculateBucketMinutes(dto.StartTime, dto.EndTime);
 
@@ -43,25 +48,30 @@ namespace Application.Services
             var totalHours = totalMinutes / 60;
             var totalDays = totalHours / 24;
 
+            //if (totalHours <= 1)
+            //    return null; // raw (5 sec)
+            if (totalHours <= 2)
+                return 0;
+
             if (totalHours <= 6)
-                return 0;   // raw
+                return 1; // 1 min
 
             if (totalHours <= 12)
-                return 1;
-
-            if (totalDays <= 1)
-                return 1;
-
-            if (totalDays <= 10)
                 return 2;
 
-            if (totalDays <= 20)
-                return 10;
+            if (totalHours <= 24)
+                return 5;
 
-            if (totalDays <= 30)
+            if (totalDays <= 7)
                 return 15;
 
-            return 30;
-        }
+            if (totalDays <= 15)
+                return 30;
+
+            if (totalDays <= 30)
+                return 60;
+
+            return 120; // 2 hours
+        }   
     }
 }

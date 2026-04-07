@@ -147,6 +147,9 @@ namespace Application.Services
                 startTime = startime,
                 endTime = endime
             });
+
+            Console.WriteLine($"These is the hourlydata {hourlydata}");
+
             var weeklyResult = weeklydata
                 .OrderBy(w => w.WeekNumber)
                 .Select(w => new
@@ -173,6 +176,30 @@ namespace Application.Services
             };
 
             return response;
+        }
+
+        public async Task<StackKpiResponse> GetStackKpi(StackKpiRequest dto)
+        {
+            var KpiData = await _kpiResultRepository
+                .GetCustomizeStackKpi(dto.KpiName, dto.NoOfStack, dto.NoOfWeeks);
+
+            var result = new StackKpiResponse
+            {
+                KpiName = dto.KpiName,
+                NoOfStacks = dto.NoOfStack,
+                NoOfWeeks = dto.NoOfWeeks,
+
+                values = KpiData.Select(a => new FilteredData
+                {
+                    StartTime = a.StartTime,
+                    Endpoint = a.EndTime,
+                    Assetname = a.AssetName,
+                    value = a.KpiValue,
+                    WeekNumber = a.WeekNumber
+                }).ToList()
+            };
+
+            return result;
         }
 
         private (DateTime weekStart, DateTime weekEnd) GetLastCompletedWeekRange()

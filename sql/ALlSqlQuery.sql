@@ -1,6 +1,8 @@
 
 
 
+
+
 UPDATE "Tags"
 SET "DataType" = 'float32'
 WHERE "TagId" = 20;
@@ -11,6 +13,8 @@ select * from "MappingTables"
    where "MappingId"=135
 
 
+select * From "Users"
+
 select * from "RegisterAddress"
    where "MappingId"=135
   
@@ -18,6 +22,10 @@ select * from "TagTypes"
 
 
 select * from "Alarms"
+order by "CreatedAt" Desc
+
+
+select * from "TagTypes"
 
 
 select * from "Assets"
@@ -28,7 +36,7 @@ select * from "ProtocolConfig"
 select * from "NodeLastDatas"	
 
 select * from "KpiTable"
-where "AssetName"='Stack_1' 
+where "AssetName"='Stack_1' and "WeekNumber"=5
 
 
 
@@ -96,16 +104,50 @@ select * from "WeeklyAvgData"
         AND "TimeStamp" between '2026-02-10T09:57:47.2045756Z' AND '2026-03-04T09:57:47.2045756Z'
 
 select * from "Tags"
+where "TagTypeId"=2 AND "IsDerived"='true'
 
-select * from "SensorRawDatas"
-where "MappingId"=5
-      AND "TimeStamp" between '2026-02-' AND '2026-02-21'
+SELECT * 
+FROM "SensorRawDatas"
+WHERE "AssetName" = 'Stack_1'
+  AND "TagName" = 'current'
+  AND "TimeStamp" >= '2026-04-07 11:30:00'
+AND "TimeStamp" <=  '2026-04-07 12:30:00';
+
+---latest one hour of data ----
+SELECT * 
+FROM "SensorRawDatas"
+WHERE "AssetName" = 'Stack_1'
+  AND "TagName" = 'current'
+  AND "TimeStamp" >= NOW() - INTERVAL '1 hour'
+  AND "TimeStamp" <= NOW()
+  Order by "TimeStamp" desc
+
+
+ALTER DATABASE "GH2-Main" SET timezone TO 'UTC';
+
+SHOW timezone
+
+SET TIME ZONE 'UTC';
+
+SELECT * 
+FROM "SensorRawDatas"
+WHERE "AssetName" = 'Stack_1'
+  AND "TagName" = 'current'
+  order by "TimeStamp" desc
+  
 
 
 SELECT *
 FROM "SensorRawDatas"
 WHERE "MappingId" = 27	
   AND "TimeStamp"::date = '2026-02-28'
+
+SHOW TIMEZONE;
+SELECT NOW();
+SELECT MAX(ts), MIN(ts) FROM "SensorRawDatas"
+
+
+
 
 
 select * from "SensorRawDatas"
@@ -215,6 +257,21 @@ WHERE "MappingId" =
 
 select * from "WeeklyAvgData"
    where "AssetId"=2 and "MappingId"=31
+
+SELECT *
+FROM "SensorRawDatas"
+WHERE "TimeStamp" >= NOW() - INTERVAL '6 hours';
+
+
+SELECT "TimeStamp" 
+FROM "SensorRawDatas"
+ORDER BY "TimeStamp" DESC
+LIMIT 30;
+
+
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = 'SensorRawDatas';
 
 
 

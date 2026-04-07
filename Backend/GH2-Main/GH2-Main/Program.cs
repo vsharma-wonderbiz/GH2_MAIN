@@ -39,10 +39,14 @@ builder.Services.AddControllers()
     });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConn")
-      
-     ));
+{
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConn"),
+        o => o.CommandTimeout(120)
+    );
+});
 
 builder.Configuration.AddJsonFile("kpiDependencies.json", optional: false, reloadOnChange: true);
 

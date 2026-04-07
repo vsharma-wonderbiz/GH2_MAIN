@@ -55,5 +55,19 @@ namespace Infrastructure.Implementation
 
         }
 
+        public async Task<List<Tag>> GetAllStackKpiTags()
+        {
+            var tagid = await _context.TagTypes
+                .Where(a => a.TagName == "Stack")
+                .Select(a => a.TagTypeId)
+                .FirstOrDefaultAsync();
+
+            return await _context.Tags
+                .Where(a => a.TagTypeId == tagid && a.IsDerived == true)
+                .ToListAsync();
+
+
+        }
+
     }
 }

@@ -144,6 +144,27 @@ namespace GH2_Main.Controllers
             }
         }
 
+        [HttpGet("StackKpis")]
+        public async Task<IActionResult> GetAllStackKpis()
+        {
+            try
+            {
+                var Kpi = await _tagRepositary.GetAllStackKpiTags();
+
+                var result = Kpi.Select(k => new
+                {
+                    TagId = k.TagId,
+                    TagName = k.TagName
+                });
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Unexpected error
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
+        }
+
 
         
     }

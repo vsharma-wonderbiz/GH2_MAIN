@@ -11,11 +11,14 @@ namespace API.Controllers
     {
         private readonly IAnalyticsService _analyticsService;
         private readonly KpiQueryService _kpiQueryService;
+        private readonly IAlarmRepositary _alarmRepositary;
+        
 
-        public AnalyticsController(IAnalyticsService analyticsService,KpiQueryService kpiQueryService)
+        public AnalyticsController(IAnalyticsService analyticsService,KpiQueryService kpiQueryService,IAlarmRepositary alarmRepositary)
         {
             _analyticsService = analyticsService;
             _kpiQueryService = kpiQueryService;
+            _alarmRepositary = alarmRepositary;
         }
 
         [HttpPost("data")]
@@ -94,6 +97,21 @@ namespace API.Controllers
         public async Task<IActionResult> GetLatestPlantKpiOnWeeks(PlantKpiRequestDto requestDto)
         {
            var result= await _kpiQueryService.GetPlantKpiBased(requestDto);
+            return Ok(result);
+        }
+
+
+        [HttpPost("StackKpis")]
+        public async Task<IActionResult> GetLatestStackCustomizableKpis(StackKpiRequest requestDto)
+        {
+            var result = await _kpiQueryService.GetStackKpi(requestDto);
+            return Ok(result);
+        }
+
+        [HttpGet("Alerts")]
+        public async Task<IActionResult> GetAllLatestAlerts()
+        {
+            var result = await _alarmRepositary.GetAllLatestAlaram();
             return Ok(result);
         }
     }

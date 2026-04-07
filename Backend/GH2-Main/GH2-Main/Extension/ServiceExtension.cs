@@ -18,6 +18,7 @@ namespace GH2_Main.Extension
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAlarmRepositary, AlarmRepository>();
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddMaps(typeof(MappingProfile).Assembly);
