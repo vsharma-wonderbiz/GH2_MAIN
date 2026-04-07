@@ -124,5 +124,47 @@ namespace Infrastructure.Implementation
         .Take(noOfWeeks)              
         .ToListAsync();
         }
+
+        public async Task<List<KpiTable>> GetCustomizeStackKpi(string Kpiname, int NoOfStacks, int NoOfWeeks)
+        {
+            //Get all stacks for given KPI
+            var stacks = await _context.KpiTable
+                .Where(a => a.KpiName == Kpiname)
+                .Select(a => a.AssetName)
+                .Distinct()
+                .ToListAsync();
+
+            Console.WriteLine($"Selected Stacks: {string.Join(", ", stacks)}");
+            //select only the no of stacks as per the reuqest mens if the request has 3 stack then first 3 stacks 
+            var orderedStacks = stacks
+                .OrderBy(a => int.Parse(a.Split('_')[1]))
+                .Take(NoOfStacks)
+                .ToList();
+
+            Console.WriteLine($"Ordered Stacks: {string.Join(", ", orderedStacks)}");
+
+            //Get the lastest of no of week in the request 
+            var selectedWeeks = await _context.KpiTable
+                .Where(x => x.KpiName == Kpiname)
+                .Select(x => x.WeekNumber)
+                .Distinct()
+                .OrderBy(x => x) 
+                .Take(NoOfWeeks)
+                .ToListAsync();
+
+            Console.WriteLine($"Selected Weeks: {string.Join(", ", selectedWeeks)}");
+
+            // Filter data based on the the stacks and the no of weeks 
+            var filteredData = await _context.KpiTable
+                .Where(x => x.KpiName == Kpiname
+                         && orderedStacks.Contains(x.AssetName)
+                         && selectedWeeks.Contains(x.WeekNumber))
+                .ToListAsync();
+
+            Console.WriteLine($"Filtered Data Count: {filteredData.Count}");
+
+            return filteredData;
+        }
     }
 }
+    

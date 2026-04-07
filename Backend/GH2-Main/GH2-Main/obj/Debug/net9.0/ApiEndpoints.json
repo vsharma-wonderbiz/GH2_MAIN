@@ -1,6 +1,16 @@
 [
   {
     "ContainingType": "API.Controllers.AnalyticsController",
+    "Method": "GetAllLatestAlerts",
+    "RelativePath": "api/Analytics/Alerts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.AnalyticsController",
     "Method": "GetAnalyticsData",
     "RelativePath": "api/Analytics/data",
     "HttpMethod": "POST",
@@ -42,6 +52,22 @@
       {
         "Name": "requestDto",
         "Type": "Application.DTOS.PlantKpiRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.AnalyticsController",
+    "Method": "GetLatestStackCustomizableKpis",
+    "RelativePath": "api/Analytics/StackKpis",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "requestDto",
+        "Type": "Application.DTOS.StackKpiRequest",
         "IsRequired": true
       }
     ],
@@ -109,6 +135,16 @@
     "ContainingType": "GH2_Main.Controllers.AssetController",
     "Method": "GetAllPlants",
     "RelativePath": "api/Asset/plants",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GH2_Main.Controllers.AssetController",
+    "Method": "GetAllStackKpis",
+    "RelativePath": "api/Asset/StackKpis",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

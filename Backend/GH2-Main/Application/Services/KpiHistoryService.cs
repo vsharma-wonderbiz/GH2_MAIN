@@ -81,7 +81,7 @@ namespace Application.Services
                 }
             }
 
-            if (results.Any())
+            if (results.Any())  
             {
                 await _resultRepository.AddRangeAsync(results);
                 await _resultRepository.SaveChangesAsync();

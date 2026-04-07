@@ -19,6 +19,7 @@ namespace Application.Interface
         //Task<(int Week, List<KpiDto> Data)> GetLatestKpisByStackAsync(string stackName);
 
         Task<List<KpiTable>> GetLatestWeeksAsync(string kpiName, int noOfWeeks);
+        Task<List<KpiTable>> GetCustomizeStackKpi(string Kpiname, int NoOfStacks, int NoOfWeeks);
         Task SaveChangesAsync();
 
 
