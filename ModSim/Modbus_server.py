@@ -10,7 +10,7 @@ from pymodbus.datastore import ModbusSequentialDataBlock
 from pymodbus.datastore import ModbusSlaveContext
 from pymodbus.datastore import ModbusServerContext
 
-IP = "10.10.10.122"
+IP = "10.10.10.23"
 
 app = Flask(__name__)
 _signals = []
@@ -170,7 +170,7 @@ def allocate_stack_registers(plant_config, stack_template):
 
     allocation = []
     for s in range(active_stacks):
-        stack_id     = s + 1
+        stack_id     = f"Stack_{s+1}"
         base_address = stack_start_address + s * stack_block_size
         addr         = base_address
         mapped_signals = []
@@ -193,9 +193,9 @@ def allocate_plant_signals(plant_config):
     plant_start          = plant_config["plant_block_start"]
 
     plant_signals = [
-        {"name": "plantdata_power",          "min": 1000, "max": 2000, "unit": "kW"},
-        {"name": "plantdata_throughput",     "min": 200,  "max": 450,  "unit": "Nm3/h"},
-        {"name": "plantdata_water_flow_tot", "min": 2.0,  "max": 5.0,  "unit": "m3/h"}
+        {"name": "power",          "min": 1000, "max": 2000, "unit": "kW"},
+        {"name": "throughput",     "min": 200,  "max": 450,  "unit": "Nm3/h"},
+        {"name": "water_flow_tot", "min": 2.0,  "max": 5.0,  "unit": "m3/h"}
     ]
 
     mapped = []

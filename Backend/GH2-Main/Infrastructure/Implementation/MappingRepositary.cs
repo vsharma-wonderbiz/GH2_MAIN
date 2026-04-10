@@ -73,5 +73,15 @@ namespace Infrastructure.Implementation
         {
             return await _context.ProtocolConfig.FirstOrDefaultAsync(a => a.MappingId == mappingId);
         }
+
+        public async Task<int> GetMappingIdFromAssetandTag(string assetname, string Tagname)
+        {
+            return await _context.Mappings
+                .Include(m => m.Asset)
+                .Include(m => m.Tag)
+                .Where(a => a.Asset.Name == assetname && a.Tag.TagName == Tagname)
+                .Select(a => a.MappingId)
+                .FirstOrDefaultAsync();
+        }
     }
 }

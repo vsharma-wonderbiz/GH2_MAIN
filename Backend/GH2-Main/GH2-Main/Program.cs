@@ -79,7 +79,9 @@ builder.Services.AddScoped<KpiHistoryService>();
 builder.Services.AddScoped<KpiQueryService>();
 builder.Services.AddScoped<MappingService>();
 builder.Services.AddScoped<IAlarmRepositary, AlarmRepository>();
+builder.Services.AddScoped<ProtocolDataSeeder>();
 builder.Services.AddCustomServices();
+
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
@@ -92,16 +94,18 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<TagsSeeder>>();
+    var seeder = scope.ServiceProvider.GetRequiredService<ProtocolDataSeeder>();
 
     // Apply migrations
     context.Database.Migrate();
 
-    // Run your seeder
+    // Run seeders
     TagTypeSeeder.Seeder(context);
     TagsSeeder.Seeder(context, logger);
     AssetSeeder.Seed(context);
     MappingSeeder.Seed(context);
-    await ProtocolDataSeeder.SeedAsync(context);
+
+    await seeder.SeedAsync(context);
 }
 
 

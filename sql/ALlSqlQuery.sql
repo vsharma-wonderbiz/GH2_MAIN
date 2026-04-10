@@ -7,7 +7,7 @@ UPDATE "Tags"
 SET "DataType" = 'float32'
 WHERE "TagId" = 20;
 
-
+select * from "ProtocolConfig"
 
 select * from "MappingTables"
    where "MappingId"=135
