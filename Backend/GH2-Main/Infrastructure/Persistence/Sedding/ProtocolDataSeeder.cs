@@ -1,74 +1,91 @@
 ﻿using System;
+using System.Text.Json;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+
+using Application.DTOS;
+using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
+using Application.Interface;
 
 namespace Infrastructure.Persistence.Sedding
 {
     public class ProtocolDataSeeder
     {
-        public static async Task SeedAsync(ApplicationDbContext context)
+        private readonly IConfiguration _configuration;
+        private readonly IMappingRepositary _mapRepo;
+
+        public ProtocolDataSeeder(IConfiguration configuration,IMappingRepositary mapRepo)
         {
-            // Prevent duplicate insert
-            if (await context.ProtocolConfig.AnyAsync())
-                return;
+            _configuration = configuration;
+            _mapRepo = mapRepo;
+        }
+        public  async Task SeedAsync(ApplicationDbContext context)
+        {
+            string relativePath = _configuration["ModbusConfig:FilePath"];
+            string fileContent = string.Empty;
 
-            // Fetch all mappings with Tag & Stack
-            var mappings = await context.Mappings
-                .Include(m => m.Tag)
-                .Include(m => m.Asset)
-                .Where(a=>a.Tag.IsDerived==false && a.Asset.Name=="Stack_1")
-                .ToListAsync();
-
-            foreach (var mapping in mappings)
+            try
             {
-                int registerAddress = GetRegisterAddress(mapping.Tag.TagName);
-
-                // Convert 0 -> 40001
-                int modbusAddress = 40001 + registerAddress;
-
-                var protocol = new ProtocolConfig(mapping.MappingId, modbusAddress,2, 3, 1);
-             
-                await context.ProtocolConfig.AddAsync(protocol);
+                fileContent = File.ReadAllText(relativePath);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading file: {ex.Message}");
+                return; // stop execution if file can't be read
+            }
+
+            var modbusConfig = JsonSerializer.Deserialize<modbusConfig>(fileContent);
+            string debugJson = JsonSerializer.Serialize(modbusConfig, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine(debugJson);
+
+
+            if (await context.ProtocolConfig.AnyAsync())
+               return;
+
+            if (modbusConfig == null)
+            {
+                throw new Exception("no config found");
+            }
+                
+
+            foreach(var config in modbusConfig.stacks)
+            {
+                foreach (var signal in config.signals)
+                {
+                    var mappingid = await _mapRepo.GetMappingIdFromAssetandTag(config.stack, signal.name);
+                    int register = signal.registers[0] + 40001;
+
+                    var newprotocol = new ProtocolConfig(mappingid, register, 2, 3, 1);
+
+                    await context.ProtocolConfig.AddAsync(newprotocol);
+                }
+            }
+
+
+            foreach (var config in modbusConfig.plant)
+            {
+                Console.WriteLine($"these is the config name {config.name}");
+                  var mappingid = await _mapRepo.GetMappingIdFromAssetandTag("Plant_1", config.name);
+
+                Console.WriteLine($"the is plant mapping id  {mappingid}");
+                
+                    int register = config.registers[0] + 40001;
+
+                    var newprotocol = new ProtocolConfig(mappingid, register, 2, 3, 1);
+
+                    await context.ProtocolConfig.AddAsync(newprotocol);
+               
+            }
+
+
+
 
             await context.SaveChangesAsync();
         }
 
-        private static int GetRegisterAddress(string tagName)
-        {
-            var registerMap = new Dictionary<string, int>
-            {
-     { "current", 0 },
-    { "voltage", 2 },
-    { "pressure", 4 },
-    { "outlet_pressure", 6 },
-    { "flowrate", 8 },
-    { "temperature", 10 },
-    { "h2flow", 12 },
-    { "water_conductivity", 14 },
-    { "water_flowrate", 16 },
-    //{ "plantdata_water_flow_tot", 18 },
-    { "concentration", 18 },
-    { "fan_rpm", 20 },
-    { "safey_board_temp", 22 },
-    { "recombiner_temp", 24 },
-    { "downstream_temp", 26 },
-    { "5v_board_voltage", 28 },
-    { "12v_board_voltage", 30 },
-    { "24v_board_voltage", 32 },
-    { "pump_signal", 34 },
-    { "battery_voltage", 36 },
-    { "warning_exists", 38 },
-    { "lifetime", 40 },
-    { "trip_signal", 42 },
-    { "power", 460 },
-    { "throughput", 462 },
-    { "water_flow_tot", 464 }
-            };
-
-            return registerMap.TryGetValue(tagName, out var address)
-                ? address
-                : 0;
-        }
+        
     }
 }

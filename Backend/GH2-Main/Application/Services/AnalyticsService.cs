@@ -54,22 +54,22 @@ namespace Application.Services
                 return 0;
 
             if (totalHours <= 6)
-                return 1; // 1 min
+                return 1; // 1 min  
 
             if (totalHours <= 12)
-                return 2;
+                return 2; // 2 min
 
             if (totalHours <= 24)
-                return 5;
+                return 5; // 5 min
 
             if (totalDays <= 7)
-                return 15;
+                return 15; // 15 min
 
             if (totalDays <= 15)
-                return 30;
+                return 30; // 30 min
 
             if (totalDays <= 30)
-                return 60;
+                return 60; // 1 hour
 
             return 120; // 2 hours
         }   
