@@ -58,7 +58,7 @@ namespace GH2_Main.Controllers
             catch (InvalidOperationException ex)
             {
                 // Business rule violation (e.g., no child assets found)
-                return NotFound(new { message = ex.Message });
+                return NotFound( new { message = ex.Message });
             }
             catch (ApplicationException ex)
             {

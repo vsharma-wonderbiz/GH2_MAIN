@@ -1,6 +1,65 @@
 
 
 
+show timezone
+
+ALTER DATABASE "GH2-Main" SET timezone TO 'UTC'
+
+SET timezone = 'UTC';
+
+explain analyse select * from "SensorRawDatas" limit 1;
+select * from "SensorRawDatas";
+explain analyse select * from "SensorRawDatas" where "MappingId"=24  Or "MappingId"=19;
+
+SELECT  *
+FROM "SensorRawDatas"
+WHERE "AssetName" = 'Plant_1'
+  AND "TagName" = 'power'
+  AND "TimeStamp" BETWEEN '2026-04-24T05:25:00Z'
+                      AND '2026-04-24T06:27:00Z'
+ORDER BY "TimeStamp" DESC;
+
+
+SELECT  
+    "AssetName",
+    "TagName",
+    AVG("Value") AS AvgValue,
+    MIN("Value") AS MinValue,
+    MAX("Value") AS MaxValue
+FROM "SensorRawDatas"
+WHERE "MappingId"=1
+  AND "TimeStamp" BETWEEN '2026-04-27T04:54:48.5116817Z'
+                      AND '2026-04-27T05:54:48.5116817Z'
+GROUP BY "AssetName", "TagName";
+
+
+SELECT *
+FROM "SensorRawDatas"
+WHERE "MappingId"=98
+  AND "TimeStamp" BETWEEN '2026-04-27T05:09:40.2654923Z'
+                      AND '2026-04-27T06:09:40.2654923Z'
+
+
+
+---- index on the analytics data api point ----
+CREATE INDEX idx_analytics_data
+ON "SensorRawDatas" ("AssetName","TagName");
+
+
+----- these the command to check what all are the index that is used to acess the data fast -----
+
+SELECT *
+FROM "SensorRawDatas"
+ORDER BY "TimeStamp" DESC
+LIMIT 10;
+
+
+SELECT *
+FROM "SensorRawDatas"
+WHERE "TimeStamp" BETWEEN '2026-04-21T09:35:00Z'
+                      AND '2026-04-21T10:34:00Z'
+ORDER BY "TimeStamp" DESC;
+
 
 
 UPDATE "Tags"
@@ -10,7 +69,7 @@ WHERE "TagId" = 20;
 select * from "ProtocolConfig"
 
 select * from "MappingTables"
-   where "MappingId"=135
+   where "MappingId"=98
 
 
 select * From "Users"
@@ -24,6 +83,11 @@ select * from "TagTypes"
 select * from "Alarms"
 order by "CreatedAt" Desc
 
+SELECT column_name, data_type, is_nullable, column_default
+FROM information_schema.columns
+WHERE table_name = 'SensorRawDatas';
+
+
 
 select * from "TagTypes"
 
@@ -33,7 +97,8 @@ select * from "Assets"
 select * from "ProtocolConfig"
      where "MappingId"=74
 
-select * from "NodeLastDatas"	
+select * from "NodeLastDatas"
+  where "TagName"='warning_exists'
 
 select * from "KpiTable"
 where "AssetName"='Stack_1' and "WeekNumber"=5
@@ -51,7 +116,7 @@ SELECT
     pc."FunctionCode",
     pc."RegisterCount",
     (pc."RegisterAddress" - 40001) AS adjusted_register,
-    ROUND(t."Deadband"::numeric, 4) AS rounded_deadband
+    ROUND(t."Deadband"::numeric, 4) AS roundeddeadband
 FROM "MappingTables" m
 JOIN "Assets" a 
     ON m."AssetId" = a."AssetId"
@@ -88,14 +153,14 @@ ORDER BY pc."Id" asc ;
 -- these is bsaically checking if the value is been presnet in the tbale or not
 SELECT *
 FROM "WeeklyAvgData"
-WHERE "MappingId" = 66
+WHERE "MappingId" = 1
   AND "WeekStartDate" <= '2026-03-04T09:57:47.2045756Z'
   AND "WeekEndDate" >= '2026-02-10T09:57:47.2045756Z';
 
 --kpi table to chec if the value is avaliable or not 
   SELECT *
 FROM "KpiTable"
-WHERE "KpiName" = 'stack_specific_energy'
+WHERE "KpiName" = 'throughtput'
   AND "StartTime" <= '2026-03-0T09:57:47.2045756Z'
   AND "EndTime" >= '2026-02-10T09:57:47.2045756Z';
 
@@ -288,6 +353,6 @@ delete from "Assets"
 
 delete from "Tags"
 
-delete from "AlarmInfo"
+delete from "Alarms"
 
 delete from "TagTypes"

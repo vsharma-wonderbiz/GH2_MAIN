@@ -32,6 +32,9 @@ namespace Infrastructure.Persistence.Configuration
             builder.Property(a => a.TimeStamp)
                 .HasColumnType("timestamptz")
                 .HasDefaultValueSql("NOW()");
+
+            builder.HasIndex(a => a.MappingId)
+                .HasDatabaseName("Idx_mapping_Id");
         }
     }
 

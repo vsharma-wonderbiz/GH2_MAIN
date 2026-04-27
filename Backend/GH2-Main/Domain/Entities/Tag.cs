@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -16,7 +17,8 @@ namespace Domain.Entities
         public float Deadband { get; private set; }
         public bool IsDerived { get; private set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
-        
+
+        [JsonIgnore]
         public TagType TagType { get; private set; }
         public ICollection<MappingTable> Mappings { get; private set; } = new List<MappingTable>();
         private Tag() { }

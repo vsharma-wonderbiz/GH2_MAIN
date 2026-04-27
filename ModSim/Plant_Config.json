@@ -1,6 +1,6 @@
 {
   "max_stacks_supported": 10,
-  "active_stacks": 200,
+  "active_stacks": 5,
   "registers_per_signal": 2,
   "signals_per_stack": 23,
   "stack_block_size": 46,

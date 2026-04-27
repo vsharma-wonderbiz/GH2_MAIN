@@ -10,9 +10,9 @@ import time
 import pika
 import json
 
-URL = "opc.tcp://10.10.10.23:4840"
+URL = "opc.tcp://10.10.10.13:4840"
 RABBITMQ_HOST='localhost'
-CHANGE_THRESHOLD = 0.01  # 1% change threshold
+CHANGE_THRESHOLD = 0.01  # change threshold
 
 
 logging.basicConfig(
@@ -96,13 +96,12 @@ class SubscriptionHandler:
         return None
 
 
-
-
 class AlarmManager:
     def __init__(self, repo, rabbit_mq):
         self.repo = repo
         self.signal_limits = {}
-        self.active_alarms = {}  # { signal_name: "min" | "max" | None }
+        # State: None = no alarm, "min" = min breached, "max" = max breached
+        self.active_alarms = {}
         self.mq = rabbit_mq
 
     def get_all_signal_limits(self):
@@ -112,72 +111,68 @@ class AlarmManager:
             for signal, min_val, max_val in limits
         }
         logging.info(f"Signal limits loaded: {self.signal_limits}")
-        
 
-    def check_alarm(self, signal_name,mapping_id,current_value):
+    def check_alarm(self, signal_name, mapping_id, current_value):
+        if not signal_name:
+            logging.debug(f"Skipping alarm check: signal_name is None for mapping_id {mapping_id}")
+            return
+
         limits = self.signal_limits.get(signal_name)
-
         if not limits:
-            return  # No limits configured for this signal
+            return
 
         try:
             val = float(current_value)
             min_val = float(limits["min"])
             max_val = float(limits["max"])
-
-            if val < min_val:
-                self._trigger_alarm(signal_name, "min", val, min_val,mapping_id)
-
-            elif val > max_val:
-                self._trigger_alarm(signal_name, "max", val, max_val,mapping_id)
-
-            else:
-                self._clear_alarm(signal_name, val,mapping_id)
-
         except (ValueError, TypeError) as e:
             logging.warning(f"Alarm check failed for {signal_name}: {e}")
+            return
 
-    def _trigger_alarm(self, signal_name, alarm_type, current_value, limit_value,mapping_id):
-        """Publish alarm only if not already active (no spam)."""
-        if self.active_alarms.get(signal_name) == alarm_type:
-            return  # Already triggered, skip
+        current_state = self.active_alarms.get(signal_name)  # None, "min", or "max"
 
-        self.active_alarms[signal_name] = alarm_type
+        if val < min_val:
+            if current_state != "min":  # Only fire on STATE CHANGE
+                self.active_alarms[signal_name] = "min"
+                self._publish_alarm("ALARM_TRIGGERED", signal_name, mapping_id, "min", val, min_val)
+                logging.warning(f"ALARM [MIN] {signal_name}: value={val}, limit={min_val}")
 
+        elif val > max_val:
+            if current_state != "max":  # Only fire on STATE CHANGE
+                self.active_alarms[signal_name] = "max"
+                self._publish_alarm("ALARM_TRIGGERED", signal_name, mapping_id, "max", val, max_val)
+                logging.warning(f"ALARM [MAX] {signal_name}: value={val}, limit={max_val}")
+
+        else:
+            if current_state is not None:  # Only clear if there WAS an active alarm
+                prev_state = current_state
+                self.active_alarms[signal_name] = None
+                self._publish_clear(signal_name, mapping_id, prev_state, val)
+                logging.info(f"ALARM CLEARED {signal_name}: value={val}")
+
+    def _publish_alarm(self, event, signal_name, mapping_id, alarm_type, current_value, limit_value):
         message = json.dumps({
-            "event": "ALARM_TRIGGERED",
-            "mapping_id":mapping_id,
+            "event": event,
+            "mapping_id": mapping_id,
             "signal": signal_name,
-            "alarm_type": alarm_type,        # "min" or "max"
+            "alarm_type": alarm_type,
             "current_value": current_value,
             "limit_breached": limit_value,
             "timestamp": datetime.now(timezone.utc).isoformat()
         })
-        print(message)
-
         self.mq.publish("alarm_queue", message)
-        logging.warning(f"ALARM [{alarm_type.upper()}] {signal_name}: value={current_value}, limit={limit_value}")
 
-    def _clear_alarm(self, signal_name, current_value,mapping_id):
-        """Publish recovery message only if alarm was previously active."""
-        if self.active_alarms.get(signal_name) is None:
-            return  # Was never in alarm, nothing to clear
-
-        previous_alarm = self.active_alarms[signal_name]
-        self.active_alarms[signal_name] = None
-
+    def _publish_clear(self, signal_name, mapping_id, previous_alarm_type, current_value):
         message = json.dumps({
             "event": "ALARM_CLEARED",
-            "mapping_id":mapping_id,
+            "mapping_id": mapping_id,
             "signal": signal_name,
-            "previous_alarm_type": previous_alarm,   # what alarm was active before
+            "previous_alarm_type": previous_alarm_type,
             "current_value": current_value,
             "timestamp": datetime.now(timezone.utc).isoformat()
         })
-
         self.mq.publish("alarm_queue", message)
-        logging.info(f"ALARM CLEARED {signal_name}: value={current_value} back in range")
-
+        
 
 class RabbitMQPublisher:
     def __init__(self, host=RABBITMQ_HOST):
@@ -248,7 +243,7 @@ class SnapshotThread(threading.Thread):
 
         while self.running:
             try:
-                timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 self.repo.create_machine_snapshots(timestamp)
                 logging.info(f"Snapshot created at {timestamp}")
 

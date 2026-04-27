@@ -17,7 +17,7 @@ namespace Infrastructure.Services
 
         public async Task BackfillAssetAsync(string assetName)
         {
-            var endDate = DateTime.Now;
+            var endDate = DateTime.UtcNow;
             var startDate = endDate.AddMonths(-1);
 
             var asset = await _context.Assets
@@ -85,7 +85,7 @@ namespace Infrastructure.Services
                     await writer.WriteAsync(assetName, NpgsqlTypes.NpgsqlDbType.Text);
                     await writer.WriteAsync(tagName, NpgsqlTypes.NpgsqlDbType.Text);
                     await writer.WriteAsync(currentValue, NpgsqlTypes.NpgsqlDbType.Real);
-                    await writer.WriteAsync(currentTime, NpgsqlTypes.NpgsqlDbType.Timestamp);
+                    await writer.WriteAsync(currentTime, NpgsqlTypes.NpgsqlDbType.TimestampTz);
 
                     totalCount++;
                     batchCount++;

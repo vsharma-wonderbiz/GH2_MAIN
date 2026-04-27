@@ -1,6 +1,7 @@
 ﻿using Application.DTOS;
 using Application.Interface;
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -93,6 +94,8 @@ namespace API.Controllers
         //    return Ok(result);
         //}
 
+
+        [Authorize(Roles="Admin")]
         [HttpPost("PlantKpis")]
         public async Task<IActionResult> GetLatestPlantKpiOnWeeks(PlantKpiRequestDto requestDto)
         {
@@ -100,13 +103,14 @@ namespace API.Controllers
             return Ok(result);
         }
 
-
+        [Authorize(Roles ="Admin")]
         [HttpPost("StackKpis")]
         public async Task<IActionResult> GetLatestStackCustomizableKpis(StackKpiRequest requestDto)
         {
             var result = await _kpiQueryService.GetStackKpi(requestDto);
             return Ok(result);
         }
+
 
         [HttpGet("Alerts")]
         public async Task<IActionResult> GetAllLatestAlerts()

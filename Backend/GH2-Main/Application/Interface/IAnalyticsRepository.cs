@@ -35,6 +35,13 @@ namespace Application.Interface
     DateTime startTime,
     DateTime endTime);
 
+
+         Task<List<MappingAvgValueDto>> GetRawAvgValuesFromMapping(
+         List<int> mappingIds,
+         DateTime startTime,
+          DateTime endTime
+            );
+
         Task<bool> DataExist();
         Task SaveChangesAsync();
 

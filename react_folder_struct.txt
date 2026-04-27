@@ -10,7 +10,7 @@ src/
 │   ├── Signals/
 │   ├── Settings/
 │
-├── features/           # Feature-wise logic (VERY IMPORTANT 🔥)
+├── features/           #Feature-wise logic (VERY IMPORTANT)
 │   ├── alerts/
 │   │   ├── components/
 │   │   ├── services/

@@ -10,7 +10,7 @@ from pymodbus.datastore import ModbusSequentialDataBlock
 from pymodbus.datastore import ModbusSlaveContext
 from pymodbus.datastore import ModbusServerContext
 
-IP = "10.10.10.23"
+IP = "10.10.10.13"
 
 app = Flask(__name__)
 _signals = []
@@ -34,7 +34,7 @@ class Signal:
     def trigger_spike(self, percent=0.8, absolute=None):
      with self._lock:
         if absolute is not None:
-            self.trigger_target = absolute      # ✅ Use exact value you specify
+            self.trigger_target = absolute      #  Use exact value you specify
         else:
             self.trigger_target = self.max * 1.2  # 20% beyond max by default
         self.trigger_active = True
@@ -99,7 +99,7 @@ def trigger():
                 "status": "ok",
                 "message": f"Triggered {group}/{signal_name}",
                 "normal_range": f"{sig.min} – {sig.max}",
-                "spike_target": round(sig.trigger_target, 3)   # ✅ Shows where it will go
+                "spike_target": round(sig.trigger_target, 3)   #  Shows where it will go
             }), 200
 
     return jsonify({"status": "error", "message": f"Signal '{group}/{signal_name}' not found"}), 404

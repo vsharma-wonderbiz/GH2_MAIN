@@ -84,7 +84,7 @@ builder.Services.AddCustomServices();
 
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-
+builder.Services.AddCustomAuthentication(builder.Configuration);
 
 
 

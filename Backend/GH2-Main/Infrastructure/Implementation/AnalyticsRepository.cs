@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,8 +31,8 @@ namespace Infrastructure.Implementation
         int bucketMinutes
          )
         {
-            var istStart = startTime.ToLocalTime();
-            var istEnd = endTime.ToLocalTime();
+            var istStart = startTime;
+            var istEnd = endTime;
             Console.WriteLine("these is repositary level");
             Console.WriteLine($"StartTime (raw) : {istStart}");
             Console.WriteLine($"EndTime (raw) : {istEnd}");
@@ -174,7 +175,9 @@ namespace Infrastructure.Implementation
         DateTime endTime)
         {
             var start = startTime.Date;
+            //Console.WriteLine($"these is the actual where the raw data is getting fecthed {startTime.ToString()}");
             var end = endTime.Date;
+            //Console.WriteLine($"these is the actual where the raw data is getting fecthed {endTime.ToString()}");
 
             return await _context.WeeklyAvgData
                 .Where(x => mappingIds.Contains(x.MappingId) &&
@@ -189,6 +192,30 @@ namespace Infrastructure.Implementation
                     MaxValue = g.Max(x => x.MaxValue)
                 })
                 .ToListAsync();
+        }
+
+        public async Task<List<MappingAvgValueDto>> GetRawAvgValuesFromMapping(
+         List<int> mappingIds,
+         DateTime startTime,
+          DateTime endTime
+            )
+        {
+            var result = await _context.SensorRawDatas.
+                Where(s => mappingIds.Contains(s.MappingId) &&
+                     s.TimeStamp <= endTime &&
+                     s.TimeStamp >= startTime)
+                .GroupBy(s => s.MappingId)
+                .Select(s => new MappingAvgValueDto
+                {
+                    MappingId = s.Key,
+                    AvgValue = s.Average(x => x.Value),
+                    MinValue = s.Min(x => x.Value),
+                    MaxValue = s.Max(x => x.Value)
+                }).ToListAsync();
+
+
+            return result;
+
         }
 
         public async Task<bool> DataExist()
