@@ -324,7 +324,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MappingId");
+                    b.HasIndex("MappingId")
+                        .HasDatabaseName("Idx_mapping_Id");
 
                     b.ToTable("SensorRawDatas");
                 });

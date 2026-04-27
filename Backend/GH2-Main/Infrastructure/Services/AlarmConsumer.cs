@@ -87,7 +87,7 @@ namespace Infrastructure.Services
 
                 if (alarm == null)
                 {
-                    Console.WriteLine("Deserialization failed ");
+                    Console.WriteLine("Deserialization failed");
                     return;
                 }
 

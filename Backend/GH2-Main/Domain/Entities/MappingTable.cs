@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -9,7 +10,11 @@ namespace Domain.Entities
 
         public int AssetId { get; private set; }
         public int TagId { get; private set; }
+
+        [JsonIgnore]
         public Assets Asset { get; private set; }
+
+        [JsonIgnore]
         public Tag Tag { get; private set; }
         public string? OpcNodeId { get; private set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;

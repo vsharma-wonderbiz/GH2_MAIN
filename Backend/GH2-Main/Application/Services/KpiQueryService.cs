@@ -26,7 +26,11 @@ namespace Application.Services
 
         public async Task<KpiQueryResultDto> GetKpiAsync(KpiQueryRequestDto request)
         {
+
+
             var (startTime, endTime) = ResolveTimeRange(request);
+            Console.WriteLine($"these is the request service {startTime.ToString()}");
+            Console.WriteLine($"these is the request service {endTime.ToString()}");
 
             // For last-week and custome requests, try cache first
             if (request.TimeRange == KpiTimeRange.LastWeek  || request.TimeRange==KpiTimeRange.Custom)
@@ -51,7 +55,7 @@ namespace Application.Services
             var liveResult = await _kpiCalulationService.CalculateKpi(new KpiRequestDto
             {
                 tagId = request.TagId,
-                startTime = startTime,
+                startTime = startTime,  
                 endTime = endTime
             });
 
@@ -139,16 +143,18 @@ namespace Application.Services
                 .GetLatestWeeksAsync(Dto.KpiName, Dto.NoOfWeeks);
 
             var startime = DateTime.UtcNow.AddHours(-1);
+            //Console.WriteLine($"these is the startime {startime}");
             var endime = DateTime.UtcNow;
+            //Console.WriteLine($"these is the startime {endime}");
 
-            var hourlydata = await _kpiCalulationService.CalculateKpi(new KpiRequestDto
+            var hourlydata = await GetKpiAsync(new KpiQueryRequestDto { TagId = Dto.KpiId, TimeRange = KpiTimeRange.LastHour });
+
+            Console.WriteLine(JsonSerializer.Serialize(hourlydata, new JsonSerializerOptions
             {
-                tagId = Dto.KpiId,
-                startTime = startime,
-                endTime = endime
-            });
+                WriteIndented = true // pretty-print with indentation
+            }));
 
-            Console.WriteLine($"These is the hourlydata {hourlydata}");
+
 
             var weeklyResult = weeklydata
                 .OrderBy(w => w.WeekNumber)
@@ -166,6 +172,11 @@ namespace Application.Services
                 endTime = endime,
                 value = a.KpiValue,
             });
+
+            Console.WriteLine(
+     string.Join(Environment.NewLine, hourlyResult.Select(r => $"Start: {r.startTime}, End: {r.endTime}, Value: {r.value}"))
+ );
+
 
             var response = new
             {
