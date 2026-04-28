@@ -10,7 +10,7 @@ import time
 import pika
 import json
 
-URL = "opc.tcp://10.10.10.13:4840"
+URL = "opc.tcp://10.10.10.78:4840"
 RABBITMQ_HOST='localhost'
 CHANGE_THRESHOLD = 0.01  # change threshold
 
@@ -107,7 +107,7 @@ class AlarmManager:
     def get_all_signal_limits(self):
         limits = self.repo.get_signal_limits()
         self.signal_limits = {
-            signal: {"min": min_val, "max": max_val}
+            signal.strip().lower(): {"min": min_val, "max": max_val}
             for signal, min_val, max_val in limits
         }
         logging.info(f"Signal limits loaded: {self.signal_limits}")
@@ -117,8 +117,10 @@ class AlarmManager:
             logging.debug(f"Skipping alarm check: signal_name is None for mapping_id {mapping_id}")
             return
 
-        limits = self.signal_limits.get(signal_name)
+        signal_key = signal_name.strip().lower()
+        limits = self.signal_limits.get(signal_key)
         if not limits:
+            logging.debug(f"No limits configured for signal {signal_name}")
             return
 
         try:
@@ -129,24 +131,24 @@ class AlarmManager:
             logging.warning(f"Alarm check failed for {signal_name}: {e}")
             return
 
-        current_state = self.active_alarms.get(signal_name)  # None, "min", or "max"
+        current_state = self.active_alarms.get(mapping_id)  # None, "min", or "max"
 
         if val < min_val:
-            if current_state != "min":  # Only fire on STATE CHANGE
-                self.active_alarms[signal_name] = "min"
+            if current_state != "min":  # Only fire on first state change
+                self.active_alarms[mapping_id] = "min"
                 self._publish_alarm("ALARM_TRIGGERED", signal_name, mapping_id, "min", val, min_val)
                 logging.warning(f"ALARM [MIN] {signal_name}: value={val}, limit={min_val}")
 
         elif val > max_val:
-            if current_state != "max":  # Only fire on STATE CHANGE
-                self.active_alarms[signal_name] = "max"
+            if current_state != "max":  # Only fire on first state change
+                self.active_alarms[mapping_id] = "max"
                 self._publish_alarm("ALARM_TRIGGERED", signal_name, mapping_id, "max", val, max_val)
                 logging.warning(f"ALARM [MAX] {signal_name}: value={val}, limit={max_val}")
 
         else:
             if current_state is not None:  # Only clear if there WAS an active alarm
                 prev_state = current_state
-                self.active_alarms[signal_name] = None
+                self.active_alarms.pop(mapping_id, None)
                 self._publish_clear(signal_name, mapping_id, prev_state, val)
                 logging.info(f"ALARM CLEARED {signal_name}: value={val}")
 
