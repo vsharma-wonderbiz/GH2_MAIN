@@ -154,15 +154,14 @@ ORDER BY pc."Id" asc ;
 SELECT *
 FROM "WeeklyAvgData"
 WHERE "MappingId" = 1
-  AND "WeekStartDate" <= '2026-03-04T09:57:47.2045756Z'
-  AND "WeekEndDate" >= '2026-02-10T09:57:47.2045756Z';
+  AND "WeekStartDate" <= '2026-04-27 00:00:00+00'
+  AND "WeekEndDate" >= '2026-04-20 00:00:00+00';
 
 --kpi table to chec if the value is avaliable or not 
   SELECT *
 FROM "KpiTable"
-WHERE "KpiName" = 'throughtput'
-  AND "StartTime" <= '2026-03-0T09:57:47.2045756Z'
-  AND "EndTime" >= '2026-02-10T09:57:47.2045756Z';
+WHERE "StartTime" <= '2026-04-26 00:00:00+00'
+  AND "EndTime" >= '2026-04-20 00:00:00+00';
 
 select * from "WeeklyAvgData"
   where "MappingId"=66

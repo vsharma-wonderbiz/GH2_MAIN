@@ -115,11 +115,11 @@ Let’s design your system like a **real industrial dashboard (clean + interview
 * Current status
 * Recent alerts
 
-👉 This connects everything together
+This connects everything together
 
 ---
 
-## 7. 🔐 User Management Page (Optional but valuable)
+## 7.User Management Page (Optional but valuable)
 
 ### Features:
 
