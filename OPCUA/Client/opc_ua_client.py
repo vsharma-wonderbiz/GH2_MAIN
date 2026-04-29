@@ -43,6 +43,7 @@ class SubscriptionHandler:
             with self.lock:
                 opc_node_id = node.nodeid.to_string()
                 signal_name=self._extract_signal_name(opc_node_id)
+                asset_name=self._extract_asset_name(opc_node_id)
                 # print(signal_name)
                 mapping_id = self.mapping_id_map.get(opc_node_id)
                 
@@ -66,7 +67,7 @@ class SubscriptionHandler:
                     self.last_known_values[mapping_id] = val
                     logging.info(f"Updated MappingId {mapping_id} (OPC: {opc_node_id}): {val}")
                     
-                    self.alarm_manager.check_alarm(signal_name,mapping_id,val)
+                    self.alarm_manager.check_alarm(asset_name,signal_name,mapping_id,val)
 
         except Exception as e:
             logging.error(f"Subscription handler error: {e}")
@@ -94,6 +95,17 @@ class SubscriptionHandler:
 
       except Exception:
         return None
+    
+    def _extract_asset_name(self,opc_id:str):
+        try:
+            clean=opc_id.split('=')[-1]
+            
+            return clean.split('.')[0]
+        
+        except Exception:
+            return None
+            
+            
 
 
 class AlarmManager:
@@ -112,7 +124,7 @@ class AlarmManager:
         }
         logging.info(f"Signal limits loaded: {self.signal_limits}")
 
-    def check_alarm(self, signal_name, mapping_id, current_value):
+    def check_alarm(self,asset_name, signal_name, mapping_id, current_value):
         if not signal_name:
             logging.debug(f"Skipping alarm check: signal_name is None for mapping_id {mapping_id}")
             return
@@ -136,13 +148,13 @@ class AlarmManager:
         if val < min_val:
             if current_state != "min":  # Only fire on first state change
                 self.active_alarms[mapping_id] = "min"
-                self._publish_alarm("ALARM_TRIGGERED", signal_name, mapping_id, "min", val, min_val)
+                self._publish_alarm("ALARM_TRIGGERED",asset_name, signal_name, mapping_id, "min", val, min_val)
                 logging.warning(f"ALARM [MIN] {signal_name}: value={val}, limit={min_val}")
 
         elif val > max_val:
             if current_state != "max":  # Only fire on first state change
                 self.active_alarms[mapping_id] = "max"
-                self._publish_alarm("ALARM_TRIGGERED", signal_name, mapping_id, "max", val, max_val)
+                self._publish_alarm("ALARM_TRIGGERED",asset_name,signal_name, mapping_id, "max", val, max_val)
                 logging.warning(f"ALARM [MAX] {signal_name}: value={val}, limit={max_val}")
 
         else:
@@ -152,10 +164,11 @@ class AlarmManager:
                 self._publish_clear(signal_name, mapping_id, prev_state, val)
                 logging.info(f"ALARM CLEARED {signal_name}: value={val}")
 
-    def _publish_alarm(self, event, signal_name, mapping_id, alarm_type, current_value, limit_value):
+    def _publish_alarm(self, event,asset_name, signal_name, mapping_id, alarm_type, current_value, limit_value):
         message = json.dumps({
             "event": event,
             "mapping_id": mapping_id,
+            "asset":asset_name,
             "signal": signal_name,
             "alarm_type": alarm_type,
             "current_value": current_value,
