@@ -98,6 +98,7 @@ namespace Infrastructure.Services
                 {
                     var entry = new AlarmInfo(
                         alarm.MappingId,
+                        alarm.AssetName,
                         alarm.Signal,
                         (float)alarm.CurrentValue,
                         alarm.AlarmType

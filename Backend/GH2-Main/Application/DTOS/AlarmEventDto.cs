@@ -9,6 +9,9 @@ public class AlarmEventDto
     [JsonPropertyName("mapping_id")]
     public int MappingId { get; set; }
 
+    [JsonPropertyName("asset")]
+    public string AssetName { get; set; }
+
     [JsonPropertyName("signal")]
     public string Signal { get; set; }
 

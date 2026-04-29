@@ -7,6 +7,9 @@ namespace Domain.Entities
     {
         public int Id { get; private set; }
         public int MappingId { get; private set; }
+
+        public string AssetName { get; private set; }
+
         public string SignalName { get; private set; }
         public float Value { get; private set; }
         public string AlarmType { get; private set; }
@@ -16,9 +19,10 @@ namespace Domain.Entities
 
         public MappingTable Mapping { get; private set; }
 
-        public AlarmInfo(int mappingId, string signalName, float value, string alarmType)
+        public AlarmInfo(int mappingId,string assetName, string signalName, float value, string alarmType)
         {
             MappingId = mappingId;
+            AssetName = assetName ?? throw new ArgumentNullException(nameof(assetName));
             SignalName = signalName ?? throw new ArgumentNullException(nameof(signalName));
             Value = value;
             AlarmType = alarmType ?? throw new ArgumentNullException(nameof(alarmType));
