@@ -11,7 +11,7 @@ namespace Domain.Entities
         public int FunctionCode { get; private set; }
         public int SlaveId { get; private set; }
 
-        public MappingTable Mapping { get; private set; }
+        public MappingTable? Mapping { get; private set; }
 
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 

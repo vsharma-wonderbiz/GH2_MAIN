@@ -49,19 +49,23 @@ namespace Application.Services
 
         public async Task<KpiMappingResultDto> CalculateKpi(KpiRequestDto dto)
         {
-            // Get KPI tag info
-            // Console.WriteLine($"passing to the calculation service{dto.startTime.ToString()}");
-            // Console.WriteLine($"passing to the calculation service{dto.endTime.ToString()}");
+           
+            var kpiTag = await _tagRepositary.GetTagNameById(dto.tagId)
+                  ?? throw new ArgumentNullException(nameof(dto), "KPI not found");
 
-            var kpiTag = await _tagRepositary.GetTagNameById(dto.tagId);
-            var level = kpiTag.TagType.TagName; 
-            var kpiName = kpiTag.TagName;
+            var level = kpiTag.TagType?.TagName
+                ?? throw new ArgumentNullException(nameof(dto),"TagType or TagName missing");
+
+            var kpiName = kpiTag.TagName
+                ?? throw new ArgumentNullException(nameof(dto),"TagName missing");
+
+
 
             Console.WriteLine(JsonSerializer.Serialize(kpiTag, new JsonSerializerOptions
             {
                 WriteIndented = true // pretty-print with indentation
             }));
-            Console.WriteLine($"{level.ToString()}");
+            Console.WriteLine($"{level?.ToString()}");
             Console.WriteLine($"{kpiName.ToString()}");
 
 
@@ -69,9 +73,9 @@ namespace Application.Services
                 .GetSection($"kpiDependencies:{level}:{kpiName}")
                 .Get<List<string>>();
 
-            Console.WriteLine($"these is dependent tag names {string.Join(",", dependentTagNames)}");
+            Console.WriteLine($"these is dependent tag names {string.Join(",", dependentTagNames ?? Enumerable.Empty<string>())}");
 
-            if (dependentTagNames == null || !dependentTagNames.Any())
+            if (dependentTagNames == null || dependentTagNames.Count==0)
                 return new KpiMappingResultDto { KpiName = kpiName, Assets = new List<AssetMappingDto>() };
 
             //fetch all the tags object from the tag tbale based on the dependent tags to calculte 
@@ -175,17 +179,6 @@ namespace Application.Services
                     }
 
 
-                    //    //using the mapping to fetch the avg vlaue use to calculate the kpi 
-                    //    var plantAvgValues = await _analyticsRepository
-                    //            .GetAvgValuesForMappings(
-                    //                plantMappings.Select(m => m.MappingId).ToList(), startTime, endTime);
-
-                    //Console.WriteLine(JsonSerializer.Serialize(plantAvgValues, new JsonSerializerOptions
-                    //{
-                    //    WriteIndented = true // pretty-print with indentation
-                    //}));
-
-
                     // Fill tagValues dictionary for formula
                     foreach (var mapping in plantMappings)
                         {
@@ -253,10 +246,7 @@ namespace Application.Services
                         }));
                     }
 
-                    //remove teh stack avg values
-                    //var stackAvgValues = await _analyticsRepository
-                    //        .GetAvgValuesForMappings(
-                    //            stackMappings.Select(m => m.MappingId).ToList(), startTime, endTime);
+                 
 
                         // SUM each aggregated tag across all stacks for formula
                         foreach (var tag in dependentTags.Where(t => _stackAggregatedTags.Contains(t.TagName)))

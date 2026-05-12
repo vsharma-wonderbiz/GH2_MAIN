@@ -42,14 +42,13 @@ namespace Application.Services
             );
         }
 
-        private int CalculateBucketMinutes(DateTime startTime, DateTime endTime)
+        private static int CalculateBucketMinutes(DateTime startTime, DateTime endTime)
         {
             var totalMinutes = (endTime - startTime).TotalMinutes;
             var totalHours = totalMinutes / 60;
             var totalDays = totalHours / 24;
 
-            //if (totalHours <= 1)
-            //    return null; // raw (5 sec)
+           
             if (totalHours <= 2)
                 return 0;
 

@@ -1,6 +1,7 @@
 
 
 
+
 show timezone
 
 ALTER DATABASE "GH2-Main" SET timezone TO 'UTC'
@@ -101,7 +102,7 @@ select * from "NodeLastDatas"
   where "TagName"='warning_exists'
 
 select * from "KpiTable"
-where "AssetName"='Stack_1' and "WeekNumber"=5
+where "AssetName"='Stack_1' and "KpiName"='stack_specific_energy'
 
 
 

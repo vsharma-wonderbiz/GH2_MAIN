@@ -16,7 +16,7 @@ namespace Application.Interface
         Task<bool> IsAlreadyCalculated(string kpiName, string assetName, DateTime startTime, DateTime endTime);
         Task<List<KpiTable>> GetByKpiNameAndDateRange(string kpiName, DateTime startTime, DateTime endTime);
 
-        //Task<(int Week, List<KpiDto> Data)> GetLatestKpisByStackAsync(string stackName);
+
 
         Task<List<KpiTable>> GetLatestWeeksAsync(string kpiName, int noOfWeeks);
         Task<List<KpiTable>> GetCustomizeStackKpi(string Kpiname, int NoOfStacks, int NoOfWeeks);

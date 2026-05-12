@@ -53,12 +53,8 @@ namespace Infrastructure.BackgroundServices
             var tagRepository = scope.ServiceProvider.GetRequiredService<ITagRepositary>();
             var kpiResultRepository = scope.ServiceProvider.GetRequiredService<IKpiResultRepository>();
 
-            //var today = DateTime.UtcNow.Date;
-            //var startTime = today.AddDays(-7);
             var (startTime, endTime) = GetLastCompletedWeekRange();
-            //var endTime = today;
-            //var startTime = today.AddDays(-7);
-
+         
             _logger.LogInformation($"Calculating KPIs for range: {startTime} → {endTime}");
 
             var allKpiTags = await tagRepository.GetAllKpiTags();

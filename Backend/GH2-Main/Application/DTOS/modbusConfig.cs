@@ -8,23 +8,23 @@ namespace Application.DTOS
 {
     public  class modbusConfig
     {
-        public List<StackConfig> stacks {  get; set; }
-        public List<SignalConfig> plant { get; set; }
+        public required List<StackConfig> stacks {  get; set; }
+        public required List<SignalConfig> plant { get; set; }
     }
 
     public class StackConfig
     {
-        public string stack { get; set; }
-        public List<SignalConfig> signals { get; set; }
+        public required string stack { get; set; }
+        public required List<SignalConfig> signals { get; set; }
     }
 
     public class SignalConfig
     {
-        public string name { get; set; }
-        public List<int> registers { get; set; }
+        public required string name { get; set; }
+        public required List<int> registers { get; set; }
         public float min {  get; set; }
         public float max { get; set; }
-        public string unit { get; set; }
+        public required string unit { get; set; }
     }
 
 }

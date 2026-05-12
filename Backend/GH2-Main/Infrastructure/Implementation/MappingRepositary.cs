@@ -48,7 +48,7 @@ namespace Infrastructure.Implementation
         public async Task<List<MappingTable>> GetAllMappingWithConfigs()
         {
             return await _context.Mappings
-                 .Where(m=>m.Tag.IsDerived==false)
+                 .Where(m => m.Tag != null && m.Tag.IsDerived == false)
                 .Include(m => m.Asset)
                 .Include(m => m.Tag)
                 .ToListAsync();
@@ -61,15 +61,17 @@ namespace Infrastructure.Implementation
 
         public async Task<List<MappingTable>> GetAllMappingsOnStack(int StackId)
         {
+            
+
             return await _context.Mappings
-                .Where(m=>m.AssetId== StackId &&  m.Tag.IsDerived == false)
+                .Where(m=>m.AssetId== StackId && m.Tag != null && m.Tag.IsDerived == false)
                .Include(m => m.Asset)
                .Include(m => m.Tag)
                .ToListAsync();
         }
 
 
-        public async Task<ProtocolConfig> GetModbusConfigFromMapppingId(int mappingId)
+        public async Task<ProtocolConfig?> GetModbusConfigFromMapppingId(int mappingId)
         {
             return await _context.ProtocolConfig.FirstOrDefaultAsync(a => a.MappingId == mappingId);
         }
@@ -79,7 +81,7 @@ namespace Infrastructure.Implementation
             return await _context.Mappings
                 .Include(m => m.Asset)
                 .Include(m => m.Tag)
-                .Where(a => a.Asset.Name == assetname && a.Tag.TagName == Tagname)
+                .Where(a => a.Asset!=null && a.Asset.Name == assetname && a.Tag != null && a.Tag.TagName == Tagname)
                 .Select(a => a.MappingId)
                 .FirstOrDefaultAsync();
         }

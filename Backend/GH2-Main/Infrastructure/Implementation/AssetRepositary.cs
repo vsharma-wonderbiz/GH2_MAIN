@@ -39,11 +39,5 @@ namespace Infrastructure.Implementation
                 .ToListAsync();
         }
 
-        //public async Task<List<Assets>> GetChildrenAsync(int parentId)
-        //{
-        //    return await _dbset
-        //        .Where(x => x.ParentAssetId == parentId)
-        //        .ToListAsync();
-        //}
     }
 }

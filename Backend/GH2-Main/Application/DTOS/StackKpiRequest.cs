@@ -10,8 +10,8 @@ namespace Application.DTOS
     {
         public int KpiId { get; set; }
 
-        public string KpiName { get; set; }
-
+        public required string KpiName { get; set; }
+         
         public int NoOfStack { get; set; }
 
         public int NoOfWeeks  { get; set;}

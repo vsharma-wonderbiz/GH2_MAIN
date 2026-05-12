@@ -19,7 +19,7 @@ namespace Domain.Entities
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
         [JsonIgnore]
-        public TagType TagType { get; private set; }
+        public TagType? TagType { get; private set; }
         public ICollection<MappingTable> Mappings { get; private set; } = new List<MappingTable>();
         private Tag() { }
         public Tag(int tagTypeId, string tagName, string unit, float lowerLimit, float upperLimit, string dataType = null, float deadband = 0, bool isDerived=false)

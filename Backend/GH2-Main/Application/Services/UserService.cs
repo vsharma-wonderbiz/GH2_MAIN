@@ -33,55 +33,91 @@ namespace Application.Services
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
-                throw new Exception($"User with ID {id} not found.");
+                throw new ArgumentNullException($"User with ID {id} not found.", nameof(user));
             return _mapper.Map<UserDto>(user);
         }
 
         public async Task<UserDto> CreateAsync(CreateUserDto createUserDto)
         {
-            if (string.IsNullOrEmpty(createUserDto.Username) || string.IsNullOrEmpty(createUserDto.Email) || string.IsNullOrEmpty(createUserDto.Password))
-                throw new Exception("Username, email, and password are required.");
+            ArgumentNullException.ThrowIfNull(createUserDto);
 
-            if (await _userRepository.UsernameExistsAsync(createUserDto.Username))
-                throw new Exception($"Username '{createUserDto.Username}' is already taken.");
+            ValidateCreateUserDto(createUserDto);
 
-            if (await _userRepository.EmailExistsAsync(createUserDto.Email))
-                throw new Exception($"Email '{createUserDto.Email}' is already registered.");
+            var username = createUserDto.Username!;
+            var email = createUserDto.Email!;
+
+            if (await _userRepository.UsernameExistsAsync(username))
+                throw new InvalidOperationException(
+                    $"Username '{username}' is already taken.");
+
+            if (await _userRepository.EmailExistsAsync(email))
+                throw new InvalidOperationException(
+                    $"Email '{email}' is already registered.");
 
             var user = _mapper.Map<User>(createUserDto);
+
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password);
             user.Role = createUserDto.Role ?? "User";
 
             await _userRepository.AddAsync(user);
+
             return _mapper.Map<UserDto>(user);
+        }
+
+        
+        private static void ValidateCreateUserDto(CreateUserDto dto)
+        {
+            ArgumentNullException.ThrowIfNull(dto);
+
+            if (string.IsNullOrWhiteSpace(dto.Username))
+                throw new ArgumentException("Username is required", nameof(dto));
+
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                throw new ArgumentException("Email is required", nameof(dto));
+
+            if (string.IsNullOrWhiteSpace(dto.Password))
+                throw new ArgumentException("Password is required", nameof(dto));
         }
 
 
         public async Task<(string AccessToken, string RefreshToken)> LoginAsync(LoginDto loginDto)
         {
-            if (string.IsNullOrWhiteSpace(loginDto.Email) || string.IsNullOrWhiteSpace(loginDto.Password))
-                throw new Exception("Email and password are required.");
-
+            ValidateLoginDto(loginDto); 
             var user = await _userRepository.GetByEmailAsync(loginDto.Email);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
-                throw new Exception("Invalid email or password.");
 
-            // Generate tokens (you already have this method implemented)
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
+                throw new UnauthorizedAccessException("Invalid email or password.");
+
+           
             var (accessToken, refreshToken) = GenerateTokens(user);
 
-            // Hash and store refresh token in the existing RefreshToken column
+         
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7); // use config instead of hardcoded value
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7); 
+
             await _userRepository.UpdateAsync(user);
 
-            return (accessToken, refreshToken); // return raw refreshToken to client (cookie)
+            return (accessToken, refreshToken);
         }
 
+        private static void ValidateLoginDto(LoginDto dto)
+        {
+            ArgumentNullException.ThrowIfNull(dto);
+
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                throw new ArgumentException("Email is required", nameof(dto));
+
+            if (string.IsNullOrWhiteSpace(dto.Password))
+                throw new ArgumentException("Password is required", nameof(dto));
+        }
 
         private (string AccessToken, string RefreshToken) GenerateTokens(User user)
         {
-            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
-            var EmailEncrptkey = Encoding.UTF8.GetBytes(_configuration["Jwt:EncryptionKey"]);
+
+            var jwtKey = _configuration["Jwt:Key"]
+                          ?? throw new InvalidOperationException("JWT Key is not configured.");
+
+            var key = Encoding.UTF8.GetBytes(jwtKey);
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -124,17 +160,16 @@ namespace Application.Services
         public async Task<UserDto> GetCurrentUserAsync(ClaimsIdentity identity)
         {
             if (identity == null || !identity.IsAuthenticated)
-                throw new Exception("User is not authenticated.");
+                throw new InvalidOperationException("User is not authenticated.");
 
             var email = identity.FindFirst(ClaimTypes.Email)?.Value;
+
+            if (email == null)
+            {
+                throw new InvalidOperationException("User email not found in claims");
+            }
+
             var user = await _userRepository.GetByEmailAsync(email);
-            //if (user == null)
-            //{
-            //    var oAuthUser = await _oAuthUserRepository.GetByEmailAsync(email);
-            //    if (oAuthUser != null)
-            //        return _mapper.Map<UserDto>(oAuthUser);
-            //    throw new Exception("User not found.");
-            //}
             return _mapper.Map<UserDto>(user);
         }
 

@@ -9,7 +9,7 @@ namespace Application.DTOS
     public class MappingDto
     {
         public int MappingId { get; set; }
-        public string AssetName { get; set; }
-        public string TagName { get; set; }
+        public required string AssetName { get; set; }
+        public required string TagName { get; set; }
     }
 }

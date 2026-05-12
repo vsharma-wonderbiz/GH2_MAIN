@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Seeding
 {
-    public class MappingSeeder
+    public static class MappingSeeder
     {
         public static void Seed(ApplicationDbContext context)
         {

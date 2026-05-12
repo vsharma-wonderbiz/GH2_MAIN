@@ -28,7 +28,7 @@ namespace Application.Interface
 
         Task UpdateAsync(WeeklyAggregatedData entity);
 
-        Task<bool> IsWeekAvgDataPresent(int mappingId, DateTime StartDate, DateTime EndDate);
+        Task<bool> IsWeekAvgDataPresent(int mappingId, DateTime weekStart, DateTime weekEnd);
 
         Task<List<MappingAvgValueDto>> GetAvgValuesForMappings(
         List<int> mappingIds,

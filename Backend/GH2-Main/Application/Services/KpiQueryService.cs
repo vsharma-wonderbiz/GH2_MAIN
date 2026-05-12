@@ -47,7 +47,7 @@ namespace Application.Services
                 }
             }
 
-            // Live calculation for last-hour, last-24h, custom, or cache miss
+           
             _logger.LogInformation(
                 "Calculating KPI live for TagId={TagId}, Range={Start} → {End}",
                 request.TagId, startTime, endTime);
@@ -69,7 +69,7 @@ namespace Application.Services
                 {
                     AssetName = a.AssetName,
                     KpiValue = a.KpiValue,
-                    //Mappings = a.Mappings
+                   
                 }).ToList()
             };
         }
@@ -78,6 +78,8 @@ namespace Application.Services
 
         private (DateTime start, DateTime end) ResolveTimeRange(KpiQueryRequestDto request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             var now = DateTime.UtcNow;
 
             return request.TimeRange switch
@@ -86,9 +88,13 @@ namespace Application.Services
                 KpiTimeRange.Last24Hours => (now.AddHours(-24), now),
                 KpiTimeRange.LastWeek => GetLastCompletedWeekRange(),
                 KpiTimeRange.Custom => (
-                    request.CustomStart ?? throw new ArgumentException("CustomStart required"),
-                    request.CustomEnd ?? throw new ArgumentException("CustomEnd required")),
-                _ => throw new ArgumentOutOfRangeException(nameof(request.TimeRange))
+                    request.CustomStart ?? throw new ArgumentException("CustomStart required", nameof(request)),
+                    request.CustomEnd ?? throw new ArgumentException("CustomEnd required", nameof(request))
+                ),
+                _ => throw new ArgumentOutOfRangeException(
+                        nameof(request),
+                        request.TimeRange,
+                        "Invalid time range value")
             };
         }
 
@@ -96,7 +102,12 @@ namespace Application.Services
             int tagId, DateTime startTime, DateTime endTime)
         {
             var tag = await _tagRepositary.GetTagNameById(tagId);
-            var kpiName = tag.TagName;
+            var kpiName = tag?.TagName;
+
+            if (kpiName == null)
+            {
+                throw new ArgumentException("Invalid tagId: KPI name not found", nameof(tagId));
+            }
 
             var cached = await _kpiResultRepository
                 .GetByKpiNameAndDateRange(kpiName, startTime, endTime);
@@ -116,26 +127,10 @@ namespace Application.Services
                     KpiValue = c.KpiValue,
                     StartTime=c.StartTime,
                     EndTime=c.EndTime
-                    //Mappings = new List<TagMappingDto>() // cache doesn't store raw mappings
+                    
                 }).ToList()
             };
         }
-
-
-        //public async Task<KpiResponseDto> GetLatestKpisAsync(string stackName)
-        //{
-        //    var result = await _kpiResultRepository.GetLatestWeeksAsync(stackName);
-
-        //    if (result.Data == null || result.Data.Count == 0)
-        //        return null;
-
-        //    return new KpiResponseDto
-        //    {
-        //        StackName = stackName,
-        //        Week = result.Week,
-        //        Data = result.Data
-        //    };
-        //}
 
         public async Task<object> GetPlantKpiBased(PlantKpiRequestDto Dto)
         {
@@ -143,16 +138,12 @@ namespace Application.Services
                 .GetLatestWeeksAsync(Dto.KpiName, Dto.NoOfWeeks);
 
             var startime = DateTime.UtcNow.AddHours(-1);
-            //Console.WriteLine($"these is the startime {startime}");
+        
             var endime = DateTime.UtcNow;
-            //Console.WriteLine($"these is the startime {endime}");
 
             var hourlydata = await GetKpiAsync(new KpiQueryRequestDto { TagId = Dto.KpiId, TimeRange = KpiTimeRange.LastHour });
 
-            Console.WriteLine(JsonSerializer.Serialize(hourlydata, new JsonSerializerOptions
-            {
-                WriteIndented = true // pretty-print with indentation
-            }));
+   
 
 
 

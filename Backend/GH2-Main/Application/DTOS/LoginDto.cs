@@ -9,7 +9,7 @@ namespace Application.DTOS
     //these dto is to tkae the data from teh frontend to get login in the system
     public class LoginDto
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public required string Email { get; set; }
+        public required string Password { get; set; }
     }
 }
