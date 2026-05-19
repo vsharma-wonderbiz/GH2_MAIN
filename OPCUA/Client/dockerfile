@@ -1,0 +1,15 @@
+FROM python:3
+
+WORKDIR /app/Opc_Client
+
+COPY requirements.txt ./
+
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install cryptography
+
+
+COPY . .
+
+
+
+CMD [ "python","./opc_ua_client.py"]

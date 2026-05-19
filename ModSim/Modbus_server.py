@@ -9,8 +9,14 @@ from pymodbus.server.sync import StartTcpServer
 from pymodbus.datastore import ModbusSequentialDataBlock
 from pymodbus.datastore import ModbusSlaveContext
 from pymodbus.datastore import ModbusServerContext
+from dotenv import load_dotenv
+import os 
 
-IP = "10.10.10.95"
+load_dotenv()
+
+IP = os.getenv("MODBUS_HOST")
+MODBUS_PORT=int(os.getenv("MODBUS_PORT"))
+FLASK_PORT=int(os.getenv("FLASK_PORT"))
 
 app = Flask(__name__)
 _signals = []
@@ -224,7 +230,7 @@ def simulation_loop(context, signals):
 def start_flask(signals):
     global _signals
     _signals = signals
-    app.run(host="0.0.0.0", port=9000, debug=False, use_reloader=False)
+    app.run(host="0.0.0.0", port=FLASK_PORT, debug=False, use_reloader=False)
 
 
 # ─── Main ────────────────────────────────────────────────────────────
@@ -254,6 +260,6 @@ if __name__ == "__main__":
     threading.Thread(target=simulation_loop, args=(context, all_signals), daemon=True).start()
     threading.Thread(target=start_flask,     args=(all_signals,),          daemon=True).start()
 
-    print(f"[MODBUS] TCP Server on {IP}:5020")
-    print(f"[API]    Flask REST API on http://{IP}:9000")
-    StartTcpServer(context, address=(IP, 5020))
+    print(f"[MODBUS] TCP Server on {IP}:{MODBUS_PORT}")
+    print(f"[API]    Flask REST API on http://{IP}:{FLASK_PORT}")
+    StartTcpServer(context, address=(IP, MODBUS_PORT))

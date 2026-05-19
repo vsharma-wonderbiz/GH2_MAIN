@@ -2,6 +2,7 @@
 
 
 
+
 show timezone
 
 ALTER DATABASE "GH2-Main" SET timezone TO 'UTC'
@@ -16,7 +17,7 @@ SELECT  *
 FROM "SensorRawDatas"
 WHERE "AssetName" = 'Plant_1'
   AND "TagName" = 'power'
-  AND "TimeStamp" BETWEEN '2026-04-24T05:25:00Z'
+  AND "TimeStamp" BETWEEN '2026-04-24T05:25:00Z'	
                       AND '2026-04-24T06:27:00Z'
 ORDER BY "TimeStamp" DESC;
 

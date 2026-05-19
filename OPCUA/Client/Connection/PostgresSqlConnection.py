@@ -1,79 +1,88 @@
+import os
+from dotenv import load_dotenv
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from dotenv import load_dotenv
-import os
+
 
 load_dotenv()
 
-
-
-# DB_CONFIG = {
-#     "host": os.getenv("PG_HOST"),
-#     "port": int(os.getenv("PG_PORT")),
-#     "dbname": os.getenv("PG_DB"),
-#     "user": os.getenv("PG_USER"),
-#     "password": os.getenv("PG_PASSWORD"),
-# }
-
-
 DB_CONFIG = {
-    "host":"localhost",
-    "port": 5432,
-    "dbname": "GH2-Main",
-    "user": "postgres",
-    "password":"Vinay@123",
+    "host": os.getenv("PG_HOST"),
+    "port": int(os.getenv("PG_PORT")),
+    "dbname": os.getenv("PG_DB"),
+    "user": os.getenv("PG_USER"),
+    "password": os.getenv("PG_PASSWORD"),
 }
 
-# PG_HOST=postgres
-# PG_PORT=5432
-# PG_DB=MixerDb
-# PG_USER=postgres
-# PG_PASSWORD=Vinay@123
-# SYS_DB_NAME=postgres
 
-
-
+# =========================
+# CREATE DATABASE IF NOT EXISTS
+# =========================
 def create_database_if_not_exists():
+
     temp_conn = psycopg2.connect(
         host=os.getenv("PG_HOST"),
         port=int(os.getenv("PG_PORT")),
         user=os.getenv("PG_USER"),
         password=os.getenv("PG_PASSWORD"),
-        dbname=os.getenv("SYS_DB_NAME")  #system db that exist to migrate the db from the config if nt exist
+        dbname=os.getenv("SYS_DB_NAME")   # existing system DB
     )
+
     temp_conn.autocommit = True
-    cur = temp_conn.cursor()
+    cursor = temp_conn.cursor()
 
     db_name = os.getenv("PG_DB")
 
-    cur.execute(
+    # Check whether DB exists
+    cursor.execute(
         "SELECT 1 FROM pg_database WHERE datname = %s",
         (db_name,)
     )
 
-    if cur.fetchone():
-        print(f" Database already exists: {db_name}")
-    else:
-        print(f" Database not found, creating: {db_name}")
-        cur.execute(f'CREATE DATABASE "{db_name}"')
+    exists = cursor.fetchone()
 
-    cur.close()
+    if exists:
+        print(f"Database already exists: {db_name}")
+
+    else:
+        print(f"Creating database: {db_name}")
+
+        # Create DB
+        cursor.execute(f'CREATE DATABASE "{db_name}"')
+
+        print("Database created successfully")
+
+    cursor.close()
     temp_conn.close()
 
+
+# =========================
+# POSTGRES CONNECTION CLASS
+# =========================
 class PostgresSqlConnection:
+
     def __init__(self):
         self.conn = None
 
+    # -------------------------
+    # Connect to PostgreSQL
+    # -------------------------
     def connect(self):
+
         self.conn = psycopg2.connect(**DB_CONFIG)
+
         self.conn.autocommit = False
-        print("PostgreSQL connected")
+
+        print("PostgreSQL connected successfully")
+
         return self.conn
-    
 
     def init_table(self):
+
         self.conn = self.connect()
+
         cursor = self.conn.cursor()
+
 
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS node_master (
@@ -85,12 +94,14 @@ class PostgresSqlConnection:
         )
         """)
 
+      
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS node_last_value (
             id SERIAL PRIMARY KEY,
             node_id INTEGER NOT NULL UNIQUE,
             value DOUBLE PRECISION NOT NULL,
             timestamp TIMESTAMP NOT NULL,
+
             CONSTRAINT fk_node
                 FOREIGN KEY (node_id)
                 REFERENCES node_master(node_id)
@@ -104,12 +115,14 @@ class PostgresSqlConnection:
             node_id INTEGER NOT NULL,
             value DOUBLE PRECISION NOT NULL,
             timestamp TIMESTAMP NOT NULL,
+
             CONSTRAINT fk_node_telemetry
                 FOREIGN KEY (node_id)
                 REFERENCES node_master(node_id)
                 ON DELETE CASCADE
         )
         """)
+
 
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS machine_snapshot (
@@ -126,4 +139,14 @@ class PostgresSqlConnection:
         """)
 
         self.conn.commit()
+
+        print("Tables initialized successfully")
+
         cursor.close()
+
+   
+    def close(self):
+
+        if self.conn:
+            self.conn.close()
+            print("PostgreSQL connection closed")

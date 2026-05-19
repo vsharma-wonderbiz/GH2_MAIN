@@ -8,7 +8,7 @@ from Service.PostgresRepositoryService import PostgresRepositoryService
 import threading
 import time
 import pika
-import json
+import json 
 
 URL = "opc.tcp://10.10.10.95:4840"
 RABBITMQ_HOST='localhost'
