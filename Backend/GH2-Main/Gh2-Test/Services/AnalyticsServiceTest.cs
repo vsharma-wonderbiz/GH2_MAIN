@@ -126,7 +126,7 @@ namespace Gh2_Test.Services
                     request.EndTime,
                     It.IsAny<int>()),
                 Times.Once);
-        }xxxl
+        }
 
         [Fact]
         public async Task GetAnalyticsData_ShouldUseCorrectBucket_ForFiveHours()
