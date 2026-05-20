@@ -200,3 +200,5 @@ C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\GH2-Main\obj\Debug\net9.0\GH2-Ma
 C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\GH2-Main\obj\Debug\net9.0\GH2-Main.genruntimeconfig.cache
 C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\GH2-Main\obj\Debug\net9.0\ref\GH2-Main.dll
 C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\GH2-Main\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\GH2-Main\bin\Debug\net9.0\DotNetEnv.dll
+C:\Users\Vinay Sharma\GH2_MAIN\Backend\GH2-Main\GH2-Main\bin\Debug\net9.0\Superpower.dll
