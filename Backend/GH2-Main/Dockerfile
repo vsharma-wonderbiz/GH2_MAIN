@@ -17,6 +17,6 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
-EXPOSE port 
+EXPOSE 7144
 
 ENTRYPOINT ["dotnet", "GH2-Main.dll"]

@@ -1,6 +1,27 @@
-version: "3.9"
-
 services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:16
+    container_name: gh2_database
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+    ports:
+      - "5433:5432"
+
+  # RabbitMQ broker
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq_container
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
   # Modbus simulator service
   modsim:
     build: ./modsim
@@ -11,30 +32,18 @@ services:
     env_file:
       - ./modsim/.env
 
-  # PostgreSQL database
-  postgres:
-    image: postgres:16
-    container_name: gh2_database
-    environment:
-      POSTGRES_USER: ${PG_USER}
-      POSTGRES_PASSWORD: ${PG_PASSWORD}
+  # Backend service
+  backend:
+    build: ./Backend/GH2-Main
+    container_name: GH2-Backend
     ports:
-      - "5433:5432"
+      - "7144:7144"
+    env_file:
+      - ./Backend/GH2-Main/GH2-Main/.env
     depends_on:
+      - postgres
+      - rabbitmq
       - modsim
-
-  # RabbitMQ broker
-  rabbitmq:
-    image: rabbitmq:3.12-management   # includes the management UI
-    container_name: rabbitmq_container
-    ports:
-      - "5672:5672"   # main RabbitMQ port for apps/clients
-      - "15672:15672" # management UI port
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
 
   # OPC UA server
   opcua:
@@ -45,8 +54,7 @@ services:
     env_file:
       - ./opcua/server/.env
     depends_on:
-      - rabbitmq
-      - postgres
+      - backend
 
 volumes:
   rabbitmq_data:
