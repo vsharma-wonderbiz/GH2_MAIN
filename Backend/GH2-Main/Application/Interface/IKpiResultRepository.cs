@@ -20,8 +20,6 @@ namespace Application.Interface
 
         Task<List<KpiTable>> GetLatestWeeksAsync(string kpiName, int noOfWeeks);
         Task<List<KpiTable>> GetCustomizeStackKpi(string Kpiname, int NoOfStacks, int NoOfWeeks);
-
-        Task<bool> ExistsForWeek(DateTime startTime, DateTime endTime);
         Task SaveChangesAsync();
 
 
