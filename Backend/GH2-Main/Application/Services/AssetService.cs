@@ -47,64 +47,44 @@ namespace Application.Services
             return asset;
         }
 
-        public async Task<List<Assets>> GetChildAssetsAsync(int parentAssetId)
+        public async Task<List<Assets>> GetChildAssetsAsync(int parentassetID)
         {
-            try
-            {
-                var childAssets = await _assetRepo.GetChildAssets(parentAssetId);
+            var childAssets = await _assetRepo.GetChildAssets(parentassetID);
 
-                if (childAssets == null || !childAssets.Any())
-                    throw new InvalidOperationException($"No child assets found for parent asset ID {parentAssetId}.");
+            if (childAssets == null || childAssets.Count == 0)
+                throw new InvalidOperationException(
+                    $"No child assets found for parent asset ID {parentassetID}."
+                );
 
-                return childAssets;
-            }
-            catch (Exception ex)
-            {
-                // You can log the exception here if you have a logger
-                throw new ApplicationException("An error occurred while fetching child assets.", ex);
-            }
+            return childAssets;
         }
 
         public async Task<List<Assets>> GetAllPlantsAsync()
         {
-            try
-            {
+           
                 var plants = await _assetRepo.GetAllPlants();
 
-                if (plants == null || !plants.Any())
+                if (plants == null || plants.Count==0)
                     throw new InvalidOperationException("No plants found in the system.");
 
-                return plants;
-            }
-            catch (Exception ex)
-            {
-                // Optionally log the exception here
-                throw new ApplicationException("An error occurred while fetching plants.", ex);
-            }
+            return plants;
         }
 
         public async Task<List<MappingDto>> GetAllMappingsOnStackAsync(int stackId)
         {
-            try
-            {
+           
                 var mappings = await _mapRepo.GetAllMappingsOnStack(stackId);
 
-                if (mappings == null || !mappings.Any())
+                if (mappings == null || mappings.Count==0)
                     throw new InvalidOperationException($"No mappings found for stack ID {stackId}.");
 
                 return mappings.Select(m => new MappingDto
                 {
                     MappingId = m.MappingId,
-                    AssetName = m.Asset.Name,
-                    TagName = m.Tag.TagName
+                    AssetName = m.Asset?.Name ?? "Unknown Asset",
+                    TagName = m.Tag?.TagName ?? "Unknown Tag"
                 }).ToList();
 
-            }
-            catch (Exception ex)
-            {
-                // Optionally log the exception here
-                throw new ApplicationException("An error occurred while fetching mappings.", ex);
-            }
         }
 
 

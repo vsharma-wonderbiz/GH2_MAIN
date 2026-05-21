@@ -17,9 +17,9 @@ namespace Domain.Entities
         public DateTime CreatedAt { get; private set; }
         public DateTime? ResolvedAt { get; private set; }
 
-        public MappingTable Mapping { get; private set; }
+        public MappingTable? Mapping { get; private set; }
 
-        public AlarmInfo(int mappingId,string assetName, string signalName, float value, string alarmType)
+        public  AlarmInfo(int mappingId,string assetName, string signalName, float value, string alarmType)
         {
             MappingId = mappingId;
             AssetName = assetName ?? throw new ArgumentNullException(nameof(assetName));

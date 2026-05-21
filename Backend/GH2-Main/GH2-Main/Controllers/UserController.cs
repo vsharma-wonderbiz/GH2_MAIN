@@ -91,7 +91,7 @@ namespace GH2_Main.Controllers
             {
                 var refreshToken = Request.Cookies["refresh_token"];
                 if (string.IsNullOrEmpty(refreshToken))
-                    throw new ArgumentNullException(nameof(refreshToken));
+                    throw new InvalidOperationException("Cannot find the refresh token in cookies");
 
                 await _userService.LogoutAsync(refreshToken);
 
@@ -116,20 +116,6 @@ namespace GH2_Main.Controllers
         }
 
 
-        //[HttpGet("me")]
-        //public async Task<IActionResult> GetCurrentUser()
-        //{
-        //    try
-        //    {
-        //        var identity = HttpContext.User.Identity as ClaimsIdentity;
-
-        //        var user = await _userService.GetCurrentUserAsync(identity);
-        //        return Ok(user);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Unauthorized(new { Message = ex.Message });
-        //    }
-        //}
+       
     }
 }

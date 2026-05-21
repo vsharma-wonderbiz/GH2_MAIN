@@ -33,7 +33,7 @@ namespace Application.Services
         }
 
         //Stack formulas 
-        private float? StackSpecificEnergy(Dictionary<string, float> v)
+        private static float? StackSpecificEnergy(Dictionary<string, float> v)
         {
             if (!v.TryGetValue("current", out var current)) return null;
             if (!v.TryGetValue("voltage", out var voltage)) return null;
@@ -42,7 +42,7 @@ namespace Application.Services
             return (current * voltage) / h2flow;
         }
 
-        private float? PressureDiff(Dictionary<string, float> v)
+        private static float? PressureDiff(Dictionary<string, float> v)
         {
             if (!v.TryGetValue("pressure", out var pressure)) return null;
             if (!v.TryGetValue("outlet_pressure", out var outlet)) return null;
@@ -50,7 +50,7 @@ namespace Application.Services
             return pressure - outlet;
         }
 
-        private float? Ratio(Dictionary<string, float> v)
+        private static  float? Ratio(Dictionary<string, float> v)
         {
             if (!v.TryGetValue("current", out var current)) return null;
             if (!v.TryGetValue("voltage", out var voltage)) return null;
@@ -59,7 +59,7 @@ namespace Application.Services
             return (current * voltage) / h2flow;
         }
 
-        private float? TemperatureKpi(Dictionary<string, float> v)
+        private static float? TemperatureKpi(Dictionary<string, float> v)
         {
             if (!v.TryGetValue("downstream_temp", out var downstream)) return null;
             if (!v.TryGetValue("recombiner_temp", out var recombiner)) return null;
@@ -67,20 +67,20 @@ namespace Application.Services
             return Math.Abs(downstream - recombiner);
         }
 
-        private float? VoltageKpi(Dictionary<string, float> v)
+        private static float? VoltageKpi(Dictionary<string, float> v)
         {
             if (!v.TryGetValue("voltage", out var voltage)) return null;
             return voltage;
         }
 
-        private float? ConcentrationKpi(Dictionary<string, float> v)
+        private static float? ConcentrationKpi(Dictionary<string, float> v)
         {
             if (!v.TryGetValue("concentration", out var concentration)) return null;
             return concentration;
         }
 
         //  Plant formulas 
-        private float? SpecificEnergy(Dictionary<string, float> v)
+        private static float? SpecificEnergy(Dictionary<string, float> v)
         {
             if (!v.TryGetValue("power", out var power)) return null;
             if (!v.TryGetValue("h2flow", out var h2flow) || h2flow == 0) return null;
@@ -88,13 +88,13 @@ namespace Application.Services
             return power / h2flow;
         }
 
-        private float? Throughput(Dictionary<string, float> v)
+        private static float? Throughput(Dictionary<string, float> v)
         {
             if (!v.TryGetValue("h2flow", out var h2flow)) return null;
             return h2flow;
         }
 
-        private float? SpecificWaterConsumption(Dictionary<string, float> v)
+        private static float? SpecificWaterConsumption(Dictionary<string, float> v)
         {
             if (!v.TryGetValue("water_flow_tot", out var water)) return null;
             if (!v.TryGetValue("h2flow", out var h2flow) || h2flow == 0) return null;
@@ -102,7 +102,7 @@ namespace Application.Services
             return water / h2flow;
         }
 
-        private float? InletWaterConductivity(Dictionary<string, float> v)
+        private static float? InletWaterConductivity(Dictionary<string, float> v)
         {
             if (!v.TryGetValue("water_conductivity", out var conductivity)) return null;
             return conductivity;

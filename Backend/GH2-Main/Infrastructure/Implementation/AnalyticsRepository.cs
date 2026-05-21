@@ -28,7 +28,7 @@ namespace Infrastructure.Implementation
         string tagname,
         DateTime startTime,
         DateTime endTime,
-        int bucketMinutes
+        int time_bucket
          )
         {
             var istStart = startTime;
@@ -46,7 +46,7 @@ namespace Infrastructure.Implementation
 
             List<ValueDto> values;
 
-            if (bucketMinutes <= 0)
+            if (time_bucket <= 0)
             {
                 // No bucket, raw data
                 values = await query
@@ -66,7 +66,7 @@ namespace Infrastructure.Implementation
                                                     x.TimeStamp.Month,
                                                     x.TimeStamp.Day,
                                                     x.TimeStamp.Hour,
-    (x.TimeStamp.Minute / bucketMinutes) * bucketMinutes,
+    (x.TimeStamp.Minute / time_bucket) * time_bucket,
     0
 ), DateTimeKind.Utc))
                     .Select(g => new ValueDto
@@ -83,7 +83,7 @@ namespace Infrastructure.Implementation
                 AsseName = assetname,
                 TagName = tagname,
                 Values = values,
-                count = values.Count()
+                count = values.Count
             };
         }
 
@@ -175,14 +175,14 @@ namespace Infrastructure.Implementation
         DateTime endTime)
         {
             var start = startTime.Date;
-            //Console.WriteLine($"these is the actual where the raw data is getting fecthed {startTime.ToString()}");
+         
             var end = endTime.Date;
-            //Console.WriteLine($"these is the actual where the raw data is getting fecthed {endTime.ToString()}");
-
+            
             return await _context.WeeklyAvgData
                 .Where(x => mappingIds.Contains(x.MappingId) &&
                             x.WeekStartDate <= end &&    // week starts before or on end
-                            x.WeekEndDate >= start)      // week ends after or on start
+                            x.WeekEndDate >= start
+                            && x.IsFinal==true)      // week ends after or on start
                 .GroupBy(x => x.MappingId)
                 .Select(g => new MappingAvgValueDto
                 {

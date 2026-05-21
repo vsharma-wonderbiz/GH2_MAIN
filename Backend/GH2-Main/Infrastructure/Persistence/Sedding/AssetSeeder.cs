@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Sedding
 {
-    public class AssetSeeder
+    public static class AssetSeeder
     {
         public static void Seed(ApplicationDbContext context)
         {

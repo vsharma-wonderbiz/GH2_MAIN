@@ -40,13 +40,6 @@ namespace API.Controllers
             }
         }
 
-        //[HttpPost("kpi")]
-        //public async Task<IActionResult> BuildingKpiService(KpiRequestDto dto)
-        //{
-        //    var result = await _kpiCalulationService.CalculateKpi(dto);
-        //    return Ok(result);
-        //}
-
         [HttpPost("Kpi")]
         public async Task<IActionResult> GetKpi([FromBody] KpiQueryRequestDto request)
         {
@@ -67,7 +60,7 @@ namespace API.Controllers
 
                 var result = await _kpiQueryService.GetKpiAsync(request);
 
-                if (result == null || !result.Assets.Any())
+                if (result == null || result.Assets.Count==0)
                     return NotFound($"No KPI data found for TagId {request.TagId}.");
 
                 return Ok(result);
@@ -81,19 +74,6 @@ namespace API.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-
-
-        //[HttpGet("latest/{stackName}")]
-        //public async Task<IActionResult> GetLatestKpis(string stackName)
-        //{
-        //    var result = await _kpiQueryService.GetLatestKpisAsync(stackName);
-
-        //    if (result == null)
-        //        return NotFound("No KPI data found");
-
-        //    return Ok(result);
-        //}
-
 
         [Authorize(Roles="Admin")]
         [HttpPost("PlantKpis")]

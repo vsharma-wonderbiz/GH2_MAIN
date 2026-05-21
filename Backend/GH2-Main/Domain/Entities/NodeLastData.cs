@@ -10,16 +10,16 @@ namespace Domain.Entities
     {
         public int Id { get; set; }
         public int MappingId { get; set; }
-        public string OpcNodeId { get; set; }
+        public required string OpcNodeId { get; set; }
 
-        public string AssetName { get; set; }
+        public required string AssetName { get; set; }
 
-        public string TagName { get; set; }
+        public required string TagName { get; set; }
 
         public float Value { get; set; }
 
         public DateTime TimeStamp { get; set; }
 
-        public MappingTable Mapping {  get; set; }
+        public MappingTable? Mapping {  get; set; }
     }
 }

@@ -9,14 +9,19 @@ using Infrastructure.Persistence.Seeding;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using GH2_Main.Extension;
+using DotNetEnv;
 using Serilog;
  
 var builder = WebApplication.CreateBuilder(args);
 
-//Log.Logger = new LoggerConfiguration()
-//    .MinimumLevel.Debug()
-//    .WriteTo.Console()
-//    .CreateLogger();
+Env.Load();
+
+
+builder.Configuration["ConnectionStrings:DefaultConn"] = Environment.GetEnvironmentVariable("AUTH_CONN_STR");
+builder.Configuration["Jwt:Key"] = Environment.GetEnvironmentVariable("JWT_KEY");
+builder.Configuration["Jwt:Issuer"] = Environment.GetEnvironmentVariable("JWT_ISSUER");
+builder.Configuration["Jwt:Audience"] = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+
 
 builder.Host.UseSerilog((context, services, configuration) =>
 {

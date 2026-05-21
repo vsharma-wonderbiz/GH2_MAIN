@@ -7,15 +7,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Application.DTOS;
 
 namespace Infrastructure.Services
 {
     public class AlarmConsumer : BackgroundService
     {
         private IConnection _connection;
-        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly  IServiceScopeFactory _scopeFactory;
         private IModel _channel;
-        //private readonly IRepository<AlarmInfo> _repo;
+        
 
         public AlarmConsumer(IServiceScopeFactory scopeFactory)
         {

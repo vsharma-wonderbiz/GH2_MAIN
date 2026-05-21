@@ -20,7 +20,7 @@ namespace Domain.Entities
         public bool IsFinal { get; private set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
-        public MappingTable Mapping { get; private set; }
+        public MappingTable? Mapping { get; private set; }
 
         public WeeklyAggregatedData() { }
 

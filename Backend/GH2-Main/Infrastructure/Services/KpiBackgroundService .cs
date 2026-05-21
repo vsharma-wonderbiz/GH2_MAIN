@@ -32,9 +32,20 @@ namespace Infrastructure.BackgroundServices
             {
                 try
                 {
-                    await UpdateWeek();
+                    bool alreadyCalculated = await IsCurrentWeekAlreadyCalculated();
 
-                    await CalculateAndStoreAllKpis();
+                    if (!alreadyCalculated)
+                    {
+                        await UpdateWeek();
+
+                        await CalculateAndStoreAllKpis();
+
+                        _logger.LogInformation("New weekly KPI calculation completed.");
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Current week KPI already exists. Skipping.");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -53,12 +64,8 @@ namespace Infrastructure.BackgroundServices
             var tagRepository = scope.ServiceProvider.GetRequiredService<ITagRepositary>();
             var kpiResultRepository = scope.ServiceProvider.GetRequiredService<IKpiResultRepository>();
 
-            //var today = DateTime.UtcNow.Date;
-            //var startTime = today.AddDays(-7);
             var (startTime, endTime) = GetLastCompletedWeekRange();
-            //var endTime = today;
-            //var startTime = today.AddDays(-7);
-
+         
             _logger.LogInformation($"Calculating KPIs for range: {startTime} → {endTime}");
 
             var allKpiTags = await tagRepository.GetAllKpiTags();
@@ -142,6 +149,19 @@ namespace Infrastructure.BackgroundServices
             var lastWeekEnd = currentWeekStart;
 
             return (lastWeekStart, lastWeekEnd);
+        }
+
+
+        private async Task<bool> IsCurrentWeekAlreadyCalculated()
+        {
+            using var scope = _scopeFactory.CreateScope();
+
+            var repo = scope.ServiceProvider
+                .GetRequiredService<IKpiResultRepository>();
+
+            var (startTime, endTime) = GetLastCompletedWeekRange();
+
+            return await repo.ExistsForWeek(startTime, endTime);
         }
     }
 }

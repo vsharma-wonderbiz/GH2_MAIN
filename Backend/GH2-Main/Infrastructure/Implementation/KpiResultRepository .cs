@@ -125,6 +125,15 @@ namespace Infrastructure.Implementation
         .ToListAsync();
         }
 
+
+        public async Task<bool> ExistsForWeek(DateTime startTime, DateTime endTime)
+        {
+            return await _context.KpiTable
+                .AnyAsync(x =>
+                    x.StartTime == startTime &&
+                    x.EndTime == endTime);
+        }
+
         public async Task<List<KpiTable>> GetCustomizeStackKpi(string Kpiname, int NoOfStacks, int NoOfWeeks)
         {
             //Get all stacks for given KPI
@@ -155,15 +164,15 @@ namespace Infrastructure.Implementation
             Console.WriteLine($"Selected Weeks: {string.Join(", ", selectedWeeks)}");
 
             // Filter data based on the the stacks and the no of weeks 
-            var filteredData = await _context.KpiTable
+            var stackfilteredData = await _context.KpiTable
                 .Where(x => x.KpiName == Kpiname
                          && orderedStacks.Contains(x.AssetName)
                          && selectedWeeks.Contains(x.WeekNumber))
                 .ToListAsync();
 
-            Console.WriteLine($"Filtered Data Count: {filteredData.Count}");
+            Console.WriteLine($"Filtered Data Count: {stackfilteredData.Count}");
 
-            return filteredData;
+            return stackfilteredData;
         }
     }
 }

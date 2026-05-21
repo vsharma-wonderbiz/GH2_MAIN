@@ -17,7 +17,7 @@ namespace Infrastructure.Implementation
         {
         }
 
-        public async Task<AlarmInfo> GetActiveAlarm(int mappingId, string name)
+        public async Task<AlarmInfo?> GetActiveAlarm(int mappingId, string name)
         {
             return await _context.Alarms.FirstOrDefaultAsync(a => a.MappingId == mappingId && a.SignalName == name && a.Status == "Active");
         }

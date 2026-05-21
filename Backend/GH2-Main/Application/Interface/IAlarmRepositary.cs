@@ -9,7 +9,7 @@ namespace Application.Interface
 {
     public interface IAlarmRepositary : IRepository<AlarmInfo>
     {
-        Task<AlarmInfo> GetActiveAlarm(int mappingId,string name);
+        Task<AlarmInfo?> GetActiveAlarm(int mappingId,string name);
 
         Task<List<AlarmInfo>> GetAllLatestAlaram();
     }

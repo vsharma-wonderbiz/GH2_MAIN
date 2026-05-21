@@ -24,7 +24,7 @@ namespace Infrastructure.Persistence.Sedding
         }
         public  async Task SeedAsync(ApplicationDbContext context)
         {
-            string relativePath = _configuration["ModbusConfig:FilePath"];
+            string relativePath = _configuration["ModbusConfig:FilePath"] ?? throw new InvalidOperationException("File path not found");
             string fileContent = string.Empty;
 
             try
@@ -47,7 +47,7 @@ namespace Infrastructure.Persistence.Sedding
 
             if (modbusConfig == null)
             {
-                throw new Exception("no config found");
+                throw new InvalidOperationException("cannot find the Modbusconfig");
             }
                 
 

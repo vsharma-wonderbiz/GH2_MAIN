@@ -29,18 +29,34 @@ namespace Application.Services
             {
                 bool isExist = await _mapRepo.Isconfig(mapping.MappingId);
 
+                if (mapping.Asset == null)
+                {
+                    throw new InvalidOperationException(
+                        $"Asset missing for MappingId {mapping.MappingId}");
+                }
+
+                if (mapping.Tag == null)
+                {
+                    throw new InvalidOperationException(
+                        $"Tag missing for MappingId {mapping.MappingId}");
+                }
+
                 if (isExist)
                 {
 
                     var Config = await _mapRepo.GetModbusConfigFromMapppingId(mapping.MappingId);
+                    
+                    if(Config==null)
+                         throw new InvalidOperationException("Cannot Find the config");
+
                     int register = Config.RegisterAddress - 40001;
-                    var deadBand = Math.Round(mapping.Tag.Deadband, 4);
+                    var deadBand = Math.Round(mapping.Tag.Deadband , 4);
 
                     result.Add(new OpcConfigDto
                     {
                        asset_name = mapping.Asset.Name,
                         tag_name = mapping.Tag.TagName,
-                        opc_node_id = mapping.OpcNodeId,
+                        opc_node_id = mapping.OpcNodeId ?? "",
                         slave_id = Config.SlaveId,
                         register_address = register,
                         datatype = mapping.Tag.DataType,

@@ -33,7 +33,7 @@ namespace Infrastructure.Services
 
             foreach (var mapping in asset.Mappings)
             {
-                if (!mapping.Tag.IsDerived)
+                if (mapping.Tag!=null && !mapping.Tag.IsDerived)
                 {
                     Console.WriteLine($"Processing {mapping.Tag.TagName}");
                     await BackfillWithBulkCopyAsync(
@@ -55,6 +55,13 @@ namespace Infrastructure.Services
         {
             var connectionString = _context.Database.GetConnectionString();
 
+            if (mapping.Asset == null)
+               throw new ArgumentNullException("Asset not found in mapping", nameof(mapping));
+
+            if (mapping.Tag == null)
+                throw new ArgumentNullException("Tag not found in mapping", nameof(mapping));
+
+
             using var connection = new NpgsqlConnection(connectionString);
             await connection.OpenAsync();
 
@@ -62,6 +69,7 @@ namespace Infrastructure.Services
             var currentTime = startDate;
             int totalCount = 0;
             int batchSize = 100000;
+
 
             var assetName = mapping.Asset.Name;
             var tagName = mapping.Tag.TagName;

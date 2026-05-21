@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("3ac43061-a0a9-4833-8f4d-60542a621d90")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("GH2-Main")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8bbfada4931d917d126a6953e37fc6fb935aac3b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9420d96bd2ec5932df5cf34b7550e8ed4bdda0fb")]
 [assembly: System.Reflection.AssemblyProductAttribute("GH2-Main")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GH2-Main")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
