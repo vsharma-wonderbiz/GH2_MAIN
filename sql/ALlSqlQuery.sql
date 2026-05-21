@@ -87,7 +87,7 @@ order by "CreatedAt" Desc
 
 SELECT column_name, data_type, is_nullable, column_default
 FROM information_schema.columns
-WHERE table_name = 'SensorRawDatas';
+WHERE table_name = 'SensorRawDatas'
 
 
 
@@ -155,6 +155,7 @@ ORDER BY pc."Id" asc ;
 -- these is bsaically checking if the value is been presnet in the tbale or not
 SELECT *
 FROM "WeeklyAvgData"
+WHERE "IsFinal"='False'
 WHERE "MappingId" = 1
   AND "WeekStartDate" <= '2026-04-27 00:00:00+00'
   AND "WeekEndDate" >= '2026-04-20 00:00:00+00';

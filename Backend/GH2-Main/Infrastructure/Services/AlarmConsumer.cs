@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Microsoft.Extensions.Configuration;
 using Application.DTOS;
 
 namespace Infrastructure.Services
@@ -15,13 +16,15 @@ namespace Infrastructure.Services
     {
         private IConnection _connection;
         private readonly  IServiceScopeFactory _scopeFactory;
+        private readonly IConfiguration _configuration;
         private IModel _channel;
         
 
-        public AlarmConsumer(IServiceScopeFactory scopeFactory)
+        public AlarmConsumer(IServiceScopeFactory scopeFactory,IConfiguration configuration)
         {
             //_repo = repo;
             _scopeFactory = scopeFactory;
+            _configuration=configuration;
             InitializeRabbitMq();
         }
 
@@ -29,16 +32,17 @@ namespace Infrastructure.Services
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost", // change if needed
-                UserName = "guest",
-                Password = "guest"
+                HostName = _configuration["RabbitMq:HostName"],
+                Port=int.Parse(_configuration["RabbitMq:Port"]),
+                UserName = _configuration["RabbitMq:UserName"],
+                Password = _configuration["RabbitMq:Password"]
             };
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
 
             _channel.QueueDeclare(
-                queue: "alarm_queue",
+                queue: _configuration["RabbitMq:Queuename"],
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
@@ -68,7 +72,7 @@ namespace Infrastructure.Services
             };
 
             _channel.BasicConsume(
-                queue: "alarm_queue",
+                queue: _configuration["RabbitMq:Queuename"],
                 autoAck: false,
                 consumer: consumer
             );

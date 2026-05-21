@@ -21,6 +21,11 @@ builder.Configuration["ConnectionStrings:DefaultConn"] = Environment.GetEnvironm
 builder.Configuration["Jwt:Key"] = Environment.GetEnvironmentVariable("JWT_KEY");
 builder.Configuration["Jwt:Issuer"] = Environment.GetEnvironmentVariable("JWT_ISSUER");
 builder.Configuration["Jwt:Audience"] = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+builder.Configuration["RabbitMq:HostName"] = Environment.GetEnvironmentVariable("RABBITMQ_HOST");
+builder.Configuration["RabbitMq:Port"] = Environment.GetEnvironmentVariable("RABBITMQ_PORT");
+builder.Configuration["RabbitMq:UserName"] = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME");
+builder.Configuration["RabbitMq:Password"] = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD");
+builder.Configuration["RabbitMq:Queuename"] = Environment.GetEnvironmentVariable("QUEUE_NAME");
 
 
 builder.Host.UseSerilog((context, services, configuration) =>
@@ -37,7 +42,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
 
-        // allows "tagId", "TagId", "TAGID" — all work
+        // allows "tagId", "TagId", "TAGID" ï¿½ all work
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 
