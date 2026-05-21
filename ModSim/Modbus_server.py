@@ -10,7 +10,7 @@ from pymodbus.datastore import ModbusSequentialDataBlock
 from pymodbus.datastore import ModbusSlaveContext
 from pymodbus.datastore import ModbusServerContext
 
-IP = "10.10.10.52"
+IP = "10.10.10.94"
 
 app = Flask(__name__)
 _signals = []

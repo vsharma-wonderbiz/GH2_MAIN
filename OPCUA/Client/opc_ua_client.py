@@ -10,7 +10,7 @@ import time
 import pika
 import json
 
-URL = "opc.tcp://10.10.10.52:4840"
+URL = "opc.tcp://10.10.10.94:4840"
 RABBITMQ_HOST='localhost'
 CHANGE_THRESHOLD = 0.01  # change threshold
 
@@ -100,7 +100,12 @@ class SubscriptionHandler:
         try:
             clean=opc_id.split('=')[-1]
             
-            return clean.split('.')[0]
+            parts=clean.split('.')
+            
+            if len(parts)>2:
+                return parts[1]
+            else:
+                return parts[0]
         
         except Exception:
             return None
@@ -161,7 +166,7 @@ class AlarmManager:
             if current_state is not None:  # Only clear if there WAS an active alarm
                 prev_state = current_state
                 self.active_alarms.pop(mapping_id, None)
-                self._publish_clear(signal_name, mapping_id, prev_state, val)
+                self._publish_clear(asset_name,signal_name, mapping_id, prev_state, val,max_val)
                 logging.info(f"ALARM CLEARED {signal_name}: value={val}")
 
     def _publish_alarm(self, event,asset_name, signal_name, mapping_id, alarm_type, current_value, limit_value):
@@ -177,13 +182,15 @@ class AlarmManager:
         })
         self.mq.publish("alarm_queue", message)
 
-    def _publish_clear(self, signal_name, mapping_id, previous_alarm_type, current_value):
+    def _publish_clear(self,asset_name, signal_name, mapping_id, previous_alarm_type, current_value,limit_value):
         message = json.dumps({
             "event": "ALARM_CLEARED",
             "mapping_id": mapping_id,
+            "asset":asset_name,
             "signal": signal_name,
-            "previous_alarm_type": previous_alarm_type,
+            "alarm_type": previous_alarm_type,
             "current_value": current_value,
+            "limit_breached": limit_value,
             "timestamp": datetime.now(timezone.utc).isoformat()
         })
         self.mq.publish("alarm_queue", message)

@@ -125,6 +125,15 @@ namespace Infrastructure.Implementation
         .ToListAsync();
         }
 
+
+        public async Task<bool> ExistsForWeek(DateTime startTime, DateTime endTime)
+        {
+            return await _context.KpiTable
+                .AnyAsync(x =>
+                    x.StartTime == startTime &&
+                    x.EndTime == endTime);
+        }
+
         public async Task<List<KpiTable>> GetCustomizeStackKpi(string Kpiname, int NoOfStacks, int NoOfWeeks)
         {
             //Get all stacks for given KPI

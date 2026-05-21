@@ -174,7 +174,7 @@ namespace Application.Services
 
                         Console.WriteLine(JsonSerializer.Serialize(plantAvgValues, new JsonSerializerOptions
                         {
-                            WriteIndented = true // pretty-print with indentation
+                            WriteIndented = true 
                         }));
                     }
 

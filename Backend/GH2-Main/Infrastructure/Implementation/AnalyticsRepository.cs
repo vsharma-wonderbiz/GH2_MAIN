@@ -181,7 +181,8 @@ namespace Infrastructure.Implementation
             return await _context.WeeklyAvgData
                 .Where(x => mappingIds.Contains(x.MappingId) &&
                             x.WeekStartDate <= end &&    // week starts before or on end
-                            x.WeekEndDate >= start)      // week ends after or on start
+                            x.WeekEndDate >= start
+                            && x.IsFinal==true)      // week ends after or on start
                 .GroupBy(x => x.MappingId)
                 .Select(g => new MappingAvgValueDto
                 {
