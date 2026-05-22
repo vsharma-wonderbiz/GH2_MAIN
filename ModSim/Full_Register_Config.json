@@ -449,6 +449,681 @@
                     "unit": "bool"
                 }
             ]
+        },
+        {
+            "stack": "Stack_3",
+            "signals": [
+                {
+                    "name": "current",
+                    "registers": [
+                        92,
+                        93
+                    ],
+                    "min": 41,
+                    "max": 43,
+                    "unit": "A"
+                },
+                {
+                    "name": "voltage",
+                    "registers": [
+                        94,
+                        95
+                    ],
+                    "min": 44,
+                    "max": 44.1,
+                    "unit": "V"
+                },
+                {
+                    "name": "pressure",
+                    "registers": [
+                        96,
+                        97
+                    ],
+                    "min": 25,
+                    "max": 30,
+                    "unit": "bar"
+                },
+                {
+                    "name": "outlet_pressure",
+                    "registers": [
+                        98,
+                        99
+                    ],
+                    "min": 20,
+                    "max": 25,
+                    "unit": "bar"
+                },
+                {
+                    "name": "flowrate",
+                    "registers": [
+                        100,
+                        101
+                    ],
+                    "min": 2.8,
+                    "max": 3.5,
+                    "unit": "Nm3/h"
+                },
+                {
+                    "name": "temperature",
+                    "registers": [
+                        102,
+                        103
+                    ],
+                    "min": 48,
+                    "max": 55,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "h2flow",
+                    "registers": [
+                        104,
+                        105
+                    ],
+                    "min": 486,
+                    "max": 500,
+                    "unit": "Nm3/h"
+                },
+                {
+                    "name": "water_conductivity",
+                    "registers": [
+                        106,
+                        107
+                    ],
+                    "min": 15,
+                    "max": 27,
+                    "unit": "\u00c2\u00b5S/cm"
+                },
+                {
+                    "name": "water_flowrate",
+                    "registers": [
+                        108,
+                        109
+                    ],
+                    "min": 25.2,
+                    "max": 33.3,
+                    "unit": "L/min"
+                },
+                {
+                    "name": "concentration",
+                    "registers": [
+                        110,
+                        111
+                    ],
+                    "min": 0.5,
+                    "max": 1.0,
+                    "unit": "%"
+                },
+                {
+                    "name": "fan_rpm",
+                    "registers": [
+                        112,
+                        113
+                    ],
+                    "min": 3810,
+                    "max": 4290,
+                    "unit": "RPM"
+                },
+                {
+                    "name": "safey_board_temp",
+                    "registers": [
+                        114,
+                        115
+                    ],
+                    "min": 40,
+                    "max": 45,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "recombiner_temp",
+                    "registers": [
+                        116,
+                        117
+                    ],
+                    "min": 55,
+                    "max": 65,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "downstream_temp",
+                    "registers": [
+                        118,
+                        119
+                    ],
+                    "min": 50,
+                    "max": 60,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "5v_board_voltage",
+                    "registers": [
+                        120,
+                        121
+                    ],
+                    "min": 4.99,
+                    "max": 5.024,
+                    "unit": "V"
+                },
+                {
+                    "name": "12v_board_voltage",
+                    "registers": [
+                        122,
+                        123
+                    ],
+                    "min": 11.888,
+                    "max": 11.912,
+                    "unit": "V"
+                },
+                {
+                    "name": "24v_board_voltage",
+                    "registers": [
+                        124,
+                        125
+                    ],
+                    "min": 23.407,
+                    "max": 23.649,
+                    "unit": "V"
+                },
+                {
+                    "name": "pump_signal",
+                    "registers": [
+                        126,
+                        127
+                    ],
+                    "min": 0.0,
+                    "max": 2.999,
+                    "unit": "V"
+                },
+                {
+                    "name": "battery_voltage",
+                    "registers": [
+                        128,
+                        129
+                    ],
+                    "min": 3.011,
+                    "max": 3.06,
+                    "unit": "V"
+                },
+                {
+                    "name": "warning_exists",
+                    "registers": [
+                        130,
+                        131
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "unit": "bool"
+                },
+                {
+                    "name": "lifetime",
+                    "registers": [
+                        132,
+                        133
+                    ],
+                    "min": 38000,
+                    "max": 40000,
+                    "unit": "hours"
+                },
+                {
+                    "name": "trip_signal",
+                    "registers": [
+                        134,
+                        135
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "unit": "bool"
+                }
+            ]
+        },
+        {
+            "stack": "Stack_4",
+            "signals": [
+                {
+                    "name": "current",
+                    "registers": [
+                        138,
+                        139
+                    ],
+                    "min": 41,
+                    "max": 43,
+                    "unit": "A"
+                },
+                {
+                    "name": "voltage",
+                    "registers": [
+                        140,
+                        141
+                    ],
+                    "min": 44,
+                    "max": 44.1,
+                    "unit": "V"
+                },
+                {
+                    "name": "pressure",
+                    "registers": [
+                        142,
+                        143
+                    ],
+                    "min": 25,
+                    "max": 30,
+                    "unit": "bar"
+                },
+                {
+                    "name": "outlet_pressure",
+                    "registers": [
+                        144,
+                        145
+                    ],
+                    "min": 20,
+                    "max": 25,
+                    "unit": "bar"
+                },
+                {
+                    "name": "flowrate",
+                    "registers": [
+                        146,
+                        147
+                    ],
+                    "min": 2.8,
+                    "max": 3.5,
+                    "unit": "Nm3/h"
+                },
+                {
+                    "name": "temperature",
+                    "registers": [
+                        148,
+                        149
+                    ],
+                    "min": 48,
+                    "max": 55,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "h2flow",
+                    "registers": [
+                        150,
+                        151
+                    ],
+                    "min": 486,
+                    "max": 500,
+                    "unit": "Nm3/h"
+                },
+                {
+                    "name": "water_conductivity",
+                    "registers": [
+                        152,
+                        153
+                    ],
+                    "min": 15,
+                    "max": 27,
+                    "unit": "\u00c2\u00b5S/cm"
+                },
+                {
+                    "name": "water_flowrate",
+                    "registers": [
+                        154,
+                        155
+                    ],
+                    "min": 25.2,
+                    "max": 33.3,
+                    "unit": "L/min"
+                },
+                {
+                    "name": "concentration",
+                    "registers": [
+                        156,
+                        157
+                    ],
+                    "min": 0.5,
+                    "max": 1.0,
+                    "unit": "%"
+                },
+                {
+                    "name": "fan_rpm",
+                    "registers": [
+                        158,
+                        159
+                    ],
+                    "min": 3810,
+                    "max": 4290,
+                    "unit": "RPM"
+                },
+                {
+                    "name": "safey_board_temp",
+                    "registers": [
+                        160,
+                        161
+                    ],
+                    "min": 40,
+                    "max": 45,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "recombiner_temp",
+                    "registers": [
+                        162,
+                        163
+                    ],
+                    "min": 55,
+                    "max": 65,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "downstream_temp",
+                    "registers": [
+                        164,
+                        165
+                    ],
+                    "min": 50,
+                    "max": 60,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "5v_board_voltage",
+                    "registers": [
+                        166,
+                        167
+                    ],
+                    "min": 4.99,
+                    "max": 5.024,
+                    "unit": "V"
+                },
+                {
+                    "name": "12v_board_voltage",
+                    "registers": [
+                        168,
+                        169
+                    ],
+                    "min": 11.888,
+                    "max": 11.912,
+                    "unit": "V"
+                },
+                {
+                    "name": "24v_board_voltage",
+                    "registers": [
+                        170,
+                        171
+                    ],
+                    "min": 23.407,
+                    "max": 23.649,
+                    "unit": "V"
+                },
+                {
+                    "name": "pump_signal",
+                    "registers": [
+                        172,
+                        173
+                    ],
+                    "min": 0.0,
+                    "max": 2.999,
+                    "unit": "V"
+                },
+                {
+                    "name": "battery_voltage",
+                    "registers": [
+                        174,
+                        175
+                    ],
+                    "min": 3.011,
+                    "max": 3.06,
+                    "unit": "V"
+                },
+                {
+                    "name": "warning_exists",
+                    "registers": [
+                        176,
+                        177
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "unit": "bool"
+                },
+                {
+                    "name": "lifetime",
+                    "registers": [
+                        178,
+                        179
+                    ],
+                    "min": 38000,
+                    "max": 40000,
+                    "unit": "hours"
+                },
+                {
+                    "name": "trip_signal",
+                    "registers": [
+                        180,
+                        181
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "unit": "bool"
+                }
+            ]
+        },
+        {
+            "stack": "Stack_5",
+            "signals": [
+                {
+                    "name": "current",
+                    "registers": [
+                        184,
+                        185
+                    ],
+                    "min": 41,
+                    "max": 43,
+                    "unit": "A"
+                },
+                {
+                    "name": "voltage",
+                    "registers": [
+                        186,
+                        187
+                    ],
+                    "min": 44,
+                    "max": 44.1,
+                    "unit": "V"
+                },
+                {
+                    "name": "pressure",
+                    "registers": [
+                        188,
+                        189
+                    ],
+                    "min": 25,
+                    "max": 30,
+                    "unit": "bar"
+                },
+                {
+                    "name": "outlet_pressure",
+                    "registers": [
+                        190,
+                        191
+                    ],
+                    "min": 20,
+                    "max": 25,
+                    "unit": "bar"
+                },
+                {
+                    "name": "flowrate",
+                    "registers": [
+                        192,
+                        193
+                    ],
+                    "min": 2.8,
+                    "max": 3.5,
+                    "unit": "Nm3/h"
+                },
+                {
+                    "name": "temperature",
+                    "registers": [
+                        194,
+                        195
+                    ],
+                    "min": 48,
+                    "max": 55,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "h2flow",
+                    "registers": [
+                        196,
+                        197
+                    ],
+                    "min": 486,
+                    "max": 500,
+                    "unit": "Nm3/h"
+                },
+                {
+                    "name": "water_conductivity",
+                    "registers": [
+                        198,
+                        199
+                    ],
+                    "min": 15,
+                    "max": 27,
+                    "unit": "\u00c2\u00b5S/cm"
+                },
+                {
+                    "name": "water_flowrate",
+                    "registers": [
+                        200,
+                        201
+                    ],
+                    "min": 25.2,
+                    "max": 33.3,
+                    "unit": "L/min"
+                },
+                {
+                    "name": "concentration",
+                    "registers": [
+                        202,
+                        203
+                    ],
+                    "min": 0.5,
+                    "max": 1.0,
+                    "unit": "%"
+                },
+                {
+                    "name": "fan_rpm",
+                    "registers": [
+                        204,
+                        205
+                    ],
+                    "min": 3810,
+                    "max": 4290,
+                    "unit": "RPM"
+                },
+                {
+                    "name": "safey_board_temp",
+                    "registers": [
+                        206,
+                        207
+                    ],
+                    "min": 40,
+                    "max": 45,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "recombiner_temp",
+                    "registers": [
+                        208,
+                        209
+                    ],
+                    "min": 55,
+                    "max": 65,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "downstream_temp",
+                    "registers": [
+                        210,
+                        211
+                    ],
+                    "min": 50,
+                    "max": 60,
+                    "unit": "\u00c2\u00b0C"
+                },
+                {
+                    "name": "5v_board_voltage",
+                    "registers": [
+                        212,
+                        213
+                    ],
+                    "min": 4.99,
+                    "max": 5.024,
+                    "unit": "V"
+                },
+                {
+                    "name": "12v_board_voltage",
+                    "registers": [
+                        214,
+                        215
+                    ],
+                    "min": 11.888,
+                    "max": 11.912,
+                    "unit": "V"
+                },
+                {
+                    "name": "24v_board_voltage",
+                    "registers": [
+                        216,
+                        217
+                    ],
+                    "min": 23.407,
+                    "max": 23.649,
+                    "unit": "V"
+                },
+                {
+                    "name": "pump_signal",
+                    "registers": [
+                        218,
+                        219
+                    ],
+                    "min": 0.0,
+                    "max": 2.999,
+                    "unit": "V"
+                },
+                {
+                    "name": "battery_voltage",
+                    "registers": [
+                        220,
+                        221
+                    ],
+                    "min": 3.011,
+                    "max": 3.06,
+                    "unit": "V"
+                },
+                {
+                    "name": "warning_exists",
+                    "registers": [
+                        222,
+                        223
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "unit": "bool"
+                },
+                {
+                    "name": "lifetime",
+                    "registers": [
+                        224,
+                        225
+                    ],
+                    "min": 38000,
+                    "max": 40000,
+                    "unit": "hours"
+                },
+                {
+                    "name": "trip_signal",
+                    "registers": [
+                        226,
+                        227
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "unit": "bool"
+                }
+            ]
         }
     ],
     "plant": [
