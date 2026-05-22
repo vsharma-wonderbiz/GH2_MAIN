@@ -182,7 +182,7 @@ namespace Infrastructure.Implementation
                 .Where(x => mappingIds.Contains(x.MappingId) &&
                             x.WeekStartDate <= end &&    // week starts before or on end
                             x.WeekEndDate >= start
-                            && x.IsFinal==true)      // week ends after or on start
+                            && x.IsFinal == true)      // week ends after or on start
                 .GroupBy(x => x.MappingId)
                 .Select(g => new MappingAvgValueDto
                 {

@@ -29,4 +29,7 @@ namespace Application.DTOS
         [JsonPropertyName("timestamp")]
         public DateTime Timestamp { get; set; }
     }
+
+
+   
 }
