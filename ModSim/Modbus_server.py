@@ -12,15 +12,11 @@ from pymodbus.datastore import ModbusServerContext
 from dotenv import load_dotenv
 import os 
 
-<<<<<<< HEAD
 load_dotenv()
 
 IP = os.getenv("MODBUS_HOST")
 MODBUS_PORT=int(os.getenv("MODBUS_PORT"))
 FLASK_PORT=int(os.getenv("FLASK_PORT"))
-=======
-IP = "10.10.10.162"
->>>>>>> main-tested
 
 app = Flask(__name__)
 _signals = []
