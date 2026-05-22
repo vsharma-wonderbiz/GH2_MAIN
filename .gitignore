@@ -2,3 +2,18 @@
 
 # Ignore EF Core migrations in Infrastructure project
 Backend/GH2-Main/Infrastructure/Migrations/
+
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.log
+
+# VS files
+.vs/
+*.user
+*.suo
+
+# SonarQube
+.sonarqube/
