@@ -31,6 +31,8 @@ services:
       - "9000:9000"
     env_file:
       - ./modsim/.env
+    volumes:
+      - ./modsim:/app/Modsim
 
   # Backend service
   backend:
@@ -44,6 +46,8 @@ services:
       - postgres
       - rabbitmq
       - modsim
+    volumes:
+      - ./modsim:/shared/modsim
 
   # OPC UA server
   opcua:

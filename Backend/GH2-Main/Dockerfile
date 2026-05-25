@@ -17,6 +17,8 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
+ENV ASPNETCORE_URLS=http://+:7144
+
 EXPOSE 7144
 
 ENTRYPOINT ["dotnet", "GH2-Main.dll"]
