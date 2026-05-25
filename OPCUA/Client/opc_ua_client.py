@@ -9,9 +9,10 @@ import threading
 import time
 import pika
 import json 
+import os
 
-URL = "opc.tcp://10.10.10.193:4840"
-RABBITMQ_HOST='localhost'
+URL = os.getenv("OPC_URL")
+RABBITMQ_HOST=os.getenv("RABBITMQ_HOST")
 CHANGE_THRESHOLD = 0.01  # change threshold
 
 

@@ -60,5 +60,28 @@ services:
     depends_on:
       - backend
 
+  opcua_client:
+    build: ./opcua/Client
+    container_name: opcua-client
+    env_file:
+      - ./opcua/client/.env
+    depends_on:
+      - opcua
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: dockerfile
+
+    ports:
+      - "5173:5173"
+
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
 volumes:
   rabbitmq_data:
