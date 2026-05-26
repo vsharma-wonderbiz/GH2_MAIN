@@ -211,7 +211,8 @@ namespace Infrastructure.Implementation
                     AvgValue = s.Average(x => x.Value),
                     MinValue = s.Min(x => x.Value),
                     MaxValue = s.Max(x => x.Value)
-                }).ToListAsync();
+                })
+                .ToListAsync();
 
 
             return result;

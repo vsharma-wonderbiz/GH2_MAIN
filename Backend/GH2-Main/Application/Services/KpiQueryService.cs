@@ -148,7 +148,7 @@ namespace Application.Services
 
 
             var weeklyResult = weeklydata
-                .OrderBy(w => w.WeekNumber)
+                .OrderByDescending(w => w.WeekNumber)
                 .Select(w => new
                 {
                     weekNumber = w.WeekNumber,
