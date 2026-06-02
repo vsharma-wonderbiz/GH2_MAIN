@@ -1,1 +1,31 @@
 .vs/
+
+# Node.js
+node_modules/
+Frontend/node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment files
+.env
+.env.*
+
+# Ignore EF Core migrations in Infrastructure project
+Backend/GH2-Main/Infrastructure/Migrations/
+
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.log
+
+# VS files
+.vs/
+*.user
+*.suo
+
+# SonarQube
+.sonarqube/
