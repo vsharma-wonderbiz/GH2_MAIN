@@ -22,6 +22,94 @@ namespace Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("AuthMicroservice.Domain.Entities.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiry")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("User");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Domain.Entities.AlarmInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AlarmType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AssetName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<int>("MappingId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("ResolvedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SignalName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("Value")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MappingId");
+
+                    b.ToTable("Alarms");
+                });
+
             modelBuilder.Entity("Domain.Entities.Assets", b =>
                 {
                     b.Property<int>("AssetId")
@@ -35,19 +123,66 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("ParentAssetId")
-                        .HasColumnType("text");
+                    b.Property<int?>("ParentAssetId")
+                        .HasColumnType("integer");
 
                     b.HasKey("AssetId");
 
                     b.ToTable("Assets");
+                });
+
+            modelBuilder.Entity("Domain.Entities.KpiTable", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AssetName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("CalculatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("KpiName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<float>("KpiValue")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("WeekNumber")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("KpiTable");
                 });
 
             modelBuilder.Entity("Domain.Entities.MappingTable", b =>
@@ -62,30 +197,14 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DataType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Deadband")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FunctionCode")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("OpcNodeId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("RegisterAddress")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RegisterCount")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SlaveId")
-                        .HasColumnType("integer");
+                        .HasMaxLength(255)
+                        .IsUnicode(false)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("TagId")
                         .HasColumnType("integer");
@@ -94,9 +213,12 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("AssetId");
 
+                    b.HasIndex("OpcNodeId")
+                        .IsUnique();
+
                     b.HasIndex("TagId");
 
-                    b.ToTable("Mappings");
+                    b.ToTable("MappingTables", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.NodeLastData", b =>
@@ -123,16 +245,54 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<float>("Value")
                         .HasColumnType("real");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MappingId");
+                    b.HasIndex("MappingId", "OpcNodeId")
+                        .IsUnique();
 
                     b.ToTable("NodeLastDatas");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ProtocolConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<int>("FunctionCode")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MappingId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RegisterAddress")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RegisterCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SlaveId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MappingId");
+
+                    b.ToTable("ProtocolConfig");
                 });
 
             modelBuilder.Entity("Domain.Entities.SensorRawData", b =>
@@ -159,14 +319,17 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<float>("Value")
                         .HasColumnType("real");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MappingId");
+                    b.HasIndex("MappingId")
+                        .HasDatabaseName("Idx_mapping_Id");
 
                     b.ToTable("SensorRawDatas");
                 });
@@ -180,7 +343,19 @@ namespace Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TagId"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<string>("DataType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("Deadband")
+                        .HasColumnType("real");
+
+                    b.Property<bool>("IsDerived")
+                        .HasColumnType("boolean");
 
                     b.Property<float>("LowerLimit")
                         .HasColumnType("real");
@@ -247,7 +422,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<float>("Value")
                         .HasColumnType("real");
@@ -259,6 +436,65 @@ namespace Infrastructure.Migrations
                     b.ToTable("TransactionData");
                 });
 
+            modelBuilder.Entity("Domain.Entities.WeeklyAggregatedData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssetId")
+                        .HasColumnType("integer");
+
+                    b.Property<float>("AverageValue")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("DaysCount")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsFinal")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("MappingId")
+                        .HasColumnType("integer");
+
+                    b.Property<float>("MaxValue")
+                        .HasColumnType("real");
+
+                    b.Property<float>("MinValue")
+                        .HasColumnType("real");
+
+                    b.Property<int>("TotalSamples")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("WeekEndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("WeekStartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MappingId");
+
+                    b.ToTable("WeeklyAvgData");
+                });
+
+            modelBuilder.Entity("Domain.Entities.AlarmInfo", b =>
+                {
+                    b.HasOne("Domain.Entities.MappingTable", "Mapping")
+                        .WithMany("Alarms")
+                        .HasForeignKey("MappingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mapping");
+                });
+
             modelBuilder.Entity("Domain.Entities.MappingTable", b =>
                 {
                     b.HasOne("Domain.Entities.Assets", "Asset")
@@ -268,7 +504,7 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Tag", "Tag")
-                        .WithMany("Mapings")
+                        .WithMany("Mappings")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -282,6 +518,17 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.MappingTable", "Mapping")
                         .WithMany("NodeLastData")
+                        .HasForeignKey("MappingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mapping");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ProtocolConfig", b =>
+                {
+                    b.HasOne("Domain.Entities.MappingTable", "Mapping")
+                        .WithMany("ModbusConifg")
                         .HasForeignKey("MappingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -314,7 +561,18 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.TransactionData", b =>
                 {
                     b.HasOne("Domain.Entities.MappingTable", "Mapping")
-                        .WithMany("TrnasactionData")
+                        .WithMany("TransactionData")
+                        .HasForeignKey("MappingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mapping");
+                });
+
+            modelBuilder.Entity("Domain.Entities.WeeklyAggregatedData", b =>
+                {
+                    b.HasOne("Domain.Entities.MappingTable", "Mapping")
+                        .WithMany()
                         .HasForeignKey("MappingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -329,16 +587,20 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.MappingTable", b =>
                 {
+                    b.Navigation("Alarms");
+
+                    b.Navigation("ModbusConifg");
+
                     b.Navigation("NodeLastData");
 
                     b.Navigation("SensorData");
 
-                    b.Navigation("TrnasactionData");
+                    b.Navigation("TransactionData");
                 });
 
             modelBuilder.Entity("Domain.Entities.Tag", b =>
                 {
-                    b.Navigation("Mapings");
+                    b.Navigation("Mappings");
                 });
 
             modelBuilder.Entity("Domain.Entities.TagType", b =>

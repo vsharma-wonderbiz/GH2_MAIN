@@ -1,0 +1,14 @@
+sqp_391ff2631cf61bdd48334e7e4d50a9937a62a5f9
+
+dotnet sonarscanner begin /k:"Gh2-Backend" /d:sonar.host.url="http://localhost:9000"  /d:sonar.login="sqp_391ff2631cf61bdd48334e7e4d50a9937a62a5f9"
+
+dotnet build
+
+dotnet sonarscanner end /d:sonar.login="sqp_391ff2631cf61bdd48334e7e4d50a9937a62a5f9"
+
+
+to Generate teh code coverage in the sonar we have to use these it does not aurmoatically genarte the test 
+
+we have to manully use a tool to generate the code coverage 
+
+dotnet sonarscanner begin /k:"Gh2-Backend" /d:sonar.token="sqp_391ff2631cf61bdd48334e7e4d50a9937a62a5f9" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml

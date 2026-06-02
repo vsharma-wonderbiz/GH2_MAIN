@@ -27,6 +27,14 @@ namespace Infrastructure.Persistence.Configuration
                    .WithMany(m => m.SensorData)
                    .HasForeignKey(s => s.MappingId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Property(a => a.TimeStamp)
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("NOW()");
+
+            builder.HasIndex(a => a.MappingId)
+                .HasDatabaseName("Idx_mapping_Id");
         }
     }
 

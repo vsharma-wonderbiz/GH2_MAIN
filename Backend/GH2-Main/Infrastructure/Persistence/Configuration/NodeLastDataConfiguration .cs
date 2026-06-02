@@ -27,6 +27,15 @@ namespace Infrastructure.Persistence.Configuration
                    .WithMany(m => m.NodeLastData)
                    .HasForeignKey(n => n.MappingId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasIndex(n => new { n.MappingId, n.OpcNodeId })
+               .IsUnique();
+
+
+            builder.Property(a=>a.TimeStamp)
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("NOW()");
+
         }
     }
 

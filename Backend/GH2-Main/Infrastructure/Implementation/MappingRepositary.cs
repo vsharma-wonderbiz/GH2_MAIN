@@ -1,0 +1,89 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Application.Interface;
+using Domain.Entities;
+using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Implementation
+{
+    public class MappingRepositary :  IMappingRepositary
+    {
+        private readonly ApplicationDbContext _context;
+
+        public MappingRepositary(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        
+        public async Task<List<int>> GetDependentTagMAppingId(List<int> assetIds, List<int> tagIds)
+        {
+
+            var MappingIds = await _context.Mappings
+                            .Where(m => assetIds.Contains(m.AssetId) && tagIds.Contains(m.TagId))
+                            .Select(m => m.MappingId).ToListAsync();
+
+            return MappingIds;
+
+        }
+
+        public async Task<List<MappingTable>> GetMappingsByAssetIdsAndTagIds(
+         List<int> assetIds, List<int> tagIds)
+        {
+
+            return await _context.Mappings
+                .Include(m => m.Asset)
+                .Include(m => m.Tag)
+                .Where(m => assetIds.Contains(m.AssetId) && tagIds.Contains(m.TagId))
+                .ToListAsync();
+
+        }
+
+
+        public async Task<List<MappingTable>> GetAllMappingWithConfigs()
+        {
+            return await _context.Mappings
+                 .Where(m => m.Tag != null && m.Tag.IsDerived == false)
+                .Include(m => m.Asset)
+                .Include(m => m.Tag)
+                .ToListAsync();
+        }
+
+        public async Task<bool> Isconfig(int mappingID)
+        {
+            return await _context.ProtocolConfig.AnyAsync(a => a.MappingId == mappingID);
+        }
+
+        public async Task<List<MappingTable>> GetAllMappingsOnStack(int StackId)
+        {
+            
+
+            return await _context.Mappings
+                .Where(m=>m.AssetId== StackId && m.Tag != null && m.Tag.IsDerived == false)
+               .Include(m => m.Asset)
+               .Include(m => m.Tag)
+               .ToListAsync();
+        }
+
+
+        public async Task<ProtocolConfig?> GetModbusConfigFromMapppingId(int mappingId)
+        {
+            return await _context.ProtocolConfig.FirstOrDefaultAsync(a => a.MappingId == mappingId);
+        }
+
+        public async Task<int> GetMappingIdFromAssetandTag(string assetname, string Tagname)
+        {
+            return await _context.Mappings
+                .Include(m => m.Asset)
+                .Include(m => m.Tag)
+                .Where(a => a.Asset!=null && a.Asset.Name == assetname && a.Tag != null && a.Tag.TagName == Tagname)
+                .Select(a => a.MappingId)
+                .FirstOrDefaultAsync();
+        }
+    }
+}

@@ -1,0 +1,102 @@
+﻿using Application.DTOS;
+using Application.Interface;
+using Application.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AnalyticsController : ControllerBase
+    {
+        private readonly IAnalyticsService _analyticsService;
+        private readonly KpiQueryService _kpiQueryService;
+        private readonly IAlarmRepositary _alarmRepositary;
+        
+
+        public AnalyticsController(IAnalyticsService analyticsService,KpiQueryService kpiQueryService,IAlarmRepositary alarmRepositary)
+        {
+            _analyticsService = analyticsService;
+            _kpiQueryService = kpiQueryService;
+            _alarmRepositary = alarmRepositary;
+        }
+
+        [HttpPost("data")]
+        public async Task<IActionResult> GetAnalyticsData([FromBody] AnalyticsRequestDto dto)
+        {
+            try
+            {
+                var result = await _analyticsService.GetAnalyticsData(dto);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Internal server error." });
+            }
+        }
+
+        [HttpPost("Kpi")]
+        public async Task<IActionResult> GetKpi([FromBody] KpiQueryRequestDto request)
+        {
+            Console.WriteLine($"TagId: {request.TagId}, TimeRange: {request.TimeRange}");
+            try
+            {
+                if (request.TagId <= 0)
+                    return BadRequest("TagId is required and must be greater than 0.");
+
+                if (request.TimeRange == KpiTimeRange.Custom)
+                {
+                    if (request.CustomStart == null || request.CustomEnd == null)
+                        return BadRequest("CustomStart and CustomEnd are required for Custom time range.");
+
+                    if (request.CustomStart >= request.CustomEnd)
+                        return BadRequest("CustomStart must be before CustomEnd.");
+                }
+
+                var result = await _kpiQueryService.GetKpiAsync(request);
+
+                if (result == null || result.Assets.Count==0)
+                    return NotFound($"No KPI data found for TagId {request.TagId}.");
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [Authorize(Roles="Admin")]
+        [HttpPost("PlantKpis")]
+        public async Task<IActionResult> GetLatestPlantKpiOnWeeks(PlantKpiRequestDto requestDto)
+        {
+           var result= await _kpiQueryService.GetPlantKpiBased(requestDto);
+            return Ok(result);
+        }
+
+        [Authorize(Roles ="Admin")]
+        [HttpPost("StackKpis")]
+        public async Task<IActionResult> GetLatestStackCustomizableKpis(StackKpiRequest requestDto)
+        {
+            var result = await _kpiQueryService.GetStackKpi(requestDto);
+            return Ok(result);
+        }
+
+
+        [HttpGet("Alerts")]
+        public async Task<IActionResult> GetAllLatestAlerts()
+        {
+            var result = await _alarmRepositary.GetAllLatestAlaram();
+            return Ok(result);
+        }
+    }
+}

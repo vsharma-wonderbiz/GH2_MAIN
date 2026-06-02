@@ -7,13 +7,29 @@ load_dotenv()
 
 
 
+# DB_CONFIG = {
+#     "host": os.getenv("PG_HOST"),
+#     "port": int(os.getenv("PG_PORT")),
+#     "dbname": os.getenv("PG_DB"),
+#     "user": os.getenv("PG_USER"),
+#     "password": os.getenv("PG_PASSWORD"),
+# }
+
+
 DB_CONFIG = {
-    "host": os.getenv("PG_HOST"),
-    "port": int(os.getenv("PG_PORT")),
-    "dbname": os.getenv("PG_DB"),
-    "user": os.getenv("PG_USER"),
-    "password": os.getenv("PG_PASSWORD"),
+    "host":"localhost",
+    "port": 5432,
+    "dbname": "GH2-Main",
+    "user": "postgres",
+    "password":"Vinay@123",
 }
+
+# PG_HOST=postgres
+# PG_PORT=5432
+# PG_DB=MixerDb
+# PG_USER=postgres
+# PG_PASSWORD=Vinay@123
+# SYS_DB_NAME=postgres
 
 
 
@@ -36,9 +52,9 @@ def create_database_if_not_exists():
     )
 
     if cur.fetchone():
-        print(f"✅ Database already exists: {db_name}")
+        print(f" Database already exists: {db_name}")
     else:
-        print(f"🛠️ Database not found, creating: {db_name}")
+        print(f" Database not found, creating: {db_name}")
         cur.execute(f'CREATE DATABASE "{db_name}"')
 
     cur.close()

@@ -1,0 +1,14 @@
+Backend
+
+navigate to the folder 
+step :- 1
+
+dotnet sonarscanner begin /k:"my-project" /d:sonar.host.url="http://localhost:9000"  /d:sonar.login="squ_1a9fcbcbaddd8b8225046f3fb43559e62f8c10d7"
+
+step 2:-
+
+dotnet build 
+
+
+step 3:- 
+dotnet sonarscanner end /d:sonar.login="squ_1a9fcbcbaddd8b8225046f3fb43559e62f8c10d7" 

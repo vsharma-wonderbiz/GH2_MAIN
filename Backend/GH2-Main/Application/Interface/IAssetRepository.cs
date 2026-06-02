@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Domain.Entities;
+
+namespace Application.Interface
+{
+    public interface IAssetRepository : IRepository<Assets>
+    {
+        Task<Assets?> GetByNameAsync(string name);
+        Task<List<Assets>> GetAssetsByType(string assetType);
+        Task<List<Assets>> GetChildAssets(int parentAssetId);
+        Task<List<Assets>> GetAllPlants();
+
+       
+    }
+}

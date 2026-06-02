@@ -24,9 +24,13 @@ namespace Infrastructure.Persistence.Configuration
 
 
             builder.HasOne(s => s.Mapping)
-                   .WithMany(m => m.TrnasactionData)
+                   .WithMany(m => m.TransactionData)
                    .HasForeignKey(s => s.MappingId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(a => a.TimeStamp)
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("NOW()");
         }
     }
 }

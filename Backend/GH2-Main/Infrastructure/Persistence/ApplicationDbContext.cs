@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
+using AuthMicroservice.Domain.Entities;
 
 namespace Infrastructure.Persistence
 {
@@ -21,6 +22,16 @@ namespace Infrastructure.Persistence
         public DbSet<TagType> TagTypes { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<SensorRawData> SensorRawDatas { get; set; }
+
+        public DbSet<ProtocolConfig> ProtocolConfig { get; set; }
+
+        public DbSet<WeeklyAggregatedData> WeeklyAvgData { get; set; }
+
+        public DbSet<AlarmInfo> Alarms { get; set; } 
+
+        public DbSet<KpiTable> KpiTable { get; set; }
+
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,0 +1,46 @@
+src/
+│
+├── app/                # App level setup
+│   ├── App.jsx
+│   ├── routes.jsx
+│
+├── pages/              # Full pages (routes)
+│   ├── Dashboard/
+│   ├── Alerts/
+│   ├── Signals/
+│   ├── Settings/
+│
+├── features/           #Feature-wise logic (VERY IMPORTANT)
+│   ├── alerts/
+│   │   ├── components/
+│   │   ├── services/
+│   │   ├── hooks/
+│   │   ├── alertsSlice.js (if redux)
+│   │
+│   ├── signals/
+│   ├── auth/
+│
+├── components/         # Reusable UI components
+│   ├── Button.jsx
+│   ├── Card.jsx
+│   ├── Modal.jsx
+│
+├── layouts/            # Layouts (sidebar, navbar)
+│   ├── DashboardLayout.jsx
+│
+├── services/           # API calls (common)
+│   ├── api.js
+│   ├── axiosInstance.js
+│
+├── hooks/              # Global custom hooks
+│   ├── usePolling.js
+│
+├── utils/              # Helper functions
+│   ├── formatDate.js
+│
+├── constants/          # Static values
+│   ├── alertLevels.js
+│
+├── styles/             # CSS / Tailwind config
+│
+└── assets/             # images/icons

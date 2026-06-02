@@ -18,12 +18,19 @@ namespace Infrastructure.Persistence.Configuration
 
             builder.Property(t => t.TagName).IsRequired();
             builder.Property(t => t.Unit).IsRequired();
+            builder.Property(t=>t.Deadband).IsRequired();
+            builder.Property(t => t.DataType).IsRequired();
 
             
             builder.HasOne(t => t.TagType)          
                    .WithMany(tt => tt.Tags)       
                    .HasForeignKey(t => t.TagTypeId) 
                    .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Property(a => a.CreatedAt)
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("NOW()");
 
         }
     }

@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Domain.Entities;
+
+namespace Application.Interface
+{
+    public interface IMappingRepositary
+    {
+        Task<List<int>> GetDependentTagMAppingId(List<int> assetIds,List<int> tagIds);
+
+        Task<List<MappingTable>> GetMappingsByAssetIdsAndTagIds(List<int> assetIds, List<int> tagIds);
+
+        Task<bool> Isconfig(int mappingID);
+        Task<List<MappingTable>> GetAllMappingWithConfigs();
+
+        Task<ProtocolConfig?> GetModbusConfigFromMapppingId(int mappingId);
+
+        Task<List<MappingTable>> GetAllMappingsOnStack(int StackId);
+
+        Task<int> GetMappingIdFromAssetandTag(string assetname, string Tagname);
+
+     
+    }
+}

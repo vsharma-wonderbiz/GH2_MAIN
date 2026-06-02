@@ -1,0 +1,170 @@
+Yessss 🙌 you’ve basically cracked it. Let me clean it up and tighten it so there’s zero confusion.
+
+First small correction though:
+
+👉 KPI id comes
+👉 You fetch **KPI name from KPI table**, not from Tag table
+
+Tag table is only for sensor tags like `pressure`, `voltage`, etc.
+
+Now the proper clean flow 👇
+
+---
+
+# 🧠 Final Correct Flow
+
+### 1️⃣ KPI ID comes in request
+
+```
+GET /kpi/{kpiId}
+```
+
+---
+
+### 2️⃣ Fetch KPI metadata (from KPI table)
+
+You get:
+
+* `kpiName`
+* `level` (Plant / Stack)
+
+Example:
+
+```
+pressure_diff
+Stack
+```
+
+---
+
+### 3️⃣ Read dependent tag names from config
+
+From your config:
+
+```
+["pressure", "outlet_pressure"]
+```
+
+Still name-based. Perfect.
+
+---
+
+### 4️⃣ Fetch TagIds from Tag table
+
+Using those names:
+
+```
+pressure → 11
+outlet_pressure → 12
+```
+
+Now you have dependent TagIds.
+
+---
+
+### 5️⃣ Fetch MappingIds (VERY IMPORTANT STEP)
+
+Now combine:
+
+* AssetIds (all stacks)
+* Dependent TagIds
+
+Query mapping table:
+
+```
+MappingId | AssetId | TagId
+--------------------------------
+101       | 1       | 11
+102       | 1       | 12
+201       | 2       | 11
+202       | 2       | 12
+```
+
+Now you have correct mapping ids per stack.
+
+---
+
+### 6️⃣ Fetch average sensor data using MappingIds
+
+Since your avg table stores data using MappingId:
+
+```
+SELECT * FROM AvgSensorData
+WHERE MappingId IN (101,102,201,202)
+```
+
+Now you have values.
+
+---
+
+### 7️⃣ Group data per Asset
+
+Build something like:
+
+```
+Stack_1:
+   pressure = 25
+   outlet_pressure = 22
+
+Stack_2:
+   pressure = 26
+   outlet_pressure = 23
+```
+
+---
+
+### 8️⃣ Calculate KPI per asset
+
+For example:
+
+```
+pressure_diff = pressure - outlet_pressure
+```
+
+So:
+
+```
+Stack_1 → 3
+Stack_2 → 3
+```
+
+---
+
+### 9️⃣ Send clean response for graphs
+
+Something like:
+
+```json
+{
+  "kpiId": 2,
+  "kpiName": "pressure_diff",
+  "level": "Stack",
+  "values": [
+    { "assetId": 1, "value": 3 },
+    { "assetId": 2, "value": 3 }
+  ]
+}
+```
+
+Frontend can directly plot.
+
+---
+
+# 🎯 So yes — your understanding is now correct.
+
+Your final sentence rewritten properly:
+
+> KPI id → get KPI name → get dependent tag names → fetch tag ids → fetch mapping ids using asset + tag ids → fetch avg data using mapping ids → calculate → send response.
+
+That’s solid architecture. Industrial-level clean.
+
+---
+
+One small thing I want you to think about now:
+
+Are you calculating for:
+
+* Latest average only?
+* Or for a time range (like last 1 hour trend)?
+
+Because if it’s time-based, grouping logic changes slightly.
