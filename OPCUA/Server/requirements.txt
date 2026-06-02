@@ -1,0 +1,5 @@
+opcua==0.98.13
+pymodbus==2.5.3
+python-dotenv==1.2.2
+Requests==2.34.0
+urllib3==2.7.0
