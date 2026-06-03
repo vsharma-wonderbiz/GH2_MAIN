@@ -108,6 +108,7 @@ using (var scope = app.Services.CreateScope())
     var seeder = scope.ServiceProvider.GetRequiredService<ProtocolDataSeeder>();
 
     // Run seeders
+    UserSeeder.Seed(context);
     TagTypeSeeder.Seeder(context);
     TagsSeeder.Seeder(context, logger);
     AssetSeeder.Seed(context);
