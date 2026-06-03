@@ -8,12 +8,6 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD}
     ports:
       - "5433:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PG_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 20s
     networks:
       - gh2_network
 
@@ -29,19 +23,13 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 20s
     networks:
       - gh2_network
 
   modsim:
     build: ./modsim
     container_name: modsim-server
-    restart: on-failure:5
+    restart: on-failure
     ports:
       - "5020:5020"
       - "9000:9000"
@@ -49,70 +37,57 @@ services:
       - ./modsim/.env
     volumes:
       - ./modsim:/app/Modsim
-    healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 5020 || exit 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
+    depends_on:
+      - postgres
+      - rabbitmq
     networks:
       - gh2_network
 
   backend:
     build: ./Backend/GH2-Main
     container_name: GH2-Backend
-    restart: on-failure:10
+    restart: on-failure
     ports:
       - "7144:7144"
     env_file:
       - ./Backend/GH2-Main/GH2-Main/.env
     depends_on:
-      postgres:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-      modsim:
-        condition: service_started
+      - postgres
+      - rabbitmq
+      - modsim
     volumes:
       - ./modsim:/shared/modsim
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:7144/health || exit 1"]
-      interval: 15s
-      timeout: 10s
-      retries: 10
-      start_period: 40s
     networks:
       - gh2_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:7144/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 50s
 
   opcua:
     build: ./opcua/server
     container_name: opcua-server
-    restart: on-failure:10
+    restart: on-failure
     ports:
       - "4840:4840"
     env_file:
       - ./opcua/server/.env
     depends_on:
       backend:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 4840 || exit 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
+        condition: service_healthy  # waits until backend /health returns 200
     networks:
       - gh2_network
 
   opcua_client:
     build: ./opcua/Client
     container_name: opcua-client
-    restart: on-failure:10
+    restart: on-failure
     env_file:
       - ./opcua/client/.env
     depends_on:
-      opcua:
-        condition: service_healthy
+      - opcua
     networks:
       - gh2_network
 
@@ -121,12 +96,11 @@ services:
       context: ./Frontend
       dockerfile: dockerfile
     container_name: gh2-frontend
-    restart: on-failure:5
+    restart: on-failure
     ports:
       - "5173:5173"
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     environment:
       CHOKIDAR_USEPOLLING: "true"
       VITE_API_BASE_URL: http://localhost:7144/api

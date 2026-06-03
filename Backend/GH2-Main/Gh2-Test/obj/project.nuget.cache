@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gFgTnFroto0=",
+  "dgSpecHash": "5ld7KOHZHhA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Vinay Sharma\\GH2_MAIN\\Backend\\GH2-Main\\Gh2-Test\\Gh2-Test.csproj",
+  "projectFilePath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Gh2-Test\\Gh2-Test.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Vinay Sharma\\.nuget\\packages\\automapper\\15.1.3\\automapper.15.1.3.nupkg.sha512",
     "C:\\Users\\Vinay Sharma\\.nuget\\packages\\azure.core\\1.50.0\\azure.core.1.50.0.nupkg.sha512",

@@ -102,12 +102,10 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+     
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<TagsSeeder>>();
     var seeder = scope.ServiceProvider.GetRequiredService<ProtocolDataSeeder>();
-
-    // Apply migrations
-    context.Database.Migrate();
 
     // Run seeders
     TagTypeSeeder.Seeder(context);
@@ -129,6 +127,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapGet("/health", () => Results.Ok("healthy"));
 
 app.UseAuthorization();
 

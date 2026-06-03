@@ -23,9 +23,9 @@ namespace Infrastructure.Persistence
         public DbSet<Tag> Tags { get; set; }
         public DbSet<SensorRawData> SensorRawDatas { get; set; }
 
-        public DbSet<ProtocolConfig> ProtocolConfig { get; set; }
+        public DbSet<ProtocolConfig> ProtocolConfig { get; set;}
 
-        public DbSet<WeeklyAggregatedData> WeeklyAvgData { get; set; }
+        public DbSet<WeeklyAggregatedData> WeeklyAvgData { get; set;}
 
         public DbSet<AlarmInfo> Alarms { get; set; } 
 
