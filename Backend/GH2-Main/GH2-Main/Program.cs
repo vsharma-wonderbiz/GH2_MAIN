@@ -42,12 +42,11 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
 
-        // allows "tagId", "TagId", "TAGID" � all work
+        
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 
     });
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -64,10 +63,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         policy => policy
-            .WithOrigins("http://localhost:5173") // ? exact frontend URL
+            .WithOrigins("http://localhost:5173")
             .AllowAnyMethod()
             .AllowAnyHeader()
-            .AllowCredentials()); // ? now works because origin is specific
+            .AllowCredentials()); 
 });
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
