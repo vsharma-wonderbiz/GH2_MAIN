@@ -1,0 +1,15 @@
+FROM python:3
+
+WORKDIR /app/Modsim
+
+COPY requirements.txt ./
+
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install cryptography
+
+
+COPY . .
+
+EXPOSE 4080
+
+CMD ["python","./opc_sim_server.py"]

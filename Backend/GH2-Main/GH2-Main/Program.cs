@@ -37,7 +37,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
 
-        // allows "tagId", "TagId", "TAGID" — all work
+        // allows "tagId", "TagId", "TAGID" all work
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 
