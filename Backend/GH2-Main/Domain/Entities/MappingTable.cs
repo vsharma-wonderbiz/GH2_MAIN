@@ -26,6 +26,7 @@ namespace Domain.Entities
         public ICollection<ProtocolConfig> ModbusConifg { get; private set; } = new List<ProtocolConfig>();
         public ICollection<AlarmInfo> Alarms { get; set; }
 
+        public ICollection<RecommendationInfo> Recommendations { get; set; }
 
         private MappingTable() { }
 

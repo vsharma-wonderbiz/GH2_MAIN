@@ -295,6 +295,57 @@ namespace Infrastructure.Migrations
                     b.ToTable("ProtocolConfig");
                 });
 
+            modelBuilder.Entity("Domain.Entities.RecommendationInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AssetName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<float>("CurrentVal")
+                        .HasColumnType("real");
+
+                    b.Property<int>("MappingId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RecommendationType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ResolvedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SignalName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("TriggerVal")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MappingId");
+
+                    b.ToTable("Recommendations");
+                });
+
             modelBuilder.Entity("Domain.Entities.SensorRawData", b =>
                 {
                     b.Property<int>("Id")
@@ -536,6 +587,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Mapping");
                 });
 
+            modelBuilder.Entity("Domain.Entities.RecommendationInfo", b =>
+                {
+                    b.HasOne("Domain.Entities.MappingTable", "Mapping")
+                        .WithMany("Recommendations")
+                        .HasForeignKey("MappingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mapping");
+                });
+
             modelBuilder.Entity("Domain.Entities.SensorRawData", b =>
                 {
                     b.HasOne("Domain.Entities.MappingTable", "Mapping")
@@ -592,6 +654,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("ModbusConifg");
 
                     b.Navigation("NodeLastData");
+
+                    b.Navigation("Recommendations");
 
                     b.Navigation("SensorData");
 

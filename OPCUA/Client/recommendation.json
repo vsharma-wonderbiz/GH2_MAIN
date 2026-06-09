@@ -1,0 +1,93 @@
+{
+"trigger_percentage": 70,
+"resolve_percentage": 60,
+
+"signals": {
+"current": {
+"min_message": "Current is approaching the minimum operating threshold. Verify stack load and electrical performance.",
+"max_message": "Current is approaching the maximum operating threshold. Review stack load to prevent overload conditions."
+},
+
+"voltage": {
+  "min_message": "Voltage is approaching the minimum operating threshold. Verify power supply stability and stack performance.",
+  "max_message": "Voltage is approaching the maximum operating threshold. Review electrical operating conditions."
+},
+
+"pressure": {
+  "min_message": "Pressure is approaching the minimum operating threshold. Verify process stability and gas supply conditions.",
+  "max_message": "Pressure is approaching the maximum operating threshold. Inspect pressure regulation components and process conditions."
+},
+
+"outlet_pressure": {
+  "min_message": "Outlet pressure is approaching the minimum operating threshold. Verify downstream flow conditions.",
+  "max_message": "Outlet pressure is approaching the maximum operating threshold. Review downstream pressure control systems."
+},
+
+"flowrate": {
+  "min_message": "Flow rate is approaching the minimum operating threshold. Verify fluid circulation and process performance.",
+  "max_message": "Flow rate is approaching the maximum operating threshold. Monitor process flow stability."
+},
+
+"temperature": {
+  "min_message": "Temperature is approaching the minimum operating threshold. Verify process heating and operating conditions.",
+  "max_message": "Temperature is approaching the maximum operating threshold. Check cooling system performance."
+},
+
+"h2flow": {
+  "min_message": "Hydrogen flow is approaching the minimum operating threshold. Verify electrolyzer efficiency and hydrogen production performance.",
+  "max_message": "Hydrogen flow is approaching the maximum operating threshold. Monitor production conditions and process stability."
+},
+
+"water_conductivity": {
+  "min_message": "Water conductivity is approaching the minimum operating threshold. Verify water treatment system performance.",
+  "max_message": "Water conductivity is approaching the maximum operating threshold. Inspect water quality and purification systems."
+},
+
+"water_flowrate": {
+  "min_message": "Water flow rate is approaching the minimum operating threshold. Verify pump operation and circulation systems.",
+  "max_message": "Water flow rate is approaching the maximum operating threshold. Monitor water circulation performance."
+},
+
+"concentration": {
+  "min_message": "Electrolyte concentration is approaching the minimum operating threshold. Review process concentration levels.",
+  "max_message": "Electrolyte concentration is approaching the maximum operating threshold. Verify concentration control settings."
+},
+
+"fan_rpm": {
+  "min_message": "Fan speed is approaching the minimum operating threshold. Inspect cooling fan performance and airflow conditions.",
+  "max_message": "Fan speed is approaching the maximum operating threshold. Verify cooling system operating conditions."
+},
+
+"safey_board_temp": {
+  "min_message": "Safety board temperature is approaching the minimum operating threshold. Verify environmental operating conditions.",
+  "max_message": "Safety board temperature is approaching the maximum operating threshold. Inspect enclosure cooling and ventilation."
+},
+
+"recombiner_temp": {
+  "min_message": "Recombiner temperature is approaching the minimum operating threshold. Verify recombiner operating conditions.",
+  "max_message": "Recombiner temperature is approaching the maximum operating threshold. Inspect recombiner cooling and process performance."
+},
+
+"downstream_temp": {
+  "min_message": "Downstream temperature is approaching the minimum operating threshold. Verify process heat transfer conditions.",
+  "max_message": "Downstream temperature is approaching the maximum operating threshold. Review downstream cooling performance."
+},
+
+"power": {
+  "min_message": "Plant power consumption is approaching the minimum operating threshold. Verify plant loading and operating conditions.",
+  "max_message": "Plant power consumption is approaching the maximum operating threshold. Review energy utilization and operating efficiency."
+},
+
+"throughput": {
+  "min_message": "Plant throughput is approaching the minimum operating threshold. Verify production performance and process stability.",
+  "max_message": "Plant throughput is approaching the maximum operating threshold. Monitor production capacity and operating conditions."
+},
+
+"lifetime": {
+  "min_message": "Stack lifetime is below expected operating levels. Verify maintenance records and operating conditions.",
+  "max_message": "Stack lifetime is approaching its configured operating limit. Schedule preventive maintenance."
+}
+
+
+}
+}

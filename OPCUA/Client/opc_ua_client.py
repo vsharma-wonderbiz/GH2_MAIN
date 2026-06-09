@@ -10,9 +10,10 @@ import time
 import pika
 import json
 
-URL = "opc.tcp://10.10.10.233:4840"
-RABBITMQ_HOST='localhost'
+URL="opc.tcp://10.10.10.33:4840"
+RABBITMQ_HOST = 'localhost'
 CHANGE_THRESHOLD = 0.01  # change threshold
+
 
 
 logging.basicConfig(
@@ -21,32 +22,34 @@ logging.basicConfig(
 )
 logging.getLogger("opcua").setLevel(logging.WARNING)
 logging.getLogger("asyncio").setLevel(logging.WARNING)
-            
+
+
 class SubscriptionHandler:
     """
     Handles OPC UA data change notifications and DB updates.
-    
+
     Maps OPC NodeIds to MappingIds and updates DB on value changes.
     """
 
-    def __init__(self, repo: ITelemetryRepository, mapping_id_map: dict, threshold: float,alaram_manager):
+    def __init__(self, repo: ITelemetryRepository, mapping_id_map: dict, threshold: float, alarm_manager, recommendation_manager):
         self.repo = repo
         self.mapping_id_map = mapping_id_map  # Maps OpcNodeId string -> MappingId (integer)
         self.threshold = threshold
         self.last_known_values = repo.get_all_last_known_values() if repo else {}
         self.lock = threading.Lock()
-        self.alarm_manager=alaram_manager
+        self.alarm_manager = alarm_manager
+        self.recommendation_manager = recommendation_manager
 
     def datachange_notification(self, node, val, data):
         """Called when a monitored node value changes."""
         try:
             with self.lock:
                 opc_node_id = node.nodeid.to_string()
-                signal_name=self._extract_signal_name(opc_node_id)
-                asset_name=self._extract_asset_name(opc_node_id)
-                # print(signal_name)
+                signal_name = self._extract_signal_name(opc_node_id)
+                asset_name = self._extract_asset_name(opc_node_id)
+
                 mapping_id = self.mapping_id_map.get(opc_node_id)
-                
+
                 if not mapping_id:
                     logging.debug(f"OPC Node {opc_node_id} not in mapping, skipping")
                     return
@@ -55,7 +58,6 @@ class SubscriptionHandler:
                 try:
                     source_time = data.monitored_item.Value.SourceTimestamp.strftime("%Y-%m-%d %H:%M:%S")
                 except Exception:
-                    from datetime import datetime
                     source_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
                 last_value = self.last_known_values.get(mapping_id)
@@ -66,8 +68,12 @@ class SubscriptionHandler:
                     self.repo.update_last_known_value(mapping_id, opc_node_id, val, source_time)
                     self.last_known_values[mapping_id] = val
                     logging.info(f"Updated MappingId {mapping_id} (OPC: {opc_node_id}): {val}")
+
+                    # Check alarms and recommendations independently
+                    self.alarm_manager.check_alarm(asset_name, signal_name, mapping_id, val)
                     
-                    self.alarm_manager.check_alarm(asset_name,signal_name,mapping_id,val)
+                    if signal_name!="warning_exists" and signal_name!="trip_signal":
+                       self.recommendation_manager.check_recommendation(asset_name, signal_name, mapping_id, val)
 
         except Exception as e:
             logging.error(f"Subscription handler error: {e}")
@@ -84,33 +90,196 @@ class SubscriptionHandler:
 
         except (ValueError, TypeError):
             return old_value != new_value
-        
-    def _extract_signal_name(self,opc_id: str):
-      try:
-        # Step 1: remove prefix "ns=2;s="
-        clean = opc_id.split('=')[-1]
 
-        # Step 2: take last part after "."
-        return clean.split('.')[-1].lower()
-
-      except Exception:
-        return None
-    
-    def _extract_asset_name(self,opc_id:str):
+    def _extract_signal_name(self, opc_id: str):
         try:
-            clean=opc_id.split('=')[-1]
-            
-            parts=clean.split('.')
-            
-            if len(parts)>2:
+            clean = opc_id.split('=')[-1]
+            return clean.split('.')[-1].lower()
+        except Exception:
+            return None
+
+    def _extract_asset_name(self, opc_id: str):
+        try:
+            clean = opc_id.split('=')[-1]
+            parts = clean.split('.')
+            if len(parts) > 2:
                 return parts[1]
             else:
                 return parts[0]
-        
         except Exception:
             return None
-            
-            
+
+
+class RecommendationManager:
+    """
+    Monitors signal values and publishes early-warning recommendations
+    when a value approaches (but hasn't yet breached) its configured limits.
+ 
+    Trigger: value crosses trigger_percentage% of the way toward a limit.
+    Resolve: value falls back below resolve_percentage% toward that limit.
+ 
+    Example with range 0-100, trigger=70%, resolve=60%:
+      0 --[min_trigger=30]--[min_resolve=40]------[max_resolve=60]--[max_trigger=70]-- 100
+ 
+    Operator messages are loaded from recommendation_config.json in the same directory.
+    If a signal has no message configured, a generic fallback message is used.
+    """
+ 
+    FALLBACK_MESSAGE = {
+        "min": "Signal is approaching its minimum operating threshold. Please verify operating conditions.",
+        "max": "Signal is approaching its maximum operating threshold. Please verify operating conditions.",
+    }
+ 
+    def __init__(self, repo, rabbit_mq):
+        self.repo = repo
+        self.signal_limits = {}
+        self.active_recommendation = {}  # mapping_id -> None | "min" | "max"
+        self.mq = rabbit_mq
+        self.signal_messages = {}  # signal_key -> {"min_message": str, "max_message": str}
+ 
+        # Percentages can be overridden by the config file
+        self.trigger_percentage = 70
+        self.resolve_percentage = 60
+ 
+        self._load_config("recommendation.json")
+ 
+    def _load_config(self, config_path: str):
+        """Load operator messages and threshold percentages from JSON config."""
+        try:
+            with open(config_path, "r") as f:
+                config = json.load(f)
+ 
+            # Allow config to override percentages
+            self.trigger_percentage = config.get("trigger_percentage", self.trigger_percentage)
+            self.resolve_percentage = config.get("resolve_percentage", self.resolve_percentage)
+ 
+            # Load per-signal messages, keyed by lowercase signal name
+            signals = config.get("signals", {})
+            self.signal_messages = {
+                key.strip().lower(): {
+                    "min_message": val.get("min_message", self.FALLBACK_MESSAGE["min"]),
+                    "max_message": val.get("max_message", self.FALLBACK_MESSAGE["max"]),
+                }
+                for key, val in signals.items()
+            }
+ 
+            logging.info(
+                f"Recommendation config loaded: trigger={self.trigger_percentage}%, "
+                f"resolve={self.resolve_percentage}%, signals={len(self.signal_messages)}"
+            )
+ 
+        except FileNotFoundError:
+            logging.warning(f"Recommendation config not found at '{config_path}'. Using fallback messages.")
+        except Exception as e:
+            logging.error(f"Failed to load recommendation config: {e}. Using fallback messages.")
+ 
+    def _get_operator_message(self, signal_name: str, rec_type: str) -> str:
+        """Return the operator-facing message for a signal and direction (min/max)."""
+        signal_key = signal_name.strip().lower()
+        messages = self.signal_messages.get(signal_key)
+ 
+        if messages:
+            return messages.get(f"{rec_type}_message", self.FALLBACK_MESSAGE[rec_type])
+ 
+        logging.debug(f"No message config for signal '{signal_name}', using fallback.")
+        return self.FALLBACK_MESSAGE[rec_type]
+ 
+    def get_all_signal_limits(self):
+        limits = self.repo.get_signal_limits()
+        self.signal_limits = {
+            signal.strip().lower(): {"min": min_val, "max": max_val}
+            for signal, min_val, max_val in limits
+        }
+        logging.info(f"Recommendation signal limits loaded: {self.signal_limits}")
+ 
+    def check_recommendation(self, asset_name, signal_name, mapping_id, current_value):
+        if not signal_name:
+            logging.debug(f"Skipping recommendation check: signal is None for mapping_id {mapping_id}")
+            return
+ 
+        signal_key = signal_name.strip().lower()
+        limits = self.signal_limits.get(signal_key)
+ 
+        if not limits:
+            logging.debug(f"No limits configured for signal '{signal_name}'")
+            return
+ 
+        try:
+            val = float(current_value)
+            min_val = float(limits["min"])
+            max_val = float(limits["max"])
+        except (ValueError, TypeError) as e:
+            logging.warning(f"Recommendation check failed for '{signal_name}': {e}")
+            return
+ 
+        range_size = max_val - min_val
+ 
+        if range_size <= 0:
+            logging.warning(f"Invalid range for signal '{signal_name}': min={min_val}, max={max_val}")
+            return
+ 
+        # --- Compute thresholds ---
+        # Approaching max: value is trigger_percentage% of the way from min toward max
+        max_trigger = min_val + (self.trigger_percentage / 100) * range_size
+        max_resolve  = min_val + (self.resolve_percentage / 100) * range_size
+ 
+        # Approaching min: value is trigger_percentage% of the way from max down toward min
+        min_trigger = max_val - (self.trigger_percentage / 100) * range_size
+        min_resolve  = max_val - (self.resolve_percentage / 100) * range_size
+ 
+        current_state = self.active_recommendation.get(mapping_id)  # None, "min", or "max"
+ 
+        if val > max_trigger:
+            if current_state != "max":
+                self.active_recommendation[mapping_id] = "max"
+                message = self._get_operator_message(signal_name, "max")
+                self._publish_recommendation(asset_name, signal_name, mapping_id, "max", val, max_trigger, message)
+                logging.warning(f"RECOMMENDATION [MAX] '{signal_name}': value={val}, trigger={max_trigger:.2f} | {message}")
+ 
+        elif val < min_trigger:
+            if current_state != "min":
+                self.active_recommendation[mapping_id] = "min"
+                message = self._get_operator_message(signal_name, "min")
+                self._publish_recommendation(asset_name, signal_name, mapping_id, "min", val, min_trigger, message)
+                logging.warning(f"RECOMMENDATION [MIN] '{signal_name}': value={val}, trigger={min_trigger:.2f} | {message}")
+ 
+        else:
+            # Value is back in safe zone — check resolve threshold to clear
+            if current_state == "max" and val < max_resolve:
+                self.active_recommendation.pop(mapping_id, None)
+                self._publish_clear(asset_name, signal_name, mapping_id, "max", val)
+                logging.info(f"RECOMMENDATION CLEARED [MAX] '{signal_name}': value={val}")
+ 
+            elif current_state == "min" and val > min_resolve:
+                self.active_recommendation.pop(mapping_id, None)
+                self._publish_clear(asset_name, signal_name, mapping_id, "min", val)
+                logging.info(f"RECOMMENDATION CLEARED [MIN] '{signal_name}': value={val}")
+ 
+    def _publish_recommendation(self, asset_name, signal_name, mapping_id, rec_type, current_value, trigger_value, operator_message):
+        message = json.dumps({
+            "event": "RECOMMENDATION_TRIGGERED",
+            "mapping_id": mapping_id,
+            "asset": asset_name,
+            "signal": signal_name,
+            "recommendation_type": rec_type,
+            "current_value":current_value,
+            "trigger_value": round(trigger_value, 4),
+            "message": operator_message,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        })
+        self.mq.publish("recommendation_queue", message)
+ 
+    def _publish_clear(self, asset_name, signal_name, mapping_id, previous_type, current_value):
+        message = json.dumps({
+            "event": "RECOMMENDATION_CLEARED",
+            "mapping_id": mapping_id,
+            "asset": asset_name,
+            "signal": signal_name,
+            "recommendation_type": previous_type,
+            "current_value": current_value,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        })
+        self.mq.publish("recommendation_queue", message)
 
 
 class AlarmManager:
@@ -129,7 +298,7 @@ class AlarmManager:
         }
         logging.info(f"Signal limits loaded: {self.signal_limits}")
 
-    def check_alarm(self,asset_name, signal_name, mapping_id, current_value):
+    def check_alarm(self, asset_name, signal_name, mapping_id, current_value):
         if not signal_name:
             logging.debug(f"Skipping alarm check: signal_name is None for mapping_id {mapping_id}")
             return
@@ -153,27 +322,27 @@ class AlarmManager:
         if val < min_val:
             if current_state != "min":  # Only fire on first state change
                 self.active_alarms[mapping_id] = "min"
-                self._publish_alarm("ALARM_TRIGGERED",asset_name, signal_name, mapping_id, "min", val, min_val)
+                self._publish_alarm("ALARM_TRIGGERED", asset_name, signal_name, mapping_id, "min", val, min_val)
                 logging.warning(f"ALARM [MIN] {signal_name}: value={val}, limit={min_val}")
 
         elif val > max_val:
             if current_state != "max":  # Only fire on first state change
                 self.active_alarms[mapping_id] = "max"
-                self._publish_alarm("ALARM_TRIGGERED",asset_name,signal_name, mapping_id, "max", val, max_val)
+                self._publish_alarm("ALARM_TRIGGERED", asset_name, signal_name, mapping_id, "max", val, max_val)
                 logging.warning(f"ALARM [MAX] {signal_name}: value={val}, limit={max_val}")
 
         else:
             if current_state is not None:  # Only clear if there WAS an active alarm
                 prev_state = current_state
                 self.active_alarms.pop(mapping_id, None)
-                self._publish_clear(asset_name,signal_name, mapping_id, prev_state, val,max_val)
+                self._publish_clear(asset_name, signal_name, mapping_id, prev_state, val, max_val)
                 logging.info(f"ALARM CLEARED {signal_name}: value={val}")
 
-    def _publish_alarm(self, event,asset_name, signal_name, mapping_id, alarm_type, current_value, limit_value):
+    def _publish_alarm(self, event, asset_name, signal_name, mapping_id, alarm_type, current_value, limit_value):
         message = json.dumps({
             "event": event,
             "mapping_id": mapping_id,
-            "asset":asset_name,
+            "asset": asset_name,
             "signal": signal_name,
             "alarm_type": alarm_type,
             "current_value": current_value,
@@ -182,11 +351,11 @@ class AlarmManager:
         })
         self.mq.publish("alarm_queue", message)
 
-    def _publish_clear(self,asset_name, signal_name, mapping_id, previous_alarm_type, current_value,limit_value):
+    def _publish_clear(self, asset_name, signal_name, mapping_id, previous_alarm_type, current_value, limit_value):
         message = json.dumps({
             "event": "ALARM_CLEARED",
             "mapping_id": mapping_id,
-            "asset":asset_name,
+            "asset": asset_name,
             "signal": signal_name,
             "alarm_type": previous_alarm_type,
             "current_value": current_value,
@@ -194,7 +363,7 @@ class AlarmManager:
             "timestamp": datetime.now(timezone.utc).isoformat()
         })
         self.mq.publish("alarm_queue", message)
-        
+
 
 class RabbitMQPublisher:
     def __init__(self, host=RABBITMQ_HOST):
@@ -204,11 +373,12 @@ class RabbitMQPublisher:
         self._connect()
 
     def _connect(self):
-        """Establish connection and declare queue."""
+        """Establish connection and declare queues."""
         try:
-            self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host,heartbeat=300))
+            self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host, heartbeat=300))
             self.channel = self.connection.channel()
             self.channel.queue_declare(queue="alarm_queue", durable=True)
+            self.channel.queue_declare(queue="recommendation_queue", durable=True)
             logging.info(f"RabbitMQ connected at {self.host}")
         except Exception as e:
             logging.error(f"RabbitMQ connection failed: {e}")
@@ -260,7 +430,6 @@ class SnapshotThread(threading.Thread):
         self.lock = threading.Lock()
 
     def run(self):
-
         logging.info(f"Snapshot thread started (interval: {self.interval}s)")
 
         while self.running:
@@ -288,10 +457,10 @@ class NodeSubscriber:
     def __init__(self, url: str = URL, db=None, repo=None, threshold: float = CHANGE_THRESHOLD):
         """
         Initialize the subscriber.
-        
+
         Args:
             url: OPC UA server URL
-            db: Database connection object (defaults to PostgresSqlConnection)                  
+            db: Database connection object (defaults to PostgresSqlConnection)
             repo: Repository object (defaults to PostgresRepositoryService)
             threshold: Change threshold for notifications
         """
@@ -305,10 +474,12 @@ class NodeSubscriber:
         self.subscription = None
         self.monitored_nodes = {}
         self.mapping_id_map = {}
-        self.alarm_manager=AlarmManager(self.repo,RabbitMQPublisher())
 
-    
-    
+        # Shared RabbitMQ publisher — single connection for both managers
+        self.mq = RabbitMQPublisher()
+        self.alarm_manager = AlarmManager(self.repo, self.mq)
+        self.recommendation_manager = RecommendationManager(self.repo, self.mq)
+
     def connect_opc(self) -> bool:
         """Connect to OPC UA server."""
         try:
@@ -319,7 +490,6 @@ class NodeSubscriber:
             logging.error(f"Unable to connect to OPC server: {e}")
             return False
 
-    
     def disconnect_opc(self) -> None:
         """Disconnect from OPC UA server."""
         try:
@@ -330,7 +500,6 @@ class NodeSubscriber:
         except Exception as e:
             logging.warning(f"Error disconnecting OPC client: {e}")
 
-    
     def connect_db(self):
         """Connect to database."""
         if not self.db:
@@ -345,7 +514,6 @@ class NodeSubscriber:
             logging.error(f"Unable to connect to DB: {e}")
             return None
 
-    
     def discover_nodes(self) -> list:
         """Discover available OPC UA nodes in namespace 2."""
         discovered_nodes = []
@@ -357,7 +525,6 @@ class NodeSubscriber:
             logging.error(f"Node discovery failed: {e}")
         return discovered_nodes
 
-    
     def _browse_recursive(self, node, discovered_nodes: list) -> None:
         """Recursively browse OPC UA node tree."""
         try:
@@ -381,7 +548,6 @@ class NodeSubscriber:
         except Exception as e:
             logging.warning(f"Failed to browse node {node}: {e}")
 
-    
     def get_mapping_id_map(self) -> dict:
         """Fetch OPC NodeId to MappingId mapping from repository."""
         try:
@@ -392,14 +558,13 @@ class NodeSubscriber:
             logging.error(f"Failed to get mapping ID map: {e}")
             return {}
 
-    
     def subscribe_to_nodes(self, nodes: list) -> bool:
         """
         Create subscription and monitor list of nodes.
-        
+
         Args:
             nodes: List of discovered node dicts with 'opc_node_id' and 'opc_node_obj'
-            
+
         Returns:
             True if subscription created successfully
         """
@@ -408,21 +573,18 @@ class NodeSubscriber:
             return False
 
         try:
-            # Create subscription
             self.subscription = self.client.create_subscription(500, self.handler or self._create_handler())
             logging.info("Created OPC UA subscription")
 
-            # Add nodes to subscription
             for node_dict in nodes:
                 try:
                     node_obj = node_dict.get("opc_node_obj")
                     opc_node_id = node_dict.get("opc_node_id")
-                    
+
                     if not node_obj:
                         logging.warning(f"No node object for {opc_node_id}")
                         continue
 
-                    # Monitor the node
                     handle = self.subscription.subscribe_data_change(node_obj)
                     self.monitored_nodes[opc_node_id] = handle
                     logging.debug(f"Subscribed to {opc_node_id}")
@@ -437,47 +599,45 @@ class NodeSubscriber:
             logging.error(f"Failed to create subscription: {e}")
             return False
 
-    
     def _create_handler(self) -> SubscriptionHandler:
         """Create subscription handler with current config."""
         self.handler = SubscriptionHandler(
             self.repo,
             self.mapping_id_map,
             self.threshold,
-            self.alarm_manager
+            self.alarm_manager,
+            self.recommendation_manager
         )
         return self.handler
 
-    
     def keep_alive(self) -> None:
         """Keep subscription alive (blocks indefinitely)."""
         try:
             logging.info("Subscription active, listening for data changes...")
             while True:
-                import time
                 time.sleep(1)
         except KeyboardInterrupt:
             logging.info("Interrupted by user")
         except Exception as e:
             logging.error(f"Error during subscription: {e}")
-            
-            
+
     def _start_snapsot(self):
         try:
-          self.snap_shot=SnapshotThread(self.repo)
-          self.snap_shot.start()
-          
+            self.snap_shot = SnapshotThread(self.repo)
+            self.snap_shot.start()
         except Exception as e:
-            logging.warning(f"Something went wrong while updating the snaphsot service {e}")
-            
-    
+            logging.warning(f"Something went wrong while starting the snapshot service: {e}")
+
     def _stop_snapshot(self):
+        """Stop the running snapshot thread."""
         try:
-            self.snap_shot=SnapshotThread(self.repo)
-            self.snap_shot.stop()
+            if hasattr(self, 'snap_shot') and self.snap_shot is not None:
+                self.snap_shot.stop()
+            else:
+                logging.warning("No snapshot thread to stop")
         except Exception as e:
-            logging.warning(f"Something went wrong while updating the snaphsot service {e}")
-        
+            logging.warning(f"Something went wrong while stopping the snapshot service: {e}")
+
 
 def main():
     """Main entry point: connect, discover nodes, setup subscriptions, and listen."""
@@ -518,14 +678,16 @@ def main():
 
         logging.info("Successfully subscribed to nodes")
 
-        # Start snapshot thread (non-blocking)
+        # 6. Start snapshot thread (non-blocking)
         subscriber._start_snapsot()
         logging.info("Snapshot service started")
 
-        # Call alarm logic (NOW IT WILL RUN)
+        # 7. Load signal limits for both alarm and recommendation managers
         subscriber.alarm_manager.get_all_signal_limits()
+        subscriber.recommendation_manager.get_all_signal_limits()
+        logging.info("Alarm and recommendation limits loaded")
 
-        #  Keep alive should be LAST (blocking loop)
+        # 8. Keep alive — blocking loop, must be last
         subscriber.keep_alive()
 
     except Exception as e:
@@ -533,10 +695,13 @@ def main():
 
     finally:
         try:
+            subscriber._stop_snapshot()
             subscriber.disconnect_opc()
+            subscriber.mq.close()
             logging.info("Cleanup completed")
         except Exception as e:
             logging.warning(f"Error during cleanup: {e}")
+
 
 if __name__ == "__main__":
     main()

@@ -13,13 +13,15 @@ namespace API.Controllers
         private readonly IAnalyticsService _analyticsService;
         private readonly KpiQueryService _kpiQueryService;
         private readonly IAlarmRepositary _alarmRepositary;
+        private readonly IRecommendationRepositary _recommendationRepo;
         
 
-        public AnalyticsController(IAnalyticsService analyticsService,KpiQueryService kpiQueryService,IAlarmRepositary alarmRepositary)
+        public AnalyticsController(IAnalyticsService analyticsService,KpiQueryService kpiQueryService,IAlarmRepositary alarmRepositary,IRecommendationRepositary recommendationRepo)
         {
             _analyticsService = analyticsService;
             _kpiQueryService = kpiQueryService;
             _alarmRepositary = alarmRepositary;
+            _recommendationRepo= recommendationRepo;
         }
 
         [HttpPost("data")]
@@ -97,6 +99,14 @@ namespace API.Controllers
         {
             var result = await _alarmRepositary.GetAllLatestAlaram();
             return Ok(result);
+        }
+
+        [HttpGet("Recommendations")]
+        public async Task<IActionResult> GetAllRecommendation()
+        {
+            var Result = await _recommendationRepo.GetAllLatestRecommendation();
+
+            return Ok(Result);
         }
     }
 }

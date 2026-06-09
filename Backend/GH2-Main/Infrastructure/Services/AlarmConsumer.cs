@@ -8,6 +8,8 @@ using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Application.DTOS;
+using System.Security.Claims;
+using System.Threading.Channels;
 
 namespace Infrastructure.Services
 {
@@ -16,6 +18,7 @@ namespace Infrastructure.Services
         private IConnection _connection;
         private readonly  IServiceScopeFactory _scopeFactory;
         private IModel _channel;
+        private IModel _recommchannel;
         
 
         public AlarmConsumer(IServiceScopeFactory scopeFactory)
@@ -36,6 +39,7 @@ namespace Infrastructure.Services
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
+            _recommchannel = _connection.CreateModel();
 
             _channel.QueueDeclare(
                 queue: "alarm_queue",
@@ -45,8 +49,17 @@ namespace Infrastructure.Services
                 arguments: null
             );
 
+            _recommchannel.QueueDeclare(
+                queue: "recommendation_queue",
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+                );
+
             // Prevent overloading consumer
             _channel.BasicQos(0, 1, false);
+            _recommchannel.BasicQos(0,1,false);
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -65,6 +78,7 @@ namespace Infrastructure.Services
 
                 
                 _channel.BasicAck(eventArgs.DeliveryTag, false);
+                
             };
 
             _channel.BasicConsume(
@@ -72,6 +86,31 @@ namespace Infrastructure.Services
                 autoAck: false,
                 consumer: consumer
             );
+
+
+            var recommendationconsumer = new EventingBasicConsumer(_recommchannel);
+
+            recommendationconsumer.Received += async (sender, eventArgs) =>
+            {
+                var body = eventArgs.Body.ToArray();
+                var message = Encoding.UTF8.GetString(body);
+
+                Console.WriteLine($"Received: {message}");
+
+
+                await ProcessRecommendationMessage(message);
+
+
+                _recommchannel.BasicAck(eventArgs.DeliveryTag, false);
+            };
+
+            _recommchannel.BasicConsume(
+                queue: "recommendation_queue",
+                autoAck: false,
+                consumer: recommendationconsumer
+            );
+
+            
 
             return Task.CompletedTask;
         }
@@ -136,11 +175,88 @@ namespace Infrastructure.Services
             }
         }
 
+        private async Task ProcessRecommendationMessage(string message)
+        {
+            try
+            {
+                using var scope = _scopeFactory.CreateScope();
+                var repo = scope.ServiceProvider.GetRequiredService<IRecommendationRepositary>();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var recommendation =
+                    JsonSerializer.Deserialize<RecommendationEventDto>(
+                        message,
+                        options
+                    );
+
+                if (recommendation == null)
+                {
+                    Console.WriteLine("Deserialization failed");
+                    return;
+                }
+
+                Console.WriteLine($"Event: {recommendation.Event}");
+
+                if(recommendation.Event?.ToUpper() == "RECOMMENDATION_TRIGGERED")
+                {
+                    var Recommendation = new RecommendationInfo(
+                        recommendation.MappingId,
+                        recommendation.AssetName,
+                        recommendation.Signal,
+                        recommendation.recommendation_type,
+                        recommendation.CurrentVal,
+                        recommendation.TriggerVal ?? throw new ArgumentException(nameof(recommendation.TriggerVal)),
+                        recommendation.Message ?? throw new ArgumentException(nameof(recommendation.Message))
+                        );
+
+                      await repo.AddAsync(Recommendation);
+                       await repo.SaveChangesAsync();
+                }
+                
+                else if(recommendation.Event?.ToUpper()== "RECOMMENDATION_CLEARED")
+                {
+                    var activeRecommendation= await repo.GetActiveRecommendation(recommendation.MappingId,recommendation.Signal);
+
+                    if(activeRecommendation != null)
+                    {
+                        activeRecommendation.Resolve();
+                        repo.Update(activeRecommendation);
+                        await repo.SaveChangesAsync();
+
+                        Console.WriteLine("Alarm cleared");
+                    }
+                    else
+                    {
+                        Console.WriteLine("No active alarm found ");
+                    }
+                }
+
+                    Console.WriteLine(
+                        JsonSerializer.Serialize(
+                            recommendation,
+                            new JsonSerializerOptions
+                            {
+                                WriteIndented = true
+                            }
+                        )
+                    );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+
 
         public override void Dispose()
         {
             _channel?.Close();
-            _connection?.Close();   
+            _recommchannel?.Close();
+            _connection?.Close();
             base.Dispose();
         }
     }

@@ -2,10 +2,6 @@
 <AnalysisInput>
   <Settings>
     <Setting>
-      <Key>sonar.cs.vscoveragexml.reportsPaths</Key>
-      <Value>coverage.xml</Value>
-    </Setting>
-    <Setting>
       <Key>sonar.cs.ignoreHeaderComments</Key>
       <Value>true</Value>
     </Setting>
@@ -57,12 +53,12 @@
       <Key>S2342</Key>
       <Parameters>
         <Parameter>
-          <Key>flagsAttributeFormat</Key>
-          <Value>^([A-Z]{1,3}[a-z0-9]+)*([A-Z]{2})?s$</Value>
-        </Parameter>
-        <Parameter>
           <Key>format</Key>
           <Value>^([A-Z]{1,3}[a-z0-9]+)*([A-Z]{2})?$</Value>
+        </Parameter>
+        <Parameter>
+          <Key>flagsAttributeFormat</Key>
+          <Value>^([A-Z]{1,3}[a-z0-9]+)*([A-Z]{2})?s$</Value>
         </Parameter>
       </Parameters>
     </Rule>
@@ -88,10 +84,10 @@
       <Key>S3444</Key>
     </Rule>
     <Rule>
-      <Key>S3445</Key>
+      <Key>S2114</Key>
     </Rule>
     <Rule>
-      <Key>S2114</Key>
+      <Key>S3445</Key>
     </Rule>
     <Rule>
       <Key>S1144</Key>
@@ -121,12 +117,12 @@
       <Key>S3776</Key>
       <Parameters>
         <Parameter>
-          <Key>propertyThreshold</Key>
-          <Value>3</Value>
-        </Parameter>
-        <Parameter>
           <Key>threshold</Key>
           <Value>15</Value>
+        </Parameter>
+        <Parameter>
+          <Key>propertyThreshold</Key>
+          <Value>3</Value>
         </Parameter>
       </Parameters>
     </Rule>
@@ -338,10 +334,10 @@
       <Key>S3330</Key>
     </Rule>
     <Rule>
-      <Key>S4428</Key>
+      <Key>S3459</Key>
     </Rule>
     <Rule>
-      <Key>S3459</Key>
+      <Key>S4428</Key>
     </Rule>
     <Rule>
       <Key>S3217</Key>
@@ -368,10 +364,10 @@
       <Key>S1168</Key>
     </Rule>
     <Rule>
-      <Key>S3466</Key>
+      <Key>S2257</Key>
     </Rule>
     <Rule>
-      <Key>S2257</Key>
+      <Key>S3466</Key>
     </Rule>
     <Rule>
       <Key>S3346</Key>
@@ -389,10 +385,10 @@
       <Key>S4433</Key>
     </Rule>
     <Rule>
-      <Key>S3220</Key>
+      <Key>S2252</Key>
     </Rule>
     <Rule>
-      <Key>S2252</Key>
+      <Key>S3220</Key>
     </Rule>
     <Rule>
       <Key>S1163</Key>
@@ -401,10 +397,10 @@
       <Key>S818</Key>
     </Rule>
     <Rule>
-      <Key>S4790</Key>
+      <Key>S2372</Key>
     </Rule>
     <Rule>
-      <Key>S2372</Key>
+      <Key>S4790</Key>
     </Rule>
     <Rule>
       <Key>S2251</Key>
@@ -570,10 +566,10 @@
       <Key>S3981</Key>
     </Rule>
     <Rule>
-      <Key>S3626</Key>
+      <Key>S1206</Key>
     </Rule>
     <Rule>
-      <Key>S1206</Key>
+      <Key>S3626</Key>
     </Rule>
     <Rule>
       <Key>S3869</Key>
@@ -630,10 +626,10 @@
       <Key>S125</Key>
     </Rule>
     <Rule>
-      <Key>S2930</Key>
+      <Key>S1607</Key>
     </Rule>
     <Rule>
-      <Key>S1607</Key>
+      <Key>S2930</Key>
     </Rule>
     <Rule>
       <Key>S1848</Key>
@@ -780,10 +776,10 @@
       <Key>S2178</Key>
     </Rule>
     <Rule>
-      <Key>S3267</Key>
+      <Key>S3264</Key>
     </Rule>
     <Rule>
-      <Key>S3264</Key>
+      <Key>S3267</Key>
     </Rule>
     <Rule>
       <Key>S5445</Key>
@@ -798,10 +794,10 @@
       <Key>S6419</Key>
     </Rule>
     <Rule>
-      <Key>S3262</Key>
+      <Key>S2053</Key>
     </Rule>
     <Rule>
-      <Key>S2053</Key>
+      <Key>S3262</Key>
     </Rule>
     <Rule>
       <Key>S3263</Key>
@@ -828,10 +824,10 @@
       <Key>S4144</Key>
     </Rule>
     <Rule>
-      <Key>S4143</Key>
+      <Key>S3172</Key>
     </Rule>
     <Rule>
-      <Key>S3172</Key>
+      <Key>S4143</Key>
     </Rule>
     <Rule>
       <Key>S4260</Key>

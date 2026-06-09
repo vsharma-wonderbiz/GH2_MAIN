@@ -12,6 +12,7 @@ namespace Application.Interface
         Task<AlarmInfo?> GetActiveAlarm(int mappingId,string name);
 
         Task<List<AlarmInfo>> GetAllLatestAlaram();
+
     }
 }
 

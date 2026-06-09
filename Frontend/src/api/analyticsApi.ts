@@ -79,6 +79,21 @@ export interface AlertResponse {
   mapping: number
 }
 
+export interface RecommendationResponse {
+  id: number;
+  mappingId: number;
+  assetName: string;
+  signalName: string;
+  recommendationType: string;
+  currentVal: number;
+  triggerVal: number;
+  message: string;
+  createdAt: string;
+  resolvedAt: string | null;
+  mapping: number | null;
+  status: string;
+}
+
 //AXIOS INSTANCE
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -174,6 +189,16 @@ export const GetStackKpiData = async (
 export const GetLatestAlerts = async (): Promise<AlertResponse[]> => {
   try {
     const res = await api.get<AlertResponse[]>("/Analytics/Alerts");
+    return res.data;
+  } catch (error) {
+    console.error("Alerts Api Error:", error);
+    throw error;
+  }
+};
+
+export const GetLatestRecommendation = async (): Promise<RecommendationResponse[]> => {
+  try {
+    const res = await api.get<RecommendationResponse[]>("/Analytics/Recommendations");
     return res.data;
   } catch (error) {
     console.error("Alerts Api Error:", error);

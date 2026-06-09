@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AnalysisConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
-  <SonarConfigDir>C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\.sonarqube\conf</SonarConfigDir>
-  <SonarOutputDir>C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\.sonarqube\out</SonarOutputDir>
-  <SonarBinDir>C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\.sonarqube\bin</SonarBinDir>
-  <SonarScannerWorkingDirectory>C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main</SonarScannerWorkingDirectory>
+  <SonarConfigDir>C:\Users\Vinay Sharma\gh2-main-docker\GH2_MAIN\backend\gh2-main\.sonarqube\conf</SonarConfigDir>
+  <SonarOutputDir>C:\Users\Vinay Sharma\gh2-main-docker\GH2_MAIN\backend\gh2-main\.sonarqube\out</SonarOutputDir>
+  <SonarBinDir>C:\Users\Vinay Sharma\gh2-main-docker\GH2_MAIN\backend\gh2-main\.sonarqube\bin</SonarBinDir>
+  <SonarScannerWorkingDirectory>C:\Users\Vinay Sharma\gh2-main-docker\GH2_MAIN\backend\gh2-main</SonarScannerWorkingDirectory>
+  <SonarScannerCliPath>C:\Users\Vinay Sharma\.sonar\cache\2f10fe6ac36213958201a67383c712a587e3843e32ae1edf06f01062d6fd1407\sonar-scanner-cli-5.0.2.4997.zip_extracted\sonar-scanner-5.0.2.4997\bin\sonar-scanner</SonarScannerCliPath>
+  <UseSonarScannerCli>false</UseSonarScannerCli>
+  <ScanAllAnalysis>true</ScanAllAnalysis>
   <HasBeginStepCommandLineCredentials>true</HasBeginStepCommandLineCredentials>
+  <HasBeginStepCommandLineTruststorePassword>false</HasBeginStepCommandLineTruststorePassword>
   <SonarQubeHostUrl>http://localhost:9000</SonarQubeHostUrl>
   <SonarQubeVersion>9.9.8.100196</SonarQubeVersion>
-  <SonarProjectKey>Gh2-Backend</SonarProjectKey>
+  <SonarProjectKey>Gh2-main</SonarProjectKey>
   <AdditionalConfig>
     <ConfigSetting Id="BuildUri" />
     <ConfigSetting Id="TfsUri" />
     <ConfigSetting Id="VsCoverageConverterToolPath" />
     <ConfigSetting Id="UnchangedFilesPath" />
-    <ConfigSetting Id="sonar.pullrequest.cache.basepath" Value="C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main" />
-    <ConfigSetting Id="settings.file.path" Value="C:\Users\Vinay Sharma\.dotnet\tools\.store\dotnet-sonarscanner\5.13.0\dotnet-sonarscanner\5.13.0\tools\net5.0\any\SonarQube.Analysis.xml" />
+    <ConfigSetting Id="sonar.pullrequest.cache.basepath" Value="C:\Users\Vinay Sharma\gh2-main-docker\GH2_MAIN\backend\gh2-main" />
+    <ConfigSetting Id="settings.file.path" Value="C:\Users\Vinay Sharma\.dotnet\tools\.store\dotnet-sonarscanner\11.2.1\dotnet-sonarscanner\11.2.1\tools\netcoreapp3.1\any\SonarQube.Analysis.xml" />
   </AdditionalConfig>
   <ServerSettings>
     <Property Name="sonaranalyzer-cs.nuget.packageVersion">8.51.0.59060</Property>
@@ -116,17 +120,18 @@
     <Property Name="sonar.auth.gitlab.url">https://gitlab.com</Property>
     <Property Name="sonaranalyzer-vbnet.pluginKey">vbnet</Property>
     <Property Name="sonar.updatecenter.url">https://update.sonarsource.org/update-center.properties</Property>
-    <Property Name="sonar.core.id">147B411E-AZ3c2BoigogalVcerJ29</Property>
-    <Property Name="sonar.core.startTime">5/6/2026 2:16:19 PM</Property>
+    <Property Name="sonar.core.startTime">6/9/2026 12:24:39 PM</Property>
+    <Property Name="sonar.core.id">147B411E-AZ6rKXudMUQW_kjivaFd</Property>
   </ServerSettings>
   <LocalSettings>
-    <Property Name="sonar.cs.vscoveragexml.reportsPaths">coverage.xml</Property>
+    <Property Name="sonar.host.url">http://localhost:9000</Property>
   </LocalSettings>
+  <ScannerOptsSettings />
   <AnalyzersSettings>
     <AnalyzerSettings>
       <Language>cs</Language>
-      <RulesetPath>C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\.sonarqube\conf\Sonar-cs.ruleset</RulesetPath>
-      <DeactivatedRulesetPath>C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\.sonarqube\conf\Sonar-cs-none.ruleset</DeactivatedRulesetPath>
+      <RulesetPath>C:\Users\Vinay Sharma\gh2-main-docker\GH2_MAIN\backend\gh2-main\.sonarqube\conf\Sonar-cs.ruleset</RulesetPath>
+      <DeactivatedRulesetPath>C:\Users\Vinay Sharma\gh2-main-docker\GH2_MAIN\backend\gh2-main\.sonarqube\conf\Sonar-cs-none.ruleset</DeactivatedRulesetPath>
       <AnalyzerPlugins>
         <AnalyzerPlugin Key="csharp" Version="8.51.0.59060" StaticResourceName="SonarAnalyzer-8.51.0.59060.zip">
           <AssemblyPaths>
@@ -137,34 +142,16 @@
             <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\0\THIRD-PARTY-NOTICES.txt</Path>
           </AssemblyPaths>
         </AnalyzerPlugin>
-        <AnalyzerPlugin Key="vbnet" Version="8.51.0.59060" StaticResourceName="SonarAnalyzer-8.51.0.59060.zip">
-          <AssemblyPaths>
-            <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\1\Google.Protobuf.dll</Path>
-            <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\1\SonarAnalyzer.CFG.dll</Path>
-            <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\1\SonarAnalyzer.dll</Path>
-            <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\1\SonarAnalyzer.VisualBasic.dll</Path>
-            <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\1\THIRD-PARTY-NOTICES.txt</Path>
-          </AssemblyPaths>
-        </AnalyzerPlugin>
       </AnalyzerPlugins>
       <AdditionalFilePaths>
-        <Path>C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\.sonarqube\conf\cs\SonarLint.xml</Path>
+        <Path>C:\Users\Vinay Sharma\gh2-main-docker\GH2_MAIN\backend\gh2-main\.sonarqube\conf\cs\SonarLint.xml</Path>
       </AdditionalFilePaths>
     </AnalyzerSettings>
     <AnalyzerSettings>
       <Language>vbnet</Language>
-      <RulesetPath>C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\.sonarqube\conf\Sonar-vbnet.ruleset</RulesetPath>
-      <DeactivatedRulesetPath>C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\.sonarqube\conf\Sonar-vbnet-none.ruleset</DeactivatedRulesetPath>
+      <RulesetPath>C:\Users\Vinay Sharma\gh2-main-docker\GH2_MAIN\backend\gh2-main\.sonarqube\conf\Sonar-vbnet.ruleset</RulesetPath>
+      <DeactivatedRulesetPath>C:\Users\Vinay Sharma\gh2-main-docker\GH2_MAIN\backend\gh2-main\.sonarqube\conf\Sonar-vbnet-none.ruleset</DeactivatedRulesetPath>
       <AnalyzerPlugins>
-        <AnalyzerPlugin Key="csharp" Version="8.51.0.59060" StaticResourceName="SonarAnalyzer-8.51.0.59060.zip">
-          <AssemblyPaths>
-            <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\0\Google.Protobuf.dll</Path>
-            <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\0\SonarAnalyzer.CFG.dll</Path>
-            <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\0\SonarAnalyzer.CSharp.dll</Path>
-            <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\0\SonarAnalyzer.dll</Path>
-            <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\0\THIRD-PARTY-NOTICES.txt</Path>
-          </AssemblyPaths>
-        </AnalyzerPlugin>
         <AnalyzerPlugin Key="vbnet" Version="8.51.0.59060" StaticResourceName="SonarAnalyzer-8.51.0.59060.zip">
           <AssemblyPaths>
             <Path>C:\Users\Vinay Sharma\AppData\Local\Temp\.sonarqube\resources\1\Google.Protobuf.dll</Path>
@@ -176,7 +163,7 @@
         </AnalyzerPlugin>
       </AnalyzerPlugins>
       <AdditionalFilePaths>
-        <Path>C:\Users\Vinay Sharma\GH2_MAIN\backend\gh2-main\.sonarqube\conf\vbnet\SonarLint.xml</Path>
+        <Path>C:\Users\Vinay Sharma\gh2-main-docker\GH2_MAIN\backend\gh2-main\.sonarqube\conf\vbnet\SonarLint.xml</Path>
       </AdditionalFilePaths>
     </AnalyzerSettings>
   </AnalyzersSettings>

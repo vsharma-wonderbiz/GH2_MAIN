@@ -33,6 +33,8 @@ namespace Infrastructure.Persistence
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<RecommendationInfo> Recommendations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             

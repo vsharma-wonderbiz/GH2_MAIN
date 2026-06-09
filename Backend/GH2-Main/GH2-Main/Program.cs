@@ -84,6 +84,7 @@ builder.Services.AddScoped<KpiHistoryService>();
 builder.Services.AddScoped<KpiQueryService>();
 builder.Services.AddScoped<MappingService>();
 builder.Services.AddScoped<IAlarmRepositary, AlarmRepository>();
+builder.Services.AddScoped<IRecommendationRepositary, RecommendationRepositary>();
 builder.Services.AddScoped<ProtocolDataSeeder>();
 builder.Services.AddCustomServices();
 
@@ -100,10 +101,6 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<TagsSeeder>>();
     var seeder = scope.ServiceProvider.GetRequiredService<ProtocolDataSeeder>();
-
-    // Apply migrations
-    context.Database.Migrate();
-
     // Run seeders
     TagTypeSeeder.Seeder(context);
     TagsSeeder.Seeder(context, logger);
@@ -112,7 +109,6 @@ using (var scope = app.Services.CreateScope())
 
     await seeder.SeedAsync(context);
 }
-
 
 
 app.UseCors("AllowAll");
