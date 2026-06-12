@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Gh2-Test\\Gh2-Test.csproj": {}
+    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Gh2-Test\\Gh2-Test.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Application\\Application.csproj": {
+    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Application\\Application.csproj",
+        "projectUniqueName": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Application\\Application.csproj",
         "projectName": "Application",
-        "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Application\\Application.csproj",
+        "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Application\\Application.csproj",
         "packagesPath": "C:\\Users\\Vinay Sharma\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Application\\obj\\",
+        "outputPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -32,8 +32,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Domain\\Domain.csproj"
+              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\Domain.csproj"
               }
             }
           }
@@ -111,14 +111,14 @@
         }
       }
     },
-    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Domain\\Domain.csproj": {
+    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Domain\\Domain.csproj",
+        "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\Vinay Sharma\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Domain\\obj\\",
+        "outputPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -176,14 +176,14 @@
         }
       }
     },
-    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\GH2-Main\\GH2-Main.csproj": {
+    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\GH2-Main\\GH2-Main.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\GH2-Main\\GH2-Main.csproj",
+        "projectUniqueName": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\GH2-Main\\GH2-Main.csproj",
         "projectName": "GH2-Main",
-        "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\GH2-Main\\GH2-Main.csproj",
+        "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\GH2-Main\\GH2-Main.csproj",
         "packagesPath": "C:\\Users\\Vinay Sharma\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\GH2-Main\\obj\\",
+        "outputPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\GH2-Main\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -204,11 +204,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Domain\\Domain.csproj"
+              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\Domain.csproj"
               },
-              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Infrastructure\\Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Infrastructure\\Infrastructure.csproj"
+              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Infrastructure\\Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Infrastructure\\Infrastructure.csproj"
               }
             }
           }
@@ -312,14 +312,14 @@
         }
       }
     },
-    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Gh2-Test\\Gh2-Test.csproj": {
+    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Gh2-Test\\Gh2-Test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Gh2-Test\\Gh2-Test.csproj",
+        "projectUniqueName": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Gh2-Test\\Gh2-Test.csproj",
         "projectName": "Gh2-Test",
-        "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Gh2-Test\\Gh2-Test.csproj",
+        "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Gh2-Test\\Gh2-Test.csproj",
         "packagesPath": "C:\\Users\\Vinay Sharma\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Gh2-Test\\obj\\",
+        "outputPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Gh2-Test\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -340,11 +340,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Application\\Application.csproj": {
-                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Application\\Application.csproj"
+              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Application\\Application.csproj": {
+                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Application\\Application.csproj"
               },
-              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\GH2-Main\\GH2-Main.csproj": {
-                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\GH2-Main\\GH2-Main.csproj"
+              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\GH2-Main\\GH2-Main.csproj": {
+                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\GH2-Main\\GH2-Main.csproj"
               }
             }
           }
@@ -410,14 +410,14 @@
         }
       }
     },
-    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Infrastructure\\Infrastructure.csproj": {
+    "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Infrastructure\\Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Infrastructure\\Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Infrastructure\\Infrastructure.csproj",
         "projectName": "Infrastructure",
-        "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Infrastructure\\Infrastructure.csproj",
+        "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Infrastructure\\Infrastructure.csproj",
         "packagesPath": "C:\\Users\\Vinay Sharma\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -438,11 +438,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Application\\Application.csproj": {
-                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Application\\Application.csproj"
+              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Application\\Application.csproj": {
+                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Application\\Application.csproj"
               },
-              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\backend\\gh2-main\\Domain\\Domain.csproj"
+              "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\Vinay Sharma\\gh2-main-docker\\GH2_MAIN\\Backend\\GH2-Main\\Domain\\Domain.csproj"
               }
             }
           }

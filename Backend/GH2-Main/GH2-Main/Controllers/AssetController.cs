@@ -68,7 +68,7 @@ namespace GH2_Main.Controllers
             catch (Exception ex)
             {
                 // Unexpected error
-                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+                return StatusCode(500, new { aaaaaaaaa = "An unexpected error occurred.", detail = ex.Message });
             }
         }
 

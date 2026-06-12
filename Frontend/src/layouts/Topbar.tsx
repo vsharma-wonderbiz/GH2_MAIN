@@ -71,10 +71,10 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
               size="icon"
               className="relative hover:bg-accent/30 transition-colors rounded-full"
             >
-              <Bell className="h-5 w-5 text-foreground" />
+              {/* <Bell className="h-5 w-5 text-foreground" />
               <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-destructive text-destructive-foreground text-xs font-medium shadow">
                 3
-              </Badge>
+              </Badge> */}
             </Button>
           </DropdownMenuTrigger>
 
