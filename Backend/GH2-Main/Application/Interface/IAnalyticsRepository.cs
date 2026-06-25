@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,8 @@ namespace Application.Interface
          DateTime startTime,
           DateTime endTime
             );
+
+        Task<DbDataReader> GetFlattenedExportDataAsync(ExportRequestPayload request);
 
         Task<bool> DataExist();
         Task SaveChangesAsync();

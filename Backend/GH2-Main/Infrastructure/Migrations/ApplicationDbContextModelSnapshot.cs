@@ -140,6 +140,72 @@ namespace Infrastructure.Migrations
                     b.ToTable("Assets");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ExportRequest", b =>
+                {
+                    b.Property<int>("ExportRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ExportRequestId"));
+
+                    b.Property<string>("AssetName")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RequestedBy")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.HasKey("ExportRequestId");
+
+                    b.ToTable("ExportRequest");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ExportRequestTags", b =>
+                {
+                    b.Property<int>("TagRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TagRequestId"));
+
+                    b.Property<int>("ExportRequestId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TagName")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.HasKey("TagRequestId");
+
+                    b.HasIndex("ExportRequestId");
+
+                    b.ToTable("exportRequestTags");
+                });
+
             modelBuilder.Entity("Domain.Entities.KpiTable", b =>
                 {
                     b.Property<int>("Id")
@@ -546,6 +612,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Mapping");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ExportRequestTags", b =>
+                {
+                    b.HasOne("Domain.Entities.ExportRequest", "ExportRequest")
+                        .WithMany("RequestedTags")
+                        .HasForeignKey("ExportRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExportRequest");
+                });
+
             modelBuilder.Entity("Domain.Entities.MappingTable", b =>
                 {
                     b.HasOne("Domain.Entities.Assets", "Asset")
@@ -645,6 +722,11 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Assets", b =>
                 {
                     b.Navigation("Mappings");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ExportRequest", b =>
+                {
+                    b.Navigation("RequestedTags");
                 });
 
             modelBuilder.Entity("Domain.Entities.MappingTable", b =>

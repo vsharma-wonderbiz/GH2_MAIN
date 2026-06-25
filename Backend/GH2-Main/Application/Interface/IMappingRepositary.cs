@@ -21,7 +21,9 @@ namespace Application.Interface
         Task<List<MappingTable>> GetAllMappingsOnStack(int StackId);
 
         Task<int> GetMappingIdFromAssetandTag(string assetname, string Tagname);
+        Task<List<string>> GetAllTagsMappedOnStack(string stackName);
 
-     
+
+
     }
 }

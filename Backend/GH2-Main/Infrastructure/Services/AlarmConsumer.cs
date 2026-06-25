@@ -1,262 +1,282 @@
 ﻿using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
+using Application.DTOS;
 using Application.Interface;
 using Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Application.DTOS;
-using System.Security.Claims;
-using System.Threading.Channels;
 
 namespace Infrastructure.Services
 {
     public class AlarmConsumer : BackgroundService
     {
-        private IConnection _connection;
-        private readonly  IServiceScopeFactory _scopeFactory;
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IRabbitMqConnectionService _rabbitMqService;
+
         private IModel _channel;
         private IModel _recommchannel;
-        
 
-        public AlarmConsumer(IServiceScopeFactory scopeFactory)
+        public AlarmConsumer(
+            IServiceScopeFactory scopeFactory,
+            IRabbitMqConnectionService rabbitMqService)
         {
-            //_repo = repo;
             _scopeFactory = scopeFactory;
+            _rabbitMqService = rabbitMqService;
+
             InitializeRabbitMq();
         }
 
         private void InitializeRabbitMq()
         {
-            var factory = new ConnectionFactory()
-            {
-                HostName = "localhost", // change if needed
-                UserName = "guest",
-                Password = "guest"
-            };
+            var connection = _rabbitMqService.GetConnection();
 
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
-            _recommchannel = _connection.CreateModel();
+            _channel = connection.CreateModel();
+            _recommchannel = connection.CreateModel();
 
             _channel.QueueDeclare(
                 queue: "alarm_queue",
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
-                arguments: null
-            );
+                arguments: null);
 
             _recommchannel.QueueDeclare(
                 queue: "recommendation_queue",
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
-                arguments: null
-                );
+                arguments: null);
 
-            // Prevent overloading consumer
-            _channel.BasicQos(0, 1, false);
-            _recommchannel.BasicQos(0,1,false);
+            _channel.BasicQos(
+                prefetchSize: 0,
+                prefetchCount: 1,
+                global: false);
+
+            _recommchannel.BasicQos(
+                prefetchSize: 0,
+                prefetchCount: 1,
+                global: false);
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(
+            CancellationToken stoppingToken)
         {
             var consumer = new EventingBasicConsumer(_channel);
 
             consumer.Received += async (sender, eventArgs) =>
             {
-                var body = eventArgs.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
+                try
+                {
+                    var body = eventArgs.Body.ToArray();
+                    var message = Encoding.UTF8.GetString(body);
 
-                Console.WriteLine($"Received: {message}");
+                    Console.WriteLine($"Alarm Message Received: {message}");
 
-                
-                await ProcessMessage(message);
+                    await ProcessMessage(message);
 
-                
-                _channel.BasicAck(eventArgs.DeliveryTag, false);
-                
+                    _channel.BasicAck(
+                        eventArgs.DeliveryTag,
+                        false);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"Alarm Processing Error: {ex.Message}");
+
+                    _channel.BasicNack(
+                        eventArgs.DeliveryTag,
+                        false,
+                        true);
+                }
             };
 
             _channel.BasicConsume(
                 queue: "alarm_queue",
                 autoAck: false,
-                consumer: consumer
-            );
+                consumer: consumer);
 
+            var recommendationConsumer =
+                new EventingBasicConsumer(_recommchannel);
 
-            var recommendationconsumer = new EventingBasicConsumer(_recommchannel);
-
-            recommendationconsumer.Received += async (sender, eventArgs) =>
+            recommendationConsumer.Received += async (
+                sender,
+                eventArgs) =>
             {
-                var body = eventArgs.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
+                try
+                {
+                    var body = eventArgs.Body.ToArray();
+                    var message = Encoding.UTF8.GetString(body);
 
-                Console.WriteLine($"Received: {message}");
+                    Console.WriteLine(
+                        $"Recommendation Message Received: {message}");
 
+                    await ProcessRecommendationMessage(message);
 
-                await ProcessRecommendationMessage(message);
+                    _recommchannel.BasicAck(
+                        eventArgs.DeliveryTag,
+                        false);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"Recommendation Processing Error: {ex.Message}");
 
-
-                _recommchannel.BasicAck(eventArgs.DeliveryTag, false);
+                    _recommchannel.BasicNack(
+                        eventArgs.DeliveryTag,
+                        false,
+                        true);
+                }
             };
 
             _recommchannel.BasicConsume(
                 queue: "recommendation_queue",
                 autoAck: false,
-                consumer: recommendationconsumer
-            );
-
-            
+                consumer: recommendationConsumer);
 
             return Task.CompletedTask;
         }
 
         private async Task ProcessMessage(string message)
         {
-            try
+            using var scope = _scopeFactory.CreateScope();
+
+            var repo =
+                scope.ServiceProvider
+                    .GetRequiredService<IAlarmRepositary>();
+
+            var options = new JsonSerializerOptions
             {
-                using var scope = _scopeFactory.CreateScope();
-                var repo = scope.ServiceProvider.GetRequiredService<IAlarmRepositary>();
+                PropertyNameCaseInsensitive = true
+            };
 
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var alarm = JsonSerializer.Deserialize<AlarmEventDto>(message, options);
+            var alarm =
+                JsonSerializer.Deserialize<AlarmEventDto>(
+                    message,
+                    options);
 
-                if (alarm == null)
-                {
-                    Console.WriteLine("Deserialization failed");
-                    return;
-                }
+            if (alarm == null)
+            {
+                Console.WriteLine("Alarm deserialization failed.");
+                return;
+            }
 
-                Console.WriteLine($"Event: {alarm.Event}");
+            if (alarm.Event?.ToUpper() == "ALARM_TRIGGERED")
+            {
+                var entry = new AlarmInfo(
+                    alarm.MappingId,
+                    alarm.AssetName,
+                    alarm.Signal,
+                    (float)alarm.CurrentValue,
+                    alarm.AlarmType);
 
-                //these saves the message comg from the queue inot the database
-                if (alarm.Event?.ToUpper() == "ALARM_TRIGGERED")
-                {
-                    var entry = new AlarmInfo(
+                await repo.AddAsync(entry);
+                await repo.SaveChangesAsync();
+
+                Console.WriteLine("Alarm saved.");
+            }
+            else if (alarm.Event?.ToUpper() == "ALARM_CLEARED")
+            {
+                var activeAlarm =
+                    await repo.GetActiveAlarm(
                         alarm.MappingId,
-                        alarm.AssetName,
-                        alarm.Signal,
-                        (float)alarm.CurrentValue,
-                        alarm.AlarmType
-                    );
+                        alarm.Signal);
 
-                    await repo.AddAsync(entry);
+                if (activeAlarm != null)
+                {
+                    activeAlarm.Resolve();
+
+                    repo.Update(activeAlarm);
+
                     await repo.SaveChangesAsync();
 
-                    Console.WriteLine("Saved to DB ");
+                    Console.WriteLine("Alarm cleared.");
                 }
-
-                //these updates the notification once that gets resolved 
-                else if (alarm.Event?.ToUpper() == "ALARM_CLEARED")
-                {
-                    var activeAlarm = await repo.GetActiveAlarm(alarm.MappingId, alarm.Signal);
-
-                    if (activeAlarm != null)
-                    {
-                        activeAlarm.Resolve();
-                        repo.Update(activeAlarm);
-                        await repo.SaveChangesAsync();
-
-                        Console.WriteLine("Alarm cleared");
-                    }
-                    else
-                    {
-                        Console.WriteLine("No active alarm found ");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"DB Error: {ex.Message}");
             }
         }
 
-        private async Task ProcessRecommendationMessage(string message)
+        private async Task ProcessRecommendationMessage(
+            string message)
         {
-            try
+            using var scope = _scopeFactory.CreateScope();
+
+            var repo =
+                scope.ServiceProvider
+                    .GetRequiredService<IRecommendationRepositary>();
+
+            var options = new JsonSerializerOptions
             {
-                using var scope = _scopeFactory.CreateScope();
-                var repo = scope.ServiceProvider.GetRequiredService<IRecommendationRepositary>();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
+                PropertyNameCaseInsensitive = true
+            };
 
-                var recommendation =
-                    JsonSerializer.Deserialize<RecommendationEventDto>(
-                        message,
-                        options
-                    );
+            var recommendation =
+                JsonSerializer.Deserialize<RecommendationEventDto>(
+                    message,
+                    options);
 
-                if (recommendation == null)
-                {
-                    Console.WriteLine("Deserialization failed");
-                    return;
-                }
+            if (recommendation == null)
+            {
+                Console.WriteLine(
+                    "Recommendation deserialization failed.");
 
-                Console.WriteLine($"Event: {recommendation.Event}");
+                return;
+            }
 
-                if(recommendation.Event?.ToUpper() == "RECOMMENDATION_TRIGGERED")
-                {
-                    var Recommendation = new RecommendationInfo(
+            if (recommendation.Event?.ToUpper() ==
+                "RECOMMENDATION_TRIGGERED")
+            {
+                var recommendationInfo =
+                    new RecommendationInfo(
                         recommendation.MappingId,
                         recommendation.AssetName,
                         recommendation.Signal,
                         recommendation.recommendation_type,
                         recommendation.CurrentVal,
-                        recommendation.TriggerVal ?? throw new ArgumentException(nameof(recommendation.TriggerVal)),
-                        recommendation.Message ?? throw new ArgumentException(nameof(recommendation.Message))
-                        );
+                        recommendation.TriggerVal
+                            ?? throw new ArgumentException(
+                                nameof(recommendation.TriggerVal)),
+                        recommendation.Message
+                            ?? throw new ArgumentException(
+                                nameof(recommendation.Message)));
 
-                      await repo.AddAsync(Recommendation);
-                       await repo.SaveChangesAsync();
-                }
-                
-                else if(recommendation.Event?.ToUpper()== "RECOMMENDATION_CLEARED")
+                await repo.AddAsync(recommendationInfo);
+
+                await repo.SaveChangesAsync();
+
+                Console.WriteLine(
+                    "Recommendation saved.");
+            }
+            else if (recommendation.Event?.ToUpper() ==
+                     "RECOMMENDATION_CLEARED")
+            {
+                var activeRecommendation =
+                    await repo.GetActiveRecommendation(
+                        recommendation.MappingId,
+                        recommendation.Signal);
+
+                if (activeRecommendation != null)
                 {
-                    var activeRecommendation= await repo.GetActiveRecommendation(recommendation.MappingId,recommendation.Signal);
+                    activeRecommendation.Resolve();
 
-                    if(activeRecommendation != null)
-                    {
-                        activeRecommendation.Resolve();
-                        repo.Update(activeRecommendation);
-                        await repo.SaveChangesAsync();
+                    repo.Update(activeRecommendation);
 
-                        Console.WriteLine("Alarm cleared");
-                    }
-                    else
-                    {
-                        Console.WriteLine("No active alarm found ");
-                    }
-                }
+                    await repo.SaveChangesAsync();
 
                     Console.WriteLine(
-                        JsonSerializer.Serialize(
-                            recommendation,
-                            new JsonSerializerOptions
-                            {
-                                WriteIndented = true
-                            }
-                        )
-                    );
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
+                        "Recommendation cleared.");
+                }
             }
         }
-
-
 
         public override void Dispose()
         {
             _channel?.Close();
+            _channel?.Dispose();
+
             _recommchannel?.Close();
-            _connection?.Close();
+            _recommchannel?.Dispose();
+
             base.Dispose();
         }
     }

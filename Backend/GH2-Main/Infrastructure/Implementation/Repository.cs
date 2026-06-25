@@ -36,6 +36,11 @@ namespace Infrastructure.Implementation
             await _dbset.AddAsync(entity);
         }
 
+        public async Task AddRangeAsync(IEnumerable<T> entity)
+        {
+            await _dbset.AddRangeAsync(entity);
+        }
+
         public void Update(T entity)
         {
             _dbset.Update(entity);

@@ -71,25 +71,34 @@ builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<BackfillSensorDataService>();
 builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IExportRequestRepository, ExportRequestRepository>();
+
 builder.Services.AddHostedService<WeeklyAvgCalculatorBackgroundService>();
 builder.Services.AddHostedService<AlarmConsumer>();
+
 builder.Services.AddScoped<PastWeeksAggregatedData>();
 builder.Services.AddScoped<IMappingRepositary, MappingRepositary>();
 builder.Services.AddScoped<ITagRepositary, TagRepositary>();
 builder.Services.AddScoped<IKpiResultRepository, KpiResultRepository>();
 builder.Services.AddScoped<KpiCalulationService>();
 builder.Services.AddScoped<KpiFormulaService>();
+
 builder.Services.AddHostedService<KpiBackgroundService>();
+builder.Services.AddHostedService<ExportBackGroundService>();
+
 builder.Services.AddScoped<KpiHistoryService>();
 builder.Services.AddScoped<KpiQueryService>();
 builder.Services.AddScoped<MappingService>();
+builder.Services.AddScoped<IExportService, ExportService>();
 builder.Services.AddScoped<IAlarmRepositary, AlarmRepository>();
 builder.Services.AddScoped<IRecommendationRepositary, RecommendationRepositary>();
+builder.Services.AddScoped<IRabbitMqServices, RabbitMqServices>();
 builder.Services.AddScoped<ProtocolDataSeeder>();
 builder.Services.AddCustomServices();
 
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddSingleton<IRabbitMqConnectionService, RabbitMqConnectionService>();
 builder.Services.AddCustomAuthentication(builder.Configuration);
 
 

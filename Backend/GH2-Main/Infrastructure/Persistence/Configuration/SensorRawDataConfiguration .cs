@@ -35,7 +35,10 @@ namespace Infrastructure.Persistence.Configuration
 
             builder.HasIndex(a => a.MappingId)
                 .HasDatabaseName("Idx_mapping_Id");
+
+            
         }
     }
 
 }
+     

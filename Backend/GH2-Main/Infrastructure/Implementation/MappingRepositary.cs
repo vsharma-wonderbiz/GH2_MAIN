@@ -70,6 +70,15 @@ namespace Infrastructure.Implementation
                .ToListAsync();
         }
 
+        public async Task<List<string>> GetAllTagsMappedOnStack(string stackName)
+        {
+            return await _context.Mappings
+                .Where(m => m.Asset.Name == stackName)
+                .Select(m => m.Tag.TagName)
+                .Distinct()
+                .ToListAsync();
+        }
+
 
         public async Task<ProtocolConfig?> GetModbusConfigFromMapppingId(int mappingId)
         {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +13,7 @@ using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace Infrastructure.Implementation
 {
@@ -218,6 +221,62 @@ namespace Infrastructure.Implementation
             return result;
 
         }
+
+        public async Task<DbDataReader> GetFlattenedExportDataAsync(ExportRequestPayload request)
+        {
+
+            if (request.TagNames == null || !request.TagNames.Any())
+            {
+                throw new ArgumentException("At least one tag is required.");
+            }
+
+            var tagColumns = string.Join(",",
+                request.TagNames.Select(tag =>
+                    $@"MAX(CASE
+                    WHEN ""TagName"" = '{tag}'
+                    THEN ""Value""
+                END) AS ""{tag}"""));
+
+            var sql = $@"
+        SELECT
+            ""TimeStamp"",
+            {tagColumns}
+        FROM ""SensorRawDatas""
+        WHERE ""AssetName"" = @assetName
+          AND ""TagName"" = ANY(@tagNames)
+          AND ""TimeStamp"" >= @startTime
+          AND ""TimeStamp"" < @endTime
+        GROUP BY ""TimeStamp""
+        ORDER BY ""TimeStamp"";";
+
+            var connection = _context.Database.GetDbConnection();
+
+            if (connection.State != ConnectionState.Open)
+            {
+                await connection.OpenAsync();
+            }
+
+            var command = connection.CreateCommand();
+
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
+
+            command.Parameters.Add(
+                new NpgsqlParameter("assetName", request.AssetName));
+
+            command.Parameters.Add(
+                new NpgsqlParameter("tagNames", request.TagNames.ToArray()));
+
+            command.Parameters.Add(
+                new NpgsqlParameter("startTime", request.StartTime));
+
+            command.Parameters.Add(
+                new NpgsqlParameter("endTime", request.EndTime));
+
+            return await command.ExecuteReaderAsync(
+                CommandBehavior.CloseConnection);
+        }
+
 
         public async Task<bool> DataExist()
         {

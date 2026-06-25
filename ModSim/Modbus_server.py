@@ -34,7 +34,7 @@ class Signal:
     def trigger_spike(self, percent=0.8, absolute=None):
      with self._lock:
         if absolute is not None:
-            self.trigger_target = absolute      #Use exact value you specify
+            self.trigger_target = absolute      #Use exact v    whaalue you specify
         else:
             self.trigger_target = self.max * 1.2  #20% beyond max by default
         self.trigger_active = True

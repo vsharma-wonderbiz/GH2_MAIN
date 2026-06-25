@@ -35,6 +35,10 @@ namespace Infrastructure.Persistence
 
         public DbSet<RecommendationInfo> Recommendations { get; set; }
 
+        public DbSet<ExportRequest> ExportRequest { get; set; }
+
+        public DbSet<ExportRequestTags> exportRequestTags { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
