@@ -12,7 +12,8 @@ import logo from "../assets/Logo-removebg-preview.png"
 const menuItems = [
   { icon: <Home size={18} />, label: "Dashboard", path: "/dashboard" },
   { icon: <Home size={18} />, label: "Performance", path: "/performance" },
-  { icon: <Home size={18} />, label: "Signal", path: "/signals" }
+  { icon: <Home size={18} />, label: "Signal", path: "/signals" },
+  { icon: <Home size={18} />, label: "Export", path: "/export" }
 ];
 
 export default function Sidebar() {

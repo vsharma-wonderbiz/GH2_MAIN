@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Signals from "./pages/Signals";
 import Performance from "./pages/Performance";
+import Export from "./pages/Export";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/performance" element={<Performance />} />
           <Route path="/signals" element={<Signals />} />
+          <Route path="/export" element={<Export />} />
         </Route>
 
         {/* Redirect unknown routes */}

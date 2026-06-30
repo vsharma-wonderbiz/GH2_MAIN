@@ -41,7 +41,7 @@ namespace Infrastructure.Services
 
             var consumer = new EventingBasicConsumer(_channel);
 
-            consumer.Received += async (sender, ea) =>
+            consumer.Received += async (sender, ea) =>  
             {
                 try
                 {
@@ -65,7 +65,7 @@ namespace Infrastructure.Services
 
             _channel.BasicConsume(
                 queue: "Export_Queue",
-                autoAck: false,
+                autoAck: false, 
                 consumer: consumer);    
 
             return Task.CompletedTask;

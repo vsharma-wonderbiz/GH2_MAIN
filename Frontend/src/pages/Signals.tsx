@@ -30,10 +30,6 @@ interface Payload {
   EndTime: string;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Format helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
 /**
  * Normal mode: one series per tagName (signals are always distinct here
  * because the multi-select enforces uniqueness within a single stack).
