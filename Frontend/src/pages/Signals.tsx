@@ -229,6 +229,7 @@ export default function Signals() {
       const responses: AnalyticsResponse[] = await Promise.all(
         payloads.map((p) => getAnalyticsData(p))
       );
+      console.log(responses);
       setChartData(formatToChartData(responses, timeRange));
     } catch (err) {
       console.error("Error fetching signal data:", err);

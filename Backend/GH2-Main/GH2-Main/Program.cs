@@ -11,7 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using GH2_Main.Extension;
 using DotNetEnv;
 using Serilog;
- 
+using Domain.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
@@ -72,11 +73,15 @@ builder.Services.AddScoped<BackfillSensorDataService>();
 builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddScoped<IExportRequestRepository, ExportRequestRepository>();
+builder.Services.AddScoped<IStackEfficiencyRepository, StackEfficiencyRepository>();
+builder.Services.AddSingleton<EfficiencyForecastCalculator>();
+
 
 builder.Services.AddHostedService<WeeklyAvgCalculatorBackgroundService>();
 builder.Services.AddHostedService<AlarmConsumer>();
 
 builder.Services.AddScoped<PastWeeksAggregatedData>();
+builder.Services.AddScoped<HistoricalEfficiencyBatchProcessor>();
 builder.Services.AddScoped<IMappingRepositary, MappingRepositary>();
 builder.Services.AddScoped<ITagRepositary, TagRepositary>();
 builder.Services.AddScoped<IKpiResultRepository, KpiResultRepository>();
@@ -90,6 +95,7 @@ builder.Services.AddScoped<KpiHistoryService>();
 builder.Services.AddScoped<KpiQueryService>();
 builder.Services.AddScoped<MappingService>();
 builder.Services.AddScoped<IExportService, ExportService>();
+builder.Services.AddScoped<IStackEfficiencyService, StackEfficiencyService>();
 builder.Services.AddScoped<IAlarmRepositary, AlarmRepository>();
 builder.Services.AddScoped<IRecommendationRepositary, RecommendationRepositary>();
 builder.Services.AddScoped<IRabbitMqServices, RabbitMqServices>();
@@ -99,8 +105,13 @@ builder.Services.AddCustomServices();
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<IRabbitMqConnectionService, RabbitMqConnectionService>();
+builder.Services.AddSingleton<SeedingGate>();
 builder.Services.AddCustomAuthentication(builder.Configuration);
 
+var modbusStateFilePath = builder.Configuration["ModbusConfig:ModbusStateFilePath"]
+    ?? throw new InvalidOperationException("ModbusStateFilePath not configured in appsettings.json");
+
+builder.Services.AddSingleton(new ModbusStateUpdater(modbusStateFilePath));
 
 
 var app = builder.Build();

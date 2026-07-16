@@ -39,6 +39,8 @@ namespace Infrastructure.Persistence
 
         public DbSet<ExportRequestTags> exportRequestTags { get; set; }
 
+        public DbSet<StackEfficiencyRecord> StackEfficiencyRecords { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             

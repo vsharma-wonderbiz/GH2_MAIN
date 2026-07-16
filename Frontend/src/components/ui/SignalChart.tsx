@@ -22,8 +22,9 @@ const SignalChart: React.FC<Props> = ({ chartData, normalized = false }) => {
   const isMultiSeries = stackNames.length > 1;
 
   let series: any[];
+  
   let xAxisData: string[];
-
+  
   if (isMultiSeries) {
     // Build a map: time -> { [stackName]: value }
     const timeSet = new Set(chartData.map((d) => d.time));

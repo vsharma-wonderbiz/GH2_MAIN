@@ -1,0 +1,10 @@
+FIXED START (hamesha same):  OperationalHours = 0,     Efficiency = 80%
+FIXED END (hamesha same):    OperationalHours = 40000, Efficiency = 60%
+
+Beech mein:
+  → 100 points = ACTUAL data (jo already calculate ho chuka hai, DB se aayega)
+                 range: 0 se lekar "latest jo bhi calculated data hai" tak
+  → 100 points = PREDICTED data (forecast)
+                 range: "latest actual point" se lekar (40000, 60) tak
+
+Total = 200 points, graph pe bhejte hain

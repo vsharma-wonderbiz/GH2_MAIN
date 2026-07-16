@@ -9,6 +9,7 @@ namespace GH2_Main.Controllers
     public class BackfillDataController : ControllerBase
     {
         private readonly BackfillSensorDataService _backfillService;
+        private readonly SeedingGate _seedingGate;
         private readonly ILogger<BackfillDataController> _logger;
         private readonly PastWeeksAggregatedData _PastweekServce;
         private readonly KpiHistoryService _kpiHistory;
@@ -18,12 +19,14 @@ namespace GH2_Main.Controllers
             BackfillSensorDataService backfillService,
             ILogger<BackfillDataController> logger,
             PastWeeksAggregatedData pastweekServce,
-            KpiHistoryService kpiHistory)
+            KpiHistoryService kpiHistory,
+            SeedingGate seedingGate)
         {
             _backfillService = backfillService;
             _logger = logger;
             _PastweekServce = pastweekServce;
             _kpiHistory = kpiHistory;
+            _seedingGate = seedingGate;
         }
 
 
@@ -59,6 +62,20 @@ namespace GH2_Main.Controllers
         {
             await _kpiHistory.Generatepreviousweek();
             return Ok("Check Db for the results");
+        }
+
+        [HttpGet("status")]
+        public IActionResult GetStatus()
+        {
+            return Ok(new { isReady = _seedingGate.IsReady });
+        }
+
+        // POST api/seeding/mark-seeding-complete
+        [HttpPost("mark-seeding-complete")]
+        public IActionResult MarkSeedingComplete()
+        {
+            _seedingGate.SignalReady();
+            return Ok(new { message = "Seeding marked complete. Background processing will now start (if not already running)." });
         }
 
     }

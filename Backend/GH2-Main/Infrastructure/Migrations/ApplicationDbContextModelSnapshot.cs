@@ -451,6 +451,65 @@ namespace Infrastructure.Migrations
                     b.ToTable("SensorRawDatas");
                 });
 
+            modelBuilder.Entity("Domain.Entities.StackEfficiencyRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AssetName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("Current")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Deviation")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("ExpectedEfficiency")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("H2FlowRaw")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("MuEffective")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("OperationalHours")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Pressure")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("RawMeasuredEfficiency")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("RemainingLifeHours")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("SmoothedMeasuredEfficiency")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Temperature")
+                        .HasColumnType("double precision");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("TrackedEfficiency")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Voltage")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StackEfficiencyRecords");
+                });
+
             modelBuilder.Entity("Domain.Entities.Tag", b =>
                 {
                     b.Property<int>("TagId")

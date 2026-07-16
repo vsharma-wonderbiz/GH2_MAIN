@@ -49,7 +49,7 @@ namespace Infrastructure.Persistence.Seeding
                     new Tag(stackTypeId, "outlet_pressure", "bar", 20, 25,"float32",0.15f),
                     new Tag(stackTypeId, "flowrate", "Nm3/h", 2.8f, 3.5f,"float32",0.02f),
                     new Tag(stackTypeId, "temperature", "°C", 48, 55,"float32",0.21f),
-                    new Tag(stackTypeId, "h2flow", "Nm3/h", 486, 500,"float32",0.42f),
+                    new Tag(stackTypeId, "h2flow", "Nm3/h", 392, 486,"float32",0.42f),
                     new Tag(stackTypeId, "water_conductivity", "µS/cm", 15, 27,"float32",0.36f),
                     new Tag(stackTypeId, "water_flowrate", "L/min", 25.2f, 33.3f,"float32",0.24f),
                     //new Tag(stackTypeId, "plantdata_water_flow_tot", "L/min", 1, 250),

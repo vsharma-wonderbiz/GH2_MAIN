@@ -10,7 +10,7 @@ import time
 import pika
 import json
 
-URL="opc.tcp://10.10.10.127:4840"
+URL="opc.tcp://172.21.224.1:4840"
 RABBITMQ_HOST = 'localhost'
 CHANGE_THRESHOLD = 0.01  # change threshold
 
