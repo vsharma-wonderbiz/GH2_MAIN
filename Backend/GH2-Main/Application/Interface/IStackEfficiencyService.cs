@@ -10,5 +10,7 @@ namespace Application.Interface
     public  interface IStackEfficiencyService 
     {
         Task<EfficiencyGraphDto> GetEfficiencyData(string assetname);
+
+        Task<EfficiencyResult> GetLatestEfficiencyAsync(string stackName);
     }
 }

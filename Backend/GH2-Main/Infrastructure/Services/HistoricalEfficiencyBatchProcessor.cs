@@ -11,8 +11,8 @@ namespace Infrastructure.Services
         private readonly ApplicationDbContext _context;
         private readonly EfficiencyCalculationEngine _engine = new();
 
-        private const double TickSeconds = 5.0;       // must match the backfill's raw tick size
-        private const int PointsPerHourTarget = 12;    // <- the knob: how many samples/hour we want
+        private const double TickSeconds = 900;       // must match the backfill's raw tick size
+        private const int PointsPerHourTarget = 4;    // <- the knob: how many samples/hour we want
 
         // ticks/hour = 3600/TickSeconds = 720. Sampling every Nth row:
         // 720 / PointsPerHourTarget = 60 -> take every 60th row.
@@ -23,7 +23,7 @@ namespace Infrastructure.Services
         // or OperationalHours (and everything derived from it) drifts.
         private static readonly double DtHours = SampleEveryNthRow * TickSeconds / 3600.0;
 
-        private const int BatchSize = 5000;
+        private const int BatchSize = 500;
 
         public HistoricalEfficiencyBatchProcessor(ApplicationDbContext context)
         {
@@ -73,7 +73,7 @@ namespace Infrastructure.Services
                 )
                 SELECT ""TimeStamp"", current_val, voltage_val, temperature_val, pressure_val, h2flow_val
                 FROM numbered
-                WHERE rn % @sampleEveryNthRow = 1
+                WHERE (rn - 1) % @sampleEveryNthRow = 0
                 ORDER BY ""TimeStamp"";";
 
             await using var readConnection = new NpgsqlConnection(connectionString);
@@ -82,6 +82,8 @@ namespace Infrastructure.Services
             await using var command = new NpgsqlCommand(pivotSql, readConnection);
             command.Parameters.AddWithValue("assetName", assetName);
             command.Parameters.AddWithValue("sampleEveryNthRow", SampleEveryNthRow);
+
+            command.CommandTimeout = 300;
 
             await using var reader = await command.ExecuteReaderAsync();
 

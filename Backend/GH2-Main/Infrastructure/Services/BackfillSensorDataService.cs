@@ -41,7 +41,7 @@ namespace Infrastructure.Services
         public async Task BackfillAssetAsync(string assetName)
         {
             var endDate = DateTime.UtcNow;
-            var startDate = endDate.AddMonths(-1);
+            var startDate = endDate.AddYears(-2);
 
             var asset = await _context.Assets
                 .Include(a => a.Mappings)
@@ -81,8 +81,11 @@ namespace Infrastructure.Services
                 finalValues[mapping.Tag.TagName.ToLowerInvariant()] = finalValue;
             });
 
-            await _batchProcessor.ProcessAssetHistoryAsync(assetName);
+            if (asset.AssetType == "Stack")
+            {
 
+                await _batchProcessor.ProcessAssetHistoryAsync(assetName);
+            }
             
             if (finalValues.TryGetValue("lifetime", out var finalLifetime) &&
                 finalValues.TryGetValue("h2flow", out var finalH2Flow))
@@ -117,7 +120,7 @@ namespace Infrastructure.Services
             bool isLifetimeTag = mapping.Tag.TagName.Equals("lifetime", StringComparison.OrdinalIgnoreCase);
             bool isH2FlowTag = mapping.Tag.TagName.Equals("h2flow", StringComparison.OrdinalIgnoreCase);
 
-            const double tickSeconds = 5.0;
+            const double tickSeconds = 900;
             double elapsedOperatingHours = 0.0;
 
             float currentValue = isLifetimeTag ? RATED_LIFETIME_HOURS
@@ -210,7 +213,7 @@ namespace Infrastructure.Services
             if (_seedingGate.IsReady)
                 return; // already signalled, nothing to do
 
-            var totalAssetCount = await _context.Assets.CountAsync();
+            var totalAssetCount = await _context.Assets.Where(a=>a.AssetType=="Stack").CountAsync();
 
             var seededAssetCount = await _context.StackEfficiencyRecords
                 .Select(r => r.AssetName)

@@ -25,7 +25,7 @@ namespace Application.Services
 
         public async Task<EfficiencyGraphDto> GetEfficiencyData(string assetname)
         {
-            // Step 1: Actual (downsampled) data DB se lao
+            //Actual (downsampled) data DB se lao
             var data = await _efficiencyRepository.GetDownSampledRecords(assetname, POINTS_PER_SEGMENT);
 
             if (data == null || data.Count == 0)
@@ -37,36 +37,56 @@ namespace Application.Services
                 };
             }
 
-            // Step 2: Actual data ko DTO mein convert karo
+           
             var actualPoints = data.Select(a => new EfficiencyRecordDto
             {
                 OperationalHour = a.OperationalHours,
                 Efficiency = a.TrackedEfficiency,
             }).ToList();
 
-            // Step 3: Last record uthao - yahi se prediction start hogi
+            // Last record uthao - yahi se prediction start hogi
             var lastRecord = data[^1];
             var lastOperationalHour = lastRecord.OperationalHours;
             var lastTrackedEfficiency = lastRecord.TrackedEfficiency;
 
-            // Step 4: Forecast calculator ko call karo
             var forecastPoints = _forecastCalculator.PredictFuture(
                 lastOperationalHour,
                 lastTrackedEfficiency,
                 POINTS_PER_SEGMENT);
 
-            // Step 5: Forecast points ko bhi same DTO shape mein convert karo
+            // Forecast points ko bhi same DTO shape mein convert karo
             var predictedPoints = forecastPoints.Select(f => new EfficiencyRecordDto
             {
                 OperationalHour = f.OperationalHours,
                 Efficiency = f.PredictedEfficiency,
             }).ToList();
 
-            // Step 6: Dono ko combine karke return karo
+            //Dono ko combine karke return karo
             return new EfficiencyGraphDto
             {
                 Actual = actualPoints,
                 Predicted = predictedPoints
+            };
+        }
+
+
+        public async Task<EfficiencyResult> GetLatestEfficiencyAsync(string stackName)
+        {
+            var record = await _efficiencyRepository.GetLatestEfficiency(stackName);
+
+            if (record == null)
+                return new EfficiencyResult { StackName = stackName, Status = "No data" };
+
+           
+            var efficiency = Math.Round(record.TrackedEfficiency, 2);
+            var status = efficiency < 70 ? "Critical" : "Normal";
+
+            return new EfficiencyResult
+            {
+                StackName = stackName,
+                LatestEfficiency = efficiency,
+                OperationalHours = record.OperationalHours,
+                Status = status
             };
         }
     }

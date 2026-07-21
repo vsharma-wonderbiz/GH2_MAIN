@@ -10,5 +10,7 @@ namespace Application.Interface
     public interface IStackEfficiencyRepository
     {
         Task<List<StackEfficiencyRecord>> GetDownSampledRecords(string assetman, int NumberOfRecords);
+
+        Task<StackEfficiencyRecord> GetLatestEfficiency(string stackName);
     }
 }

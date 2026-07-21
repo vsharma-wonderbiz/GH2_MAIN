@@ -55,5 +55,15 @@ namespace Infrastructure.Implementation
                 .FromSqlRaw(sql, assetman, nthRow)
                 .ToListAsync();
         }
+
+        public async Task<StackEfficiencyRecord> GetLatestEfficiency(string stackName)
+        {
+            var record = await _context.StackEfficiencyRecords
+                       .Where(a => a.AssetName == stackName)
+                       .OrderByDescending(a => a.TimeStamp)
+                       .FirstOrDefaultAsync();
+
+            return record;
+        }
     }
 }

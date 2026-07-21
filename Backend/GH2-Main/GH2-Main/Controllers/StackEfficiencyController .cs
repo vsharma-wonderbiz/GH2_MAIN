@@ -28,5 +28,17 @@ namespace Application.Api.Controllers
 
             return Ok(result);
         }
+
+
+        [HttpGet("{stackName}/latest")]
+        public async Task<IActionResult> GetLatestEfficiency(string stackName)
+        {
+            var result = await _efficiencyService.GetLatestEfficiencyAsync(stackName);
+
+            if (result.Status == "No data")
+                return NotFound($"No efficiency record found for stack {stackName}");
+
+            return Ok(result);
+        }
     }
 }

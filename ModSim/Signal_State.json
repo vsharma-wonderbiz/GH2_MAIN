@@ -2,8 +2,8 @@
   "states": [
     {
       "stack": "Stack_1",
-      "remainingLifetime": 39856,
-      "currentH2Flow": 391.485
+      "remainingLifetime": 36495.95,
+      "currentH2Flow": 350.192
     },
     {
       "stack": "Stack_2",
@@ -12,18 +12,18 @@
     },
     {
       "stack": "Stack_3",
-      "remainingLifetime": 39851.527222231074,
-      "currentH2Flow": 392.889
+      "remainingLifetime": 39856,
+      "currentH2Flow": 391.485
     },
     {
       "stack": "Stack_4",
-      "remainingLifetime": 39851.527222231074,
-      "currentH2Flow": 392.889
+      "remainingLifetime": 39856,
+      "currentH2Flow": 391.485
     },
     {
       "stack": "Stack_5",
-      "remainingLifetime": 39851.527222231074,
-      "currentH2Flow": 392.889
+      "remainingLifetime": 39856,
+      "currentH2Flow": 391.485
     }
   ],
   "archived_states": []

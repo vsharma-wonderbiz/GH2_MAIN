@@ -72,7 +72,7 @@ namespace Infrastructure.Services
                     var body = eventArgs.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
 
-                    Console.WriteLine($"Alarm Message Received: {message}");
+                    //Console.WriteLine($"Alarm Message Received: {message}");
 
                     await ProcessMessage(message);
 
@@ -109,8 +109,8 @@ namespace Infrastructure.Services
                     var body = eventArgs.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
 
-                    Console.WriteLine(
-                        $"Recommendation Message Received: {message}");
+                    //Console.WriteLine(
+                    //    $"Recommendation Message Received: {message}");
 
                     await ProcessRecommendationMessage(message);
 
@@ -174,7 +174,7 @@ namespace Infrastructure.Services
                 await repo.AddAsync(entry);
                 await repo.SaveChangesAsync();
 
-                Console.WriteLine("Alarm saved.");
+                //Console.WriteLine("Alarm saved.");
             }
             else if (alarm.Event?.ToUpper() == "ALARM_CLEARED")
             {
@@ -191,7 +191,7 @@ namespace Infrastructure.Services
 
                     await repo.SaveChangesAsync();
 
-                    Console.WriteLine("Alarm cleared.");
+                    //Console.WriteLine("Alarm cleared.");
                 }
             }
         }
@@ -244,8 +244,8 @@ namespace Infrastructure.Services
 
                 await repo.SaveChangesAsync();
 
-                Console.WriteLine(
-                    "Recommendation saved.");
+                //Console.WriteLine(
+                //    "Recommendation saved.");
             }
             else if (recommendation.Event?.ToUpper() ==
                      "RECOMMENDATION_CLEARED")
@@ -263,8 +263,8 @@ namespace Infrastructure.Services
 
                     await repo.SaveChangesAsync();
 
-                    Console.WriteLine(
-                        "Recommendation cleared.");
+                    //Console.WriteLine(
+                    //    "Recommendation cleared.");
                 }
             }
         }
