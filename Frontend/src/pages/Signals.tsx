@@ -87,7 +87,7 @@ const COMPARE_COLORS = ["#3b82f6", "#f97316", "#22c55e", "#a855f7", "#ef4444"];
 // ─────────────────────────────────────────────────────────────────────────────
 // ChartLoader
 // ─────────────────────────────────────────────────────────────────────────────
-function ChartLoader() {
+export function ChartLoader() {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full gap-3">
       <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin" />

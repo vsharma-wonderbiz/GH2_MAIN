@@ -94,6 +94,23 @@ export interface RecommendationResponse {
   status: string;
 }
 
+export interface EfficiencyData {
+  operationalHour:number,
+  efficiency:number
+}
+
+export interface StackEfficiency{
+  actual:EfficiencyData[],
+  predicted:EfficiencyData[]
+}
+
+export interface EfficiencyResult{
+  stackName:string,
+  latestEfficiency:number,
+  operationalHours:number,
+  status:string
+}
+
 //AXIOS INSTANCE
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -205,3 +222,23 @@ export const GetLatestRecommendation = async (): Promise<RecommendationResponse[
     throw error;
   }
 };
+
+export const StackEfficiencyData = async (stackName:string):Promise<StackEfficiency> =>{
+  try{
+    const res = await api.get(`StackEfficiency/${stackName}`);
+    return res.data;
+  } catch (error) {
+    console.error("Stack Efficiency api error:", error);
+    throw error;
+  }
+}
+
+export const LatestEfficiencyRecord = async (stackName:string):Promise<EfficiencyResult> => {
+  try{
+    const res = await api.get(`StackEfficiency/${stackName}/latest`);
+    return res.data;
+  } catch (error) {
+    console.error("Stack Efficiency api error:", error);
+    throw error;
+  }
+}
