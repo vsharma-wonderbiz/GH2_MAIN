@@ -148,7 +148,7 @@ namespace Infrastructure.Services
                     if (isLifetimeTag)
                     {
                         double preciseLifetime =
-                            RATED_LIFETIME_HOURS - (elapsedOperatingHours * LifetimeLostPerOperatingHour);
+                            RATED_LIFETIME_HOURS - elapsedOperatingHours;
                         preciseLifetime = Math.Max(0.0, preciseLifetime);
                         currentValue = (float)Math.Round(preciseLifetime, 4);
                     }

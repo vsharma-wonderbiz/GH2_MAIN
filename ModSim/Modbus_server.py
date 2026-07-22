@@ -180,7 +180,7 @@ class Signal:
         return self.value
 
 
-# ─── Flask Endpoints ────────────────────────────────────────────────
+# ─── Flask Endpoints ────────────────────────────────────────────────  
 
 @app.route("/signals", methods=["GET"])
 def list_signals():
